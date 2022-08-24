@@ -1,6 +1,9 @@
 import Head from "next/head"
 import Image from "next/image"
+import { useTheme } from "@mui/system"
 const HomePage: React.FC = () => {
+  const theme = useTheme()
+  const currentMode = theme.palette.mode
   return (
     <>
       <Head>
