@@ -15,6 +15,7 @@ const HomePage: React.FC = () => {
       <main
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
+        <TopAppBar />
       </main>
     </>
   )
