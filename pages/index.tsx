@@ -1,5 +1,7 @@
 import Head from "next/head"
 import Image from "next/image"
+import SplitPane from "react-split-pane"
+import TopAppBar from "@/src/components/AppBar"
 import { useTheme } from "@mui/system"
 const HomePage: React.FC = () => {
   const theme = useTheme()
@@ -16,6 +18,37 @@ const HomePage: React.FC = () => {
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
         <TopAppBar />
+        <div style={{ flexGrow: 1, display: "flex" }}>
+          <SplitPane
+            split="vertical"
+            minSize={300}
+            maxSize={-300}
+            defaultSize="75%"
+            style={{
+              height: "calc(100vh - 64px)",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor:
+                  currentMode === "dark" ? "#292929" : "whitesmoke",
+                height: "100%",
+                overflow: "auto",
+                boxSizing: "border-box",
+              }}
+            >
+              {/* Visual Composer Area */}
+            </div>
+            <div
+              style={{
+                height: "100%",
+                overflow: "auto",
+                boxSizing: "border-box",
+              }}
+            >
+            </div>
+          </SplitPane>
+        </div>
       </main>
     </>
   )
