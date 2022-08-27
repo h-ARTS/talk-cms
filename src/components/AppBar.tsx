@@ -8,10 +8,15 @@ import {
   Avatar,
   Box,
   Tooltip,
+  Switch,
+  FormControlLabel,
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
+import { toggleThemeMode } from "../store/themeSlice"
+import { useDispatch } from "react-redux"
 
 const TopAppBar: React.FC = () => {
+  const dispatch = useDispatch()
 
   return (
     <AppBar position="static" elevation={0}>
@@ -25,6 +30,12 @@ const TopAppBar: React.FC = () => {
         <Tooltip title="Username">
           <Avatar alt="User Avatar" src="/path/to/avatar/image" />
         </Tooltip>
+        <Box ml={4}>
+          <FormControlLabel
+            control={<Switch onChange={() => dispatch(toggleThemeMode())} />}
+            label="Dark mode"
+          />
+        </Box>
         <Box sx={{ mx: 2 }}>
           <Button color="inherit">Save</Button>
           <Button color="inherit">Publish</Button>
