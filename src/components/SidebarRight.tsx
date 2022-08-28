@@ -38,3 +38,5 @@ const RightSidebar: React.FC = () => {
     </Box>
   )
 }
+
+export default RightSidebar
