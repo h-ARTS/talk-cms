@@ -2,10 +2,13 @@ import Head from "next/head"
 import Image from "next/image"
 import SplitPane from "react-split-pane"
 import TopAppBar from "@/src/components/AppBar"
+import RightSidebar from "@/src/components/SidebarRight"
 import { useTheme } from "@mui/system"
+
 const HomePage: React.FC = () => {
   const theme = useTheme()
   const currentMode = theme.palette.mode
+
   return (
     <>
       <Head>
@@ -46,6 +49,7 @@ const HomePage: React.FC = () => {
                 boxSizing: "border-box",
               }}
             >
+              <RightSidebar />
             </div>
           </SplitPane>
         </div>
