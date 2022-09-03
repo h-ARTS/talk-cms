@@ -1,6 +1,9 @@
 import React from "react"
 import { Box, Typography, Tabs, Tab } from "@mui/material"
+import TabBlocks from "./tabs/TabBlocks"
+import TabConfig from "./tabs/TabConfig"
 import { useTheme } from "@mui/system"
+
 const RightSidebar: React.FC = () => {
   const [value, setValue] = React.useState(0)
   const theme = useTheme()
@@ -35,6 +38,8 @@ const RightSidebar: React.FC = () => {
         <Tab label="Blocks" />
         <Tab label="Config" />
       </Tabs>
+      {value === 0 && <TabBlocks />}
+      {value === 1 && <TabConfig />}
     </Box>
   )
 }
