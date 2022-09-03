@@ -27,6 +27,10 @@ const TabBlocks: React.FC = () => {
   const cards = useSelector((state: RootState) => state.pageBuilder)
   const dispatch = useDispatch()
 
+  const handleAddCard = (type: CardData["type"]) => {
+    dispatch(addBlock(generateNewCard(type)))
+  }
+
   const moveCard = (draggedId: string, hoverIndex: number) => {
     dispatch(moveBlock({ draggedId, hoverIndex }))
   }
@@ -54,6 +58,16 @@ const TabBlocks: React.FC = () => {
             {card.content}
           </DraggableCard>
         ))}
+      </Box>
+      <Box mt={5}>
+        <ButtonGroup sx={{ mt: 2 }}>
+          <Button onClick={() => handleAddCard("headline")}>
+            Add Headline
+          </Button>
+          <Button onClick={() => handleAddCard("teaser")}>Add Teaser</Button>
+          <Button onClick={() => handleAddCard("grid")}>Add Grid</Button>
+          <Button onClick={() => handleAddCard("card")}>Add Card</Button>
+        </ButtonGroup>
       </Box>
     </Container>
   )
