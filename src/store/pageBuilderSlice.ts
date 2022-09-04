@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 type BlockData = {
   id: string
   type: "headline" | "teaser" | "grid" | "card"
-  content: React.ReactNode
+  content: string
 }
 
 const initialState: BlockData[] = [

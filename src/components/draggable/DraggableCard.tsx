@@ -1,5 +1,5 @@
 import React, { useRef } from "react"
-import { Card, CardContent } from "@mui/material"
+import { Card, CardContent, Typography } from "@mui/material"
 import { useDrag, useDrop } from "react-dnd"
 
 type DraggableCardProps = {
@@ -57,7 +57,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
       onClick={onClick}
     >
       <Card>
-        <CardContent>{children}</CardContent>
+        <CardContent>
+          <Typography variant="h4">{children}</Typography>
+        </CardContent>
       </Card>
     </div>
   )

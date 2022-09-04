@@ -10,7 +10,7 @@ import { addBlock, moveBlock } from "../../store/pageBuilderSlice"
 
 type CardData = {
   id: string
-  content: React.ReactNode
+  content: string
   type: "headline" | "teaser" | "grid" | "card"
 }
 
@@ -18,7 +18,7 @@ const generateNewCard = (type: CardData["type"]): CardData => {
   const contentText = `New ${type}`
   return {
     id: uuidv4(),
-    content: <Typography variant="h5">{contentText}</Typography>,
+    content: contentText,
     type,
   }
 }
