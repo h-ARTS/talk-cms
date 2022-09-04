@@ -5,8 +5,8 @@ import { useDrop } from "react-dnd"
 import { v4 as uuidv4 } from "uuid"
 // Redux
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../../store/rootReducer"
-import { addBlock, moveBlock } from "../../store/pageBuilderSlice"
+import { RootState } from "@/src/store/rootReducer"
+import { addBlock, deleteBlock, moveBlock } from "@/src/store/pageBuilderSlice"
 
 type CardData = {
   id: string
@@ -35,6 +35,10 @@ const TabBlocks: React.FC = () => {
     dispatch(moveBlock({ draggedId, hoverIndex }))
   }
 
+  const handleDeleteCard = (cardId: string) => {
+    dispatch(deleteBlock(cardId))
+  }
+
   const [, drop] = useDrop(() => ({
     accept: "card",
   }))
@@ -54,6 +58,7 @@ const TabBlocks: React.FC = () => {
             index={index}
             moveCard={moveCard}
             onClick={() => openSidebarSettings(card)}
+            onDelete={() => handleDeleteCard(card.id)}
           >
             {card.content}
           </DraggableCard>
