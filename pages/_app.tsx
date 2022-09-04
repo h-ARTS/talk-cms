@@ -1,4 +1,3 @@
-import "@/styles/root.css"
 import "@/styles/split-pane.css"
 import type { AppProps } from "next/app"
 import { Provider } from "react-redux"
