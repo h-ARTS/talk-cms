@@ -58,6 +58,11 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 
   drag(drop(ref))
 
+  const handleOnDelete = (event: React.SyntheticEvent) => {
+    event.stopPropagation()
+    onDelete()
+  }
+
   return (
     <div
       ref={ref}
@@ -72,7 +77,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
           <Box display={"flex"} justifyContent={"space-between"}>
             <Typography variant="h6">{children}</Typography>
             <Tooltip title="Delete Block">
-              <IconButton size="small" onClick={onDelete}>
+              <IconButton size="small" onClick={handleOnDelete}>
                 <DeleteForeverIcon />
               </IconButton>
             </Tooltip>
