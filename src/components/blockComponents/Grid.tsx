@@ -1,13 +1,19 @@
 import React from "react"
-import { TextField } from "@mui/material"
+import { TextField, Grid as MuiGrid, Box } from "@mui/material"
 
 const Grid: React.FC = () => {
   return (
-    <div>
-      <TextField label="Columns" type="number" fullWidth />
-      <TextField label="Padding" type="number" fullWidth />
-      <TextField label="Margin" type="number" fullWidth />
-    </div>
+    <MuiGrid px={3}>
+      <Box my={2}>
+        <TextField label="Margin" type="number" variant="standard" fullWidth />
+      </Box>
+      <Box my={2}>
+        <TextField label="Padding" type="number" variant="standard" fullWidth />
+      </Box>
+      <Box my={2} mb={4}>
+        <TextField label="Columns" type="number" variant="standard" fullWidth />
+      </Box>
+    </MuiGrid>
   )
 }
 

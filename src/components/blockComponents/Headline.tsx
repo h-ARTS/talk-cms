@@ -1,13 +1,19 @@
 import React from "react"
-import { TextField, Button } from "@mui/material"
+import { TextField, Grid, Box } from "@mui/material"
 
 const Headline: React.FC = () => {
   return (
-    <div>
-      <TextField label="Title" fullWidth />
-      <TextField label="Subtitle" fullWidth />
-      <Button variant="contained">Call to action</Button>
-    </div>
+    <Grid px={3}>
+      <Box my={2}>
+        <TextField label="Title" fullWidth variant="standard" />
+      </Box>
+      <Box my={2}>
+        <TextField label="Subtitle" fullWidth variant="standard" />
+      </Box>
+      <Box mt={2} mb={4}>
+        <TextField label="Call to Action Button" fullWidth variant="standard" />
+      </Box>
+    </Grid>
   )
 }
 

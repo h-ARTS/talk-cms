@@ -7,6 +7,7 @@ import Teaser from "./blockComponents/Teaser"
 // Redux
 import { useSelector } from "react-redux"
 import { RootState } from "@/src/store"
+import { Box, Typography } from "@mui/material"
 
 const BlockEditor: React.FC = () => {
   const activeBlock = useSelector(
@@ -14,7 +15,11 @@ const BlockEditor: React.FC = () => {
   )
 
   if (!activeBlock) {
-    return <div>Select a block to edit</div>
+    return (
+      <Box px={3} my={2}>
+        <Typography variant="subtitle2">Select a block to edit</Typography>
+      </Box>
+    )
   }
 
   const blockComponentMap: Record<string, JSX.Element> = {

@@ -1,6 +1,14 @@
 import React from "react"
 // Mui
-import { Button, Divider, List, ListSubheader } from "@mui/material"
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Divider,
+  List,
+  ListSubheader,
+  Typography,
+} from "@mui/material"
 // Redux
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/src/store"
@@ -59,15 +67,19 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
           />
         ))}
       </List>
-      {Object.values(BlockType).map((type) => (
-        <Button
-          key={type}
-          onClick={() => handleAddBlock(type, parentId)}
-          variant="contained"
-        >
-          Add {type}
-        </Button>
-      ))}
+      <Divider />
+      <Box px={2}>
+        <Typography my={2} variant="subtitle2">
+          Add Block:
+        </Typography>
+        <ButtonGroup variant="outlined" disableElevation>
+          {Object.values(BlockType).map((type) => (
+            <Button key={type} onClick={() => handleAddBlock(type, parentId)}>
+              {type}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </Box>
     </>
   )
 }

@@ -77,8 +77,8 @@ const SidebarRight: React.FC = () => {
         <Tab label="Config" />
       </Tabs>
       {navigationHistory.length > 0 && (
-        <Box mb={2}>
-          <Button variant="outlined" onClick={handleNavigateBack}>
+        <Box my={2} mx={3}>
+          <Button variant="outlined" size="small" onClick={handleNavigateBack}>
             Back
           </Button>
         </Box>

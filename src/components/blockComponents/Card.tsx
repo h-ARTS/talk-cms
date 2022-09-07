@@ -1,14 +1,27 @@
 import React from "react"
-import { TextField, Button } from "@mui/material"
+import { TextField, Button, Grid, Box } from "@mui/material"
 
 const Card: React.FC = () => {
   return (
-    <div>
-      <TextField label="Card Title" fullWidth />
-      <TextField label="Card Image" fullWidth />
-      <TextField label="Card Content" fullWidth multiline />
-      <Button variant="contained">Button for Card Footer</Button>
-    </div>
+    <Grid px={3}>
+      <Box my={2}>
+        <TextField label="Card Title" fullWidth variant="standard" />
+      </Box>
+      <Box my={2}>
+        <TextField label="Card Image" fullWidth variant="standard" />
+      </Box>
+      <Box my={2}>
+        <TextField
+          label="Card Content"
+          fullWidth
+          variant="standard"
+          multiline
+        />
+      </Box>
+      <Box mt={2} mb={4}>
+        <TextField label="Button Label" fullWidth variant="standard" />
+      </Box>
+    </Grid>
   )
 }
 
