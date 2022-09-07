@@ -7,7 +7,7 @@ export interface Block {
   id: string
   type: BlockType
   parentId: string | null
-  content: string
+  content: { [key: string]: any }
 }
 
 export enum BlockType {

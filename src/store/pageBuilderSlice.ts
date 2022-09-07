@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import {
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit"
 import { ActiveBlock, Block } from "@/types/types"
 
 const initialState = {
@@ -55,7 +60,29 @@ const pageBuilderSlice = createSlice({
       state.navigationHistory = action.payload
     },
   },
+  extraReducers(builder) {
+    builder.addCase(setBlockContent, (state, action) => {
+      const { id, content } = action.payload
+      const blockIndex = state.blocks.findIndex((block) => block.id === id)
+      const block = state.blocks.find((b) => b.id === id)
+      if (blockIndex !== -1) {
+        state.blocks[blockIndex].content = { ...block?.content, ...content }
+      }
+    })
+  },
 })
+
+export const updateBlockContent = createAsyncThunk(
+  "pageBuilder/updateBlockContent",
+  async (payload: { id: string; content: any }, { dispatch }) => {
+    dispatch(setBlockContent(payload))
+  }
+)
+
+export const setBlockContent = createAction<{
+  id: string
+  content: any
+}>("pageBuilder/setBlockContent")
 
 export const {
   addBlock,

@@ -37,7 +37,7 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
       id: Date.now().toString(),
       type,
       parentId,
-      content: "",
+      content: {},
     }
     dispatch(addBlock({ parent: parentId, block: newBlock }))
   }
