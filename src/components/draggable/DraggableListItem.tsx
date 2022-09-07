@@ -84,7 +84,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
           </IconButton>
         }
       >
-        <ListItemButton onClick={handleOnClick}>
+        <ListItemButton disableRipple onClick={handleOnClick}>
           <ListItemText>{type}</ListItemText>
         </ListItemButton>
       </ListItem>
