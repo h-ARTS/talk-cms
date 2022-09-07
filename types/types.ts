@@ -1,3 +1,8 @@
+export type ActiveBlock = {
+  id: string
+  type: BlockType
+}
+
 export interface Block {
   id: string
   type: BlockType

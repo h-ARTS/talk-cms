@@ -1,54 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { BlockData } from "../components/tabs/BlockContainer"
-import { Block } from "@/types/types"
+import { ActiveBlock, Block } from "@/types/types"
 
 const initialState = {
   blocks: [] as Block[],
-  activeBlock: null as BlockData | null,
-  navigationHistory: [] as (BlockData | null)[],
-}
-
-const addBlockToChildren = (
-  blocks: BlockData[],
-  parentId: string,
-  child: BlockData
-) => {
-  for (const block of blocks) {
-    if (block.id === parentId) {
-      block.children?.push(child)
-      return true
-    } else if (
-      block.children &&
-      addBlockToChildren(block.children, parentId, child)
-    ) {
-      return true
-    }
-  }
-  return false
-}
-
-const removeBlockFromChildren = (
-  blocks: BlockData[],
-  blockId: string,
-  found: { value: boolean }
-) => {
-  for (let i = 0; i < blocks.length; i++) {
-    if (blocks[i].id === blockId) {
-      blocks.splice(i, 1)
-      found.value = true
-      return
-    } else if (blocks[i].children) {
-      removeBlockFromChildren(blocks[i].children, blockId, found)
-      if (found.value) return
-    }
-  }
+  activeBlock: null as ActiveBlock | null,
+  navigationHistory: [] as string[],
 }
 
 const pageBuilderSlice = createSlice({
   name: "pageBuilder",
   initialState,
   reducers: {
-    setActiveBlock: (state, action: PayloadAction<BlockData | null>) => {
+    setActiveBlock: (state, action: PayloadAction<ActiveBlock | null>) => {
       state.activeBlock = action.payload
     },
     addBlock: (
@@ -71,9 +34,6 @@ const pageBuilderSlice = createSlice({
       state.blocks.splice(hoverIndex, 0, draggedBlock)
     },
     deleteBlock: (state, action: PayloadAction<string>) => {
-      // const blockId = action.payload
-      // const found = { value: false }
-      // removeBlockFromChildren(state.blocks, blockId, found)
       const deleteBlockRecursively = (blockId: string) => {
         const block = state.blocks.find((b) => b.id === blockId)
         if (!block) return
@@ -91,17 +51,7 @@ const pageBuilderSlice = createSlice({
 
       deleteBlockRecursively(action.payload)
     },
-    addChildBlock: (
-      state,
-      action: PayloadAction<{ parentId: string; child: BlockData }>
-    ) => {
-      const { parentId, child } = action.payload
-      addBlockToChildren(state.blocks, parentId, child)
-    },
-    setNavigationHistory: (
-      state,
-      action: PayloadAction<(BlockData | null)[]>
-    ) => {
+    setNavigationHistory: (state, action: PayloadAction<string[]>) => {
       state.navigationHistory = action.payload
     },
   },
@@ -111,7 +61,6 @@ export const {
   addBlock,
   moveBlock,
   deleteBlock,
-  addChildBlock,
   setActiveBlock,
   setNavigationHistory,
 } = pageBuilderSlice.actions

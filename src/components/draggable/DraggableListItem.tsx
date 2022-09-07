@@ -1,19 +1,22 @@
-import React, { useRef, useEffect } from "react"
+import React, { useRef } from "react"
+import { useDrag, useDrop } from "react-dnd"
+// Mui
 import {
   IconButton,
   ListItem,
   ListItemButton,
   ListItemText,
-  Tooltip,
-  Typography,
 } from "@mui/material"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
-import { useDrag, useDrop } from "react-dnd"
-import { HTML5Backend, getEmptyImage } from "react-dnd-html5-backend"
+// redux
+import { useDispatch } from "react-redux"
+import { setActiveBlock } from "@/src/store/pageBuilderSlice"
+// Types
+import { BlockType } from "@/types/types"
 
 type DraggableListItemProps = {
   id: string
-  type: string
+  type: BlockType
   index: number
   moveCard: (draggedId: string, hoverIndex: number) => void
   onClick: (id: string) => void
@@ -28,6 +31,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
   onClick,
   onDelete,
 }) => {
+  const dispatch = useDispatch()
   const ref = useRef<HTMLDivElement>(null)
 
   const [, drop] = useDrop({
@@ -64,6 +68,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
   const handleOnClick = (event: React.SyntheticEvent) => {
     event.stopPropagation()
     onClick(id)
+    dispatch(setActiveBlock({ id, type }))
   }
 
   return (

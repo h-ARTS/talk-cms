@@ -1,18 +1,15 @@
-import {
-  Button,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  ListSubheader,
-} from "@mui/material"
+import React from "react"
+// Mui
+import { Button, Divider, List, ListSubheader } from "@mui/material"
+// Redux
 import { useSelector, useDispatch } from "react-redux"
-import { addBlock, deleteBlock, moveBlock } from "@/src/store/pageBuilderSlice"
-import { Block, BlockType } from "@/types/types"
 import { RootState } from "@/src/store"
-import { Delete as DeleteIcon } from "@mui/icons-material"
+import { addBlock, deleteBlock, moveBlock } from "@/src/store/pageBuilderSlice"
+// Types
+import { Block, BlockType } from "@/types/types"
+// Components
 import DraggableListItem from "../draggable/DraggableListItem"
+import BlockEditor from "../BlockEditor"
 
 interface BlockTreeProps {
   parentId: string | null
@@ -47,6 +44,8 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
 
   return (
     <>
+      <BlockEditor />
+      <Divider />
       <List subheader={<ListSubheader>Blocks</ListSubheader>}>
         {childBlocks.map((block, idx) => (
           <DraggableListItem

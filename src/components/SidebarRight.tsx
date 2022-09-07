@@ -1,24 +1,51 @@
-import React, { useState } from "react"
+import React, { useEffect } from "react"
+// Mui
 import { Box, Typography, Tabs, Tab, Button } from "@mui/material"
-import TabConfig from "./tabs/TabConfig"
 import { useTheme } from "@mui/system"
+// Tabs
+import TabConfig from "./tabs/TabConfig"
 import BlockTree from "./tabs/BlockTree"
+// Redux
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "@/src/store"
+import {
+  setActiveBlock,
+  setNavigationHistory,
+} from "@/src/store/pageBuilderSlice"
 
-const RightSidebar: React.FC = () => {
+const SidebarRight: React.FC = () => {
   const [value, setValue] = React.useState(0)
   const theme = useTheme()
   const currentMode = theme.palette.mode
-  const [navStack, setNavStack] = useState<string[]>([])
+  const navigationHistory = useSelector(
+    (state: RootState) => state.pageBuilder.navigationHistory
+  )
+  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
+  const currentBlock = blocks.find(
+    (b) => b.id === navigationHistory[navigationHistory.length - 1]
+  )
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (navigationHistory.length == 0) dispatch(setActiveBlock(null))
+    else if (currentBlock) {
+      const { type, id } = currentBlock
+      dispatch(setActiveBlock({ type, id }))
+    }
+  }, [currentBlock, dispatch, navigationHistory, navigationHistory.length])
 
   const handleNavigate = (id: string) => {
-    setNavStack((prevStack) => [...prevStack, id])
+    dispatch(setNavigationHistory([...navigationHistory, id]))
   }
 
   const handleNavigateBack = () => {
-    setNavStack((prevStack) => prevStack.slice(0, -1))
+    dispatch(setNavigationHistory(navigationHistory.slice(0, -1)))
   }
 
-  const currentView = navStack.length > 0 ? navStack[navStack.length - 1] : null
+  const currentView =
+    navigationHistory.length > 0
+      ? navigationHistory[navigationHistory.length - 1]
+      : null
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -49,7 +76,7 @@ const RightSidebar: React.FC = () => {
         <Tab label="Blocks" />
         <Tab label="Config" />
       </Tabs>
-      {navStack.length > 0 && (
+      {navigationHistory.length > 0 && (
         <Box mb={2}>
           <Button variant="outlined" onClick={handleNavigateBack}>
             Back
@@ -64,4 +91,4 @@ const RightSidebar: React.FC = () => {
   )
 }
 
-export default RightSidebar
+export default SidebarRight
