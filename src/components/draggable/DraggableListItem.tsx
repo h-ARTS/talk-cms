@@ -1,34 +1,32 @@
-import React, { useRef } from "react"
+import React, { useRef, useEffect } from "react"
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
   IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemText,
   Tooltip,
   Typography,
 } from "@mui/material"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import { useDrag, useDrop } from "react-dnd"
+import { HTML5Backend, getEmptyImage } from "react-dnd-html5-backend"
 
-type DraggableCardProps = {
+type DraggableListItemProps = {
   id: string
   type: string
   index: number
   moveCard: (draggedId: string, hoverIndex: number) => void
-  onClick: () => void
-  onDelete: () => void
-  children: React.ReactNode
+  onClick: (id: string) => void
+  onDelete: (id: string) => void
 }
 
-const DraggableCard: React.FC<DraggableCardProps> = ({
+const DraggableListItem: React.FC<DraggableListItemProps> = ({
   id,
   type,
   index,
   moveCard,
   onClick,
   onDelete,
-  children,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -48,7 +46,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
     },
   })
 
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: "card",
     item: { id, type, index },
     collect: (monitor) => ({
@@ -60,33 +58,33 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 
   const handleOnDelete = (event: React.SyntheticEvent) => {
     event.stopPropagation()
-    onDelete()
+    onDelete(id)
+  }
+
+  const handleOnClick = (event: React.SyntheticEvent) => {
+    event.stopPropagation()
+    onClick(id)
   }
 
   return (
-    <div
-      ref={ref}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-        marginBottom: "10px",
-      }}
-      onClick={onClick}
-    >
-      <Card>
-        <CardContent>
-          <Box display={"flex"} justifyContent={"space-between"}>
-            <Typography variant="h6">{children}</Typography>
-            <Tooltip title="Delete Block">
-              <IconButton size="small" onClick={handleOnDelete}>
-                <DeleteForeverIcon />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </CardContent>
-        <div></div>
-      </Card>
+    <div ref={ref}>
+      <ListItem
+        sx={{
+          opacity: isDragging ? 0.5 : 1,
+        }}
+        disablePadding
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete" onClick={handleOnDelete}>
+            <DeleteForeverIcon />
+          </IconButton>
+        }
+      >
+        <ListItemButton onClick={handleOnClick}>
+          <ListItemText>{type}</ListItemText>
+        </ListItemButton>
+      </ListItem>
     </div>
   )
 }
 
-export default DraggableCard
+export default DraggableListItem

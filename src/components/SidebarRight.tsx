@@ -1,13 +1,24 @@
-import React from "react"
-import { Box, Typography, Tabs, Tab } from "@mui/material"
-import TabBlocks from "./tabs/TabBlocks"
+import React, { useState } from "react"
+import { Box, Typography, Tabs, Tab, Button } from "@mui/material"
 import TabConfig from "./tabs/TabConfig"
 import { useTheme } from "@mui/system"
+import BlockTree from "./tabs/BlockTree"
 
 const RightSidebar: React.FC = () => {
   const [value, setValue] = React.useState(0)
   const theme = useTheme()
   const currentMode = theme.palette.mode
+  const [navStack, setNavStack] = useState<string[]>([])
+
+  const handleNavigate = (id: string) => {
+    setNavStack((prevStack) => [...prevStack, id])
+  }
+
+  const handleNavigateBack = () => {
+    setNavStack((prevStack) => prevStack.slice(0, -1))
+  }
+
+  const currentView = navStack.length > 0 ? navStack[navStack.length - 1] : null
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -38,7 +49,16 @@ const RightSidebar: React.FC = () => {
         <Tab label="Blocks" />
         <Tab label="Config" />
       </Tabs>
-      {value === 0 && <TabBlocks />}
+      {navStack.length > 0 && (
+        <Box mb={2}>
+          <Button variant="outlined" onClick={handleNavigateBack}>
+            Back
+          </Button>
+        </Box>
+      )}
+      {value === 0 && (
+        <BlockTree parentId={currentView} onNavigate={handleNavigate} />
+      )}
       {value === 1 && <TabConfig />}
     </Box>
   )
