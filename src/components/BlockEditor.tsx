@@ -29,7 +29,9 @@ const BlockEditor: React.FC = () => {
   }
 
   const handleBlockInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {
+      target: { checked?: boolean }
+    }
   ) => {
     const { name, value, checked } = event.target
     const newContent = {
