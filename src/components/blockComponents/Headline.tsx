@@ -8,7 +8,7 @@ type HeadlineProps = {
 }
 
 const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
-  const { title, subtitle, cta_button_label } = values || {}
+  const { title = "", subtitle = "", cta_button_label = "" } = values || {}
   const handleInputChange = useInputChange(onInputChange)
 
   return (

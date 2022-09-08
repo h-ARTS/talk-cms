@@ -14,7 +14,7 @@ type GridProps = {
 }
 
 const Grid: React.FC<GridProps> = ({ onInputChange, values }) => {
-  const { margin, padding, columns } = values || {}
+  const { margin = 0, padding = 0, columns = 0 } = values || {}
   const handleInputChange = useInputChange(onInputChange)
 
   return (

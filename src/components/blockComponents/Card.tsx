@@ -8,7 +8,12 @@ type CardProps = {
 }
 
 const Card: React.FC<CardProps> = ({ onInputChange, values }) => {
-  const { title, content, image_url, btn_label } = values || {}
+  const {
+    title = "",
+    content = "",
+    image_url = "",
+    btn_label = "",
+  } = values || {}
   const handleInputChange = useInputChange(onInputChange)
 
   return (
