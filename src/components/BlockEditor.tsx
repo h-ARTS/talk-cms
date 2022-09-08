@@ -31,10 +31,10 @@ const BlockEditor: React.FC = () => {
   const handleBlockInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = event.target
+    const { name, value, checked } = event.target
     const newContent = {
       ...block?.content,
-      [name]: value,
+      [name]: name === "fluid" ? checked : value,
     }
     dispatch(setBlockContent({ id: activeBlock.id, content: newContent }))
   }
@@ -46,9 +46,15 @@ const BlockEditor: React.FC = () => {
         values={block?.content}
       />
     ),
-    card: <Card />,
-    grid: <Grid />,
-    teaser: <Teaser />,
+    card: (
+      <Card onInputChange={handleBlockInputChange} values={block?.content} />
+    ),
+    grid: (
+      <Grid onInputChange={handleBlockInputChange} values={block?.content} />
+    ),
+    teaser: (
+      <Teaser onInputChange={handleBlockInputChange} values={block?.content} />
+    ),
   }
 
   return (

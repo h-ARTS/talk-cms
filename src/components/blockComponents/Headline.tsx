@@ -1,5 +1,6 @@
 import React from "react"
 import { TextField, Grid, Box } from "@mui/material"
+import { useInputChange } from "@/src/hooks/useInputChange"
 
 type HeadlineProps = {
   values: { [key: string]: any } | undefined
@@ -8,11 +9,7 @@ type HeadlineProps = {
 
 const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
   const { title, subtitle, cta_button_label } = values || {}
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    onInputChange({ [name]: value })
-  }
+  const handleInputChange = useInputChange(onInputChange)
 
   return (
     <Grid px={3}>
