@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  firefly-cms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:4.4.12
+    container_name: mongo
+    env_file:
+      - .env.local
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
