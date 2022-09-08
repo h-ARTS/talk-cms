@@ -15,7 +15,7 @@ type TeaserProps = {
 }
 
 const Teaser: React.FC<TeaserProps> = ({ onInputChange, values }) => {
-  const { margin, padding, bg_color, fluid } = values || {}
+  const { margin = 0, padding = 0, bg_color = "", fluid } = values || {}
   const handleInputChange = useInputChange(onInputChange)
 
   return (
