@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 // Mui
-import { Box, Typography, Tabs, Tab, Button } from "@mui/material"
+import { Box, Typography, Tabs, Tab } from "@mui/material"
 import { useTheme } from "@mui/system"
 // Tabs
 import TabConfig from "./tabs/TabConfig"
@@ -12,6 +12,7 @@ import {
   setActiveBlock,
   setNavigationHistory,
 } from "@/src/store/pageBuilderSlice"
+import Breadcrumb from "./Breadcrumb"
 
 const SidebarRight: React.FC = () => {
   const [value, setValue] = React.useState(0)
@@ -36,10 +37,6 @@ const SidebarRight: React.FC = () => {
 
   const handleNavigate = (id: string) => {
     dispatch(setNavigationHistory([...navigationHistory, id]))
-  }
-
-  const handleNavigateBack = () => {
-    dispatch(setNavigationHistory(navigationHistory.slice(0, -1)))
   }
 
   const currentView =
@@ -76,13 +73,7 @@ const SidebarRight: React.FC = () => {
         <Tab label="Blocks" />
         <Tab label="Config" />
       </Tabs>
-      {navigationHistory.length > 0 && (
-        <Box my={2} mx={3}>
-          <Button variant="outlined" size="small" onClick={handleNavigateBack}>
-            Back
-          </Button>
-        </Box>
-      )}
+      {navigationHistory.length > 0 && <Breadcrumb />}
       {value === 0 && (
         <BlockTree parentId={currentView} onNavigate={handleNavigate} />
       )}
