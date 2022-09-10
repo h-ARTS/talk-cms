@@ -1,8 +1,8 @@
 import React from "react"
 import { Breadcrumbs, Link, Typography } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/src/store"
-import { setNavigationHistory } from "@/src/store/pageBuilderSlice"
+import { RootState } from "@/store/index"
+import { setNavigationHistory } from "@/store/pageBuilderSlice"
 
 const Breadcrumb = () => {
   const dispatch = useDispatch()

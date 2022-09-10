@@ -10,9 +10,9 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 // redux
 import { useDispatch } from "react-redux"
-import { setActiveBlock } from "@/src/store/pageBuilderSlice"
+import { setActiveBlock } from "@/store/pageBuilderSlice"
 // Types
-import { BlockType } from "@/types/types"
+import { BlockType } from "@/types/index"
 
 type DraggableListItemProps = {
   id: string

@@ -7,7 +7,7 @@ import {
   Box,
   InputAdornment,
 } from "@mui/material"
-import { useInputChange } from "@/src/hooks/useInputChange"
+import { useInputChange } from "@/hooks/useInputChange"
 
 type TeaserProps = {
   values: { [key: string]: any } | undefined

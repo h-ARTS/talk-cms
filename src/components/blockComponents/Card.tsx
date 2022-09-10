@@ -1,6 +1,6 @@
 import React from "react"
 import { TextField, Grid, Box } from "@mui/material"
-import { useInputChange } from "@/src/hooks/useInputChange"
+import { useInputChange } from "@/hooks/useInputChange"
 
 type CardProps = {
   values: { [key: string]: any } | undefined

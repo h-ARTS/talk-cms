@@ -4,7 +4,7 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit"
-import { ActiveBlock, Block } from "@/types/types"
+import { ActiveBlock, Block } from "@/types/index"
 
 const initialState = {
   blocks: [] as Block[],

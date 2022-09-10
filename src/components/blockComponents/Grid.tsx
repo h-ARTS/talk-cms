@@ -6,7 +6,7 @@ import {
   InputAdornment,
   FormHelperText,
 } from "@mui/material"
-import { useInputChange } from "@/src/hooks/useInputChange"
+import { useInputChange } from "@/hooks/useInputChange"
 
 type GridProps = {
   values: { [key: string]: any } | undefined

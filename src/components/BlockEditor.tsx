@@ -8,8 +8,8 @@ import Grid from "./blockComponents/Grid"
 import Teaser from "./blockComponents/Teaser"
 // Redux
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/src/store"
-import { setBlockContent } from "@/src/store/pageBuilderSlice"
+import { RootState } from "@/store/index"
+import { setBlockContent } from "@/store/pageBuilderSlice"
 
 const BlockEditor: React.FC = () => {
   const dispatch = useDispatch()

@@ -16,7 +16,12 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/components/*": ["src/components/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/store/*": ["src/store/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/styles/*": ["src/styles/*"],
+      "@/types/*":["types/*"]
     },
     "typeRoots": ["./node_modules/@types", "./typings"]
   },

@@ -11,10 +11,10 @@ import {
 } from "@mui/material"
 // Redux
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "@/src/store"
-import { addBlock, deleteBlock, moveBlock } from "@/src/store/pageBuilderSlice"
+import { RootState } from "@/store/index"
+import { addBlock, deleteBlock, moveBlock } from "@/store/pageBuilderSlice"
 // Types
-import { Block, BlockType } from "@/types/types"
+import { Block, BlockType } from "@/types/index"
 // Components
 import DraggableListItem from "../draggable/DraggableListItem"
 import BlockEditor from "../BlockEditor"
@@ -54,7 +54,7 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
     <>
       <BlockEditor />
       <Divider />
-      <List subheader={<ListSubheader>Blocks</ListSubheader>}>
+      <List subheader={<ListSubheader>Childrens</ListSubheader>}>
         {childBlocks.map((block, idx) => (
           <DraggableListItem
             key={block.id}

@@ -7,11 +7,8 @@ import TabConfig from "./tabs/TabConfig"
 import BlockTree from "./tabs/BlockTree"
 // Redux
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "@/src/store"
-import {
-  setActiveBlock,
-  setNavigationHistory,
-} from "@/src/store/pageBuilderSlice"
+import { RootState } from "@/store/index"
+import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
 import Breadcrumb from "./Breadcrumb"
 
 const SidebarRight: React.FC = () => {
