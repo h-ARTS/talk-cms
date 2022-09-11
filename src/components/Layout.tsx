@@ -1,8 +1,8 @@
 // components/Layout.tsx
 import React from "react"
 import { useSelector } from "react-redux"
-import { RootState } from "@/src/store"
-import { getTheme } from "@/src/theme"
+import { RootState } from "@/store/index"
+import { getTheme } from "../theme"
 import { CssBaseline, Box } from "@mui/material"
 import { ThemeProvider as MuiThemeProvider } from "@mui/system"
 

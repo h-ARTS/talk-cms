@@ -1,8 +1,8 @@
 import Head from "next/head"
 import Image from "next/image"
 import SplitPane from "react-split-pane"
-import TopAppBar from "@/src/components/AppBar"
-import RightSidebar from "@/src/components/SidebarRight"
+import TopAppBar from "@/components/AppBar"
+import RightSidebar from "@/components/SidebarRight"
 import { useTheme } from "@mui/system"
 
 const HomePage: React.FC = () => {

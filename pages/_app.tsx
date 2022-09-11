@@ -1,9 +1,9 @@
-import "@/styles/split-pane.css"
 import type { AppProps } from "next/app"
 import { Provider } from "react-redux"
-import store from "@/src/store"
-import DndProviderWrapper from "@/src/components/DndProviderWrapper"
-import Layout from "@/src/components/Layout"
+import "@/styles/split-pane.css"
+import store from "@/store/index"
+import DndProviderWrapper from "@/components/DndProviderWrapper"
+import Layout from "@/components/Layout"
 
 function App({ Component, pageProps }: AppProps) {
   return (
