@@ -50,7 +50,6 @@ const SidebarRight: React.FC = () => {
       sx={{
         width: "100%",
         backgroundColor: currentMode === "dark" ? "dark" : "white",
-        boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Typography
