@@ -13,9 +13,12 @@ import {
   Drawer,
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
-import { toggleThemeMode } from "../store/themeSlice"
-import { useDispatch } from "react-redux"
 import BlockTreeView from "./BlockTreeView"
+// redux
+import { useDispatch } from "react-redux"
+import { toggleThemeMode } from "@/store/themeSlice"
+import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
+import { Block } from "@/types/index"
 
 const TopAppBar: React.FC = () => {
   const dispatch = useDispatch()
@@ -23,6 +26,14 @@ const TopAppBar: React.FC = () => {
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen)
+  }
+
+  const handleSetActiveBlock = (block: Block) => {
+    dispatch(setActiveBlock(block))
+  }
+
+  const handleNavigationHistoryChange = (history: string[]) => {
+    dispatch(setNavigationHistory(history))
   }
 
   return (
@@ -56,7 +67,10 @@ const TopAppBar: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
-        <BlockTreeView />
+        <BlockTreeView
+          onBlockItemClick={handleSetActiveBlock}
+          onNavigationHistoryChange={handleNavigationHistoryChange}
+        />
       </Drawer>
     </>
   )
