@@ -8,6 +8,7 @@ export interface Block {
   type: BlockType
   parentId: string | null
   content: { [key: string]: any }
+  children?: []
 }
 
 export enum BlockType {
