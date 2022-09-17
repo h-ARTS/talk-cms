@@ -1,5 +1,6 @@
 import Head from "next/head"
 import Image from "next/image"
+import { useState } from "react"
 import SplitPane from "react-split-pane"
 import TopAppBar from "@/components/AppBar"
 import RightSidebar from "@/components/SidebarRight"
@@ -10,6 +11,7 @@ import { Box } from "@mui/material"
 const HomePage: React.FC = () => {
   const theme = useTheme()
   const currentMode = theme.palette.mode
+  const [isDragging, setIsDragging] = useState(false)
 
   const currentUrl = "https://example.com"
 
@@ -34,6 +36,8 @@ const HomePage: React.FC = () => {
             style={{
               height: "calc(100vh - 64px)",
             }}
+            onDragStarted={() => setIsDragging(true)}
+            onDragFinished={() => setIsDragging(false)}
           >
             <Box
               style={{
@@ -54,6 +58,18 @@ const HomePage: React.FC = () => {
                 }}
                 title="Visual Composer"
               />
+              {isDragging && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 9999,
+                  }}
+                ></div>
+              )}
             </Box>
             <div
               style={{
