@@ -4,10 +4,14 @@ import SplitPane from "react-split-pane"
 import TopAppBar from "@/components/AppBar"
 import RightSidebar from "@/components/SidebarRight"
 import { useTheme } from "@mui/system"
+import UrlAppBar from "@/components/UrlAppBar"
+import { Box } from "@mui/material"
 
 const HomePage: React.FC = () => {
   const theme = useTheme()
   const currentMode = theme.palette.mode
+
+  const currentUrl = "https://example.com"
 
   return (
     <>
@@ -31,17 +35,26 @@ const HomePage: React.FC = () => {
               height: "calc(100vh - 64px)",
             }}
           >
-            <div
+            <Box
               style={{
                 backgroundColor:
                   currentMode === "dark" ? "#292929" : "whitesmoke",
-                height: "100%",
+                height: "calc(100vh - 64px)",
                 overflow: "auto",
                 boxSizing: "border-box",
               }}
             >
-              {/* Visual Composer Area */}
-            </div>
+              <UrlAppBar url={currentUrl} />
+              <iframe
+                src={currentUrl} // Replace this with the URL of the website you want to embed
+                style={{
+                  width: "100%",
+                  height: "calc(100vh - 112px)",
+                  border: "none",
+                }}
+                title="Visual Composer"
+              />
+            </Box>
             <div
               style={{
                 height: "100%",
