@@ -1,19 +1,30 @@
 import Head from "next/head"
-import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import SplitPane from "react-split-pane"
-import TopAppBar from "@/components/AppBar"
-import RightSidebar from "@/components/SidebarRight"
+// Mui
 import { useTheme } from "@mui/system"
-import UrlAppBar from "@/components/UrlAppBar"
 import { Box } from "@mui/material"
+// Components
+import TopAppBar from "@/components/AppBar"
+import UrlAppBar from "@/components/UrlAppBar"
+import RightSidebar from "@/components/SidebarRight"
+// redux
+import useTransformedBlocks from "@/hooks/useTransformedBlocks"
 
 const HomePage: React.FC = () => {
   const theme = useTheme()
   const currentMode = theme.palette.mode
   const [isDragging, setIsDragging] = useState(false)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const blocks = useTransformedBlocks()
 
-  const currentUrl = "https://example.com"
+  const currentUrl = new URL("http://localhost:3001?editMode=true")
+
+  useEffect(() => {
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(blocks, "*")
+    }
+  }, [blocks])
 
   return (
     <>
@@ -48,9 +59,10 @@ const HomePage: React.FC = () => {
                 boxSizing: "border-box",
               }}
             >
-              <UrlAppBar url={currentUrl} />
+              <UrlAppBar url={currentUrl.origin} />
               <iframe
-                src={currentUrl} // Replace this with the URL of the website you want to embed
+                ref={iframeRef}
+                src={currentUrl.href} // Replace this with the URL of the website you want to embed
                 style={{
                   width: "100%",
                   height: "calc(100vh - 112px)",
