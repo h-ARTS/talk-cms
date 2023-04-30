@@ -42,7 +42,7 @@ npm install
 4. Create a `.env.local` file in the root directory of the project and add the required environment variables:
 
 ```
-NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
+OPENAI_API_KEY=your_openai_api_key
 ```
 
 Replace `your_openai_api_key` with your actual OpenAI API key.
