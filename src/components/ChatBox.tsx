@@ -1,7 +1,16 @@
-import React from "react"
-import { Box, Input, IconButton, useTheme } from "@mui/material"
-import SendIcon from "@mui/icons-material/Send"
+import axios from "axios"
+import React, { useRef } from "react"
+// Redux
+import { addMessageToHistory } from "@/store/chatHistorySlice"
+import { setBlocks } from "@/store/pageBuilderSlice"
+import { useDispatch } from "react-redux"
+// Mui
 import ClickAwayListener from "@mui/core/ClickAwayListener"
+import SendIcon from "@mui/icons-material/Send"
+import Box from "@mui/material/Box"
+import IconButton from "@mui/material/IconButton"
+import TextField from "@mui/material/TextField"
+import { useTheme } from "@mui/material"
 
 interface ChatBoxProps {
   chatOpen: boolean
@@ -10,12 +19,23 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
   const theme = useTheme()
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dispatch = useDispatch()
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      // Handle submit logic here
-      event.preventDefault()
+  const handleSubmit = async (input: string) => {
+    try {
+      const response = await axios.post("/api/block-builder", { input })
+      dispatch(setBlocks(response.data))
+      dispatch(addMessageToHistory(input))
+    } catch (error) {
+      console.error("Failed to submit the request:", error)
     }
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const input = inputRef.current!.value
+    handleSubmit(input)
   }
 
   const handleClickAway = () => {
@@ -45,30 +65,39 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
           }}
         >
           {/* Chat content */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-              pl: 1,
-              pr: 1,
-            }}
-          >
-            <Input
-              placeholder="What do you want to build?"
-              fullWidth
-              onKeyDown={handleKeyDown}
-            />
-            <IconButton
-              color="primary"
-              onClick={() => {
-                // Handle submit logic here
+          <form onSubmit={handleKeyDown}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                pl: 1,
+                pr: 1,
               }}
             >
-              <SendIcon />
-            </IconButton>
-          </Box>
+              <TextField
+                InputProps={{
+                  inputRef,
+                }}
+                placeholder="What do you want to build?"
+                minRows={1}
+                maxRows={5}
+                multiline
+                style={{
+                  width: "100%",
+                  overflow: "hidden",
+                  paddingRight: theme.spacing(1),
+                }}
+              />
+              <IconButton
+                color="primary"
+                onClick={() => handleSubmit(inputRef.current?.value || "")}
+              >
+                <SendIcon />
+              </IconButton>
+            </Box>
+          </form>
         </Box>
       </ClickAwayListener>
       {chatOpen && (

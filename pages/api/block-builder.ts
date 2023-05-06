@@ -14,7 +14,18 @@ type JsonResponse = Array<{
   content?: object
 }>
 
-const supportedElements = ["headline", "card", "grid", "teaser", "navbar"]
+type Block = {
+  id: string
+  type: string
+  parentId: string | null
+  content: object
+}
+
+const supportedElements = ["Headline", "Card", "Grid", "Teaser", "Navbar"]
+
+function generateUniqueId() {
+  return Date.now().toString() + Math.random().toString(36).substr(2, 9)
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,9 +39,16 @@ export default async function handler(
       messages: [
         {
           role: "user",
-          content: `Given the user input "${userInput}", generate a JSON schema for a landing page using only the supported elements [${supportedElements.join(
+          content: `Given the user input "${userInput}", generate a JSON schema for a landing page using the following supported elements: ${supportedElements.join(
             ", "
-          )}] and in the following format: [{ type: 'element_type', children: [ { type: 'child_element_type', content: { key: 'value' } } ], content: { key: 'value' } }]`,
+          )} and their properties:
+          - Headline: content (title, subtitle, cta_button_label, bg_image_url)
+          - Card: content (title, text, image_url, btn_label)
+          - Grid: content (margin, padding, columns)
+          - Teaser: content (margin, padding, bg_color)
+          - Navbar: content
+          The format should be: [{ type: 'element_type', children: [ { type: 'child_element_type', content: { key: 'value' } } ], content: { key: 'value' } }].
+          If a random image is requested please utilized the unsplash api. Consider the elements as case-insensitive.`,
         },
       ],
       max_tokens: 500,
@@ -50,7 +68,9 @@ export default async function handler(
     console.log(validationResult)
 
     if (validationResult.valid) {
-      res.status(200).json(processedJson)
+      const jsonWithImages = await addBackgroundImages(processedJson)
+      const flattenResponse = flattenJsonResponse(jsonWithImages)
+      res.status(200).json(flattenResponse)
     } else {
       res.status(400).json({ error: validationResult.message })
     }
@@ -100,6 +120,31 @@ function validateJsonSchema(
   return { valid: true, message: "Validation successful" }
 }
 
+function flattenJsonResponse(jsonResponse: JsonResponse): Block[] {
+  const flattenedBlocks: Block[] = []
+
+  function processBlock(block: any, parentId: string | null) {
+    const id = generateUniqueId()
+
+    flattenedBlocks.push({
+      id,
+      type: block.type,
+      parentId,
+      content: block.content,
+    })
+
+    if (block.children) {
+      block.children.forEach((child: any) => {
+        processBlock(child, id)
+      })
+    }
+  }
+
+  jsonResponse.forEach((block) => processBlock(block, null))
+
+  return flattenedBlocks
+}
+
 function findSimilarElement(
   element: string,
   supportedElements: string[]
@@ -111,4 +156,46 @@ function findSimilarElement(
     }
   }
   return null
+}
+
+async function addBackgroundImages(
+  jsonSchema: JsonResponse
+): Promise<JsonResponse> {
+  const updatedSchema = []
+
+  for (const item of jsonSchema) {
+    if (item.type === "Headline") {
+      const randomImage = await getRandomUnsplashImage()
+      updatedSchema.push({
+        ...item,
+        content: {
+          ...item.content,
+          bg_image_url: randomImage,
+        },
+      })
+    } else {
+      updatedSchema.push(item)
+    }
+  }
+
+  return updatedSchema
+}
+
+async function getRandomUnsplashImage(): Promise<string> {
+  try {
+    const result = await axios.get("https://api.unsplash.com/photos/random", {
+      headers: {
+        Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`,
+      },
+      params: {
+        query: "hero headline",
+        ScreenOrientation: "landscape",
+      },
+    })
+
+    return result.data.urls.regular
+  } catch (error) {
+    console.error("Error fetching random image from Unsplash:", error)
+    return ""
+  }
 }
