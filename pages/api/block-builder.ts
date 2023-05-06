@@ -31,7 +31,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<JsonResponse | { error: string }>
 ) {
-  const userInput = req.body.input
+  const userInput = JSON.stringify(req.body.input)
 
   try {
     const openaiResponse = await openai.createChatCompletion({
@@ -39,16 +39,16 @@ export default async function handler(
       messages: [
         {
           role: "user",
-          content: `Given the user input "${userInput}", generate a JSON schema for a landing page using the following supported elements: ${supportedElements.join(
+          content: `Given the user input (${userInput}), generate a JSON schema for a landing page using the following supported elements: ${supportedElements.join(
             ", "
           )} and their properties:
-          - Headline: content (title, subtitle, cta_button_label, bg_image_url)
-          - Card: content (title, text, image_url, btn_label)
-          - Grid: content (margin, padding, columns)
-          - Teaser: content (margin, padding, bg_color)
-          - Navbar: content
-          The format should be: [{ type: 'element_type', children: [ { type: 'child_element_type', content: { key: 'value' } } ], content: { key: 'value' } }].
-          If a random image is requested please utilized the unsplash api. Consider the elements as case-insensitive.`,
+            - Headline: content (title, subtitle, cta_button_label, bg_image_url)
+            - Card: content (title, text, image_url, btn_label)
+            - Grid: content (margin, padding, columns)
+            - Teaser: content (margin, padding, bg_color)
+            - Navbar: content
+            The format should be: [{ type: 'element_type', children: [ { type: 'child_element_type', content: { key: 'value' } } ], content: { key: 'value' } }].
+            If a random image is requested, please utilize the Unsplash API. Treat the element types as case-insensitive.`,
         },
       ],
       max_tokens: 500,
@@ -87,7 +87,7 @@ function processOpenAIResponse(responseText: string): JsonResponse {
     const jsonData: JsonResponse = JSON.parse(responseText)
 
     const processedJson = jsonData.map((item) => ({
-      type: item.type || "unknown_type",
+      type: capitalizeFirstLetter(item.type || "unknown_type"),
       children: item.children || [],
       content: item.content || {},
     }))
@@ -97,6 +97,10 @@ function processOpenAIResponse(responseText: string): JsonResponse {
     console.error("Error processing OpenAI response:", error)
     throw new Error("Invalid JSON format in OpenAI response")
   }
+}
+
+function capitalizeFirstLetter(string: string): string {
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 type ValidationResult = {

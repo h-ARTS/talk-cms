@@ -13,11 +13,15 @@ const chatHistorySlice = createSlice({
   initialState,
   reducers: {
     addMessageToHistory: (state, action: PayloadAction<string>) => {
-      state.history.push(action.payload)
+      state.history.unshift(action.payload)
+    },
+    deleteMessageHistory: (state, action: PayloadAction<number>) => {
+      state.history.splice(action.payload, 1)
     },
   },
 })
 
-export const { addMessageToHistory } = chatHistorySlice.actions
+export const { addMessageToHistory, deleteMessageHistory } =
+  chatHistorySlice.actions
 
 export default chatHistorySlice.reducer
