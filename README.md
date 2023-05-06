@@ -3,6 +3,7 @@
 Talk is an experimental headless CMS designed for seamless integration with ChatGPT by OpenAI for automatic landing page creation. It is inspired by Storyblok, a popular headless CMS, and aims to provide a user-friendly way to build and manage content for your web projects.
 
 ![Talk CMS](preview.png "Talk CMS")
+![Talk CMS](preview_dark.png "Talk CMS dark mode")
 
 ## **Features**
 
