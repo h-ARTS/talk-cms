@@ -26,7 +26,7 @@ To get started with Talk CMS, follow the steps below:
 1. Clone the Talk CMS repository:
 
 ```
-git clone https://github.com/your-username/firefly-cms.git
+git clone https://github.com/your-username/talk-cms.git
 ```
 
 2. Change into the project directory:
@@ -45,6 +45,12 @@ npm install
 
 ```
 OPENAI_API_KEY=your_openai_api_key
+```
+
+5. Get your access key from unsplash.com and add it to the environment variables:
+
+```
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key
 ```
 
 Replace `your_openai_api_key` with your actual OpenAI API key.
