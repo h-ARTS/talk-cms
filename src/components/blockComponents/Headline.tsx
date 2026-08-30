@@ -1,5 +1,5 @@
 import React from "react"
-import { TextField, Grid, Box, InputAdornment } from "@mui/material"
+import { TextField, Box, InputAdornment } from "@mui/material"
 import { useInputChange } from "@/hooks/useInputChange"
 import { useUrlInputChange } from "@/hooks/useUrlInputChange"
 import LinkIcon from "@mui/icons-material/Link"
@@ -20,8 +20,8 @@ const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
   const { handleUrlInputChange, urlError } = useUrlInputChange(onInputChange)
 
   return (
-    <Grid px={3}>
-      <Box my={2}>
+    <Box sx={{ px: 3 }}>
+      <Box sx={{ my: 2 }}>
         <TextField
           label="Title"
           name="title"
@@ -31,7 +31,7 @@ const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box my={2}>
+      <Box sx={{ my: 2 }}>
         <TextField
           label="Subtitle"
           name="subtitle"
@@ -41,7 +41,7 @@ const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box mt={2} mb={4}>
+      <Box sx={{ mt: 2, mb: 4 }}>
         <TextField
           label="Call to Action Button"
           name="cta_button_label"
@@ -51,7 +51,7 @@ const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box mt={2} mb={4}>
+      <Box sx={{ mt: 2, mb: 4 }}>
         <TextField
           label="Background Image URL"
           name="bg_image_url"
@@ -59,19 +59,23 @@ const Headline: React.FC<HeadlineProps> = ({ onInputChange, values }) => {
           variant="standard"
           value={bg_image_url}
           onChange={handleUrlInputChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LinkIcon />
-              </InputAdornment>
-            ),
-            placeholder: "http(s)://...",
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LinkIcon />
+                </InputAdornment>
+              ),
+            },
+            htmlInput: {
+              placeholder: "http(s)://...",
+            },
           }}
           error={urlError}
           helperText={urlError ? "Please enter a valid URL" : ""}
         />
       </Box>
-    </Grid>
+    </Box>
   )
 }
 

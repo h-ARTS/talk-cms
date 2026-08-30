@@ -1,7 +1,7 @@
 import React from "react"
 import {
   TextField,
-  Grid as MuiGrid,
+  Grid,
   Box,
   InputAdornment,
   FormHelperText,
@@ -13,14 +13,14 @@ type GridProps = {
   onInputChange: (updatedContent: any) => void
 }
 
-const Grid: React.FC<GridProps> = ({ onInputChange, values }) => {
+const GridComponent: React.FC<GridProps> = ({ onInputChange, values }) => {
   const { margin = 0, padding = 0, columns = 0 } = values || {}
   const handleInputChange = useInputChange(onInputChange)
 
   return (
-    <MuiGrid px={3}>
-      <MuiGrid container columnGap={2} my={2}>
-        <MuiGrid item xs>
+    <Box sx={{ px: 3 }}>
+      <Grid container columnSpacing={2} sx={{ my: 2 }}>
+        <Grid size={6}>
           <TextField
             fullWidth
             label="Margin"
@@ -29,12 +29,14 @@ const Grid: React.FC<GridProps> = ({ onInputChange, values }) => {
             name="margin"
             value={margin}
             onChange={handleInputChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              },
             }}
           />
-        </MuiGrid>
-        <MuiGrid item xs>
+        </Grid>
+        <Grid size={6}>
           <TextField
             fullWidth
             label="Padding"
@@ -43,13 +45,15 @@ const Grid: React.FC<GridProps> = ({ onInputChange, values }) => {
             name="padding"
             value={padding}
             onChange={handleInputChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              },
             }}
           />
-        </MuiGrid>
-      </MuiGrid>
-      <Box my={2} mb={4}>
+        </Grid>
+      </Grid>
+      <Box sx={{ my: 2, mb: 4 }}>
         <TextField
           fullWidth
           label="Columns"
@@ -61,8 +65,8 @@ const Grid: React.FC<GridProps> = ({ onInputChange, values }) => {
         />
         <FormHelperText id="max-columns-helper">Max 12 columns.</FormHelperText>
       </Box>
-    </MuiGrid>
+    </Box>
   )
 }
 
-export default Grid
+export default GridComponent
