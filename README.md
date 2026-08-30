@@ -41,12 +41,16 @@ npm install
 3. To use the block-builder API, create `.env.local` in the project root:
 
 ```dotenv
+VITE_VISUAL_COMPOSER_URL=https://your-preview-site.example?editMode=true
 OPENAI_API_KEY=your_openai_api_key
 OPENAI_ORG_ID=your_optional_openai_organization_id
 UNSPLASH_ACCESS_KEY=your_unsplash_access_key
 ```
 
-These values are not needed to install, build, lint, type-check, or test the project. They are only read when `/api/block-builder` handles a request. The `/api/hello` route does not need environment variables.
+`VITE_VISUAL_COMPOSER_URL` controls the site shown in the visual-composer iframe.
+When it is omitted or invalid, the preview area remains empty. The OpenAI and
+Unsplash values are only read when `/api/block-builder` handles a request and
+are not required to run or test the rest of the application.
 
 ### Development
 
