@@ -36,7 +36,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
 
   const [, drop] = useDrop({
     accept: "card",
-    hover(item: any, monitor) {
+    hover(item: any) {
       if (!ref.current) {
         return
       }
@@ -50,7 +50,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
     },
   })
 
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag(() => ({
     type: "card",
     item: { id, type, index },
     collect: (monitor) => ({
