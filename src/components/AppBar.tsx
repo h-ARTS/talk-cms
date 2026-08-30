@@ -54,7 +54,7 @@ const TopAppBar: React.FC = () => {
           <Tooltip title="Username">
             <Avatar alt="User Avatar" src="/path/to/avatar/image" />
           </Tooltip>
-          <Box ml={4}>
+          <Box sx={{ ml: 4 }}>
             <FormControlLabel
               control={<Switch onChange={() => dispatch(toggleThemeMode())} />}
               label="Dark mode"
