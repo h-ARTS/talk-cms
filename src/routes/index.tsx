@@ -9,7 +9,13 @@ import useTransformedBlocks from "@/hooks/useTransformedBlocks"
 import FloatingChatButton from "@/components/FloatingChatButton"
 import ChatBox from "@/components/ChatBox"
 
-const visualComposerUrl = new URL("http://localhost:3001?editMode=true")
+const visualComposerUrlValue = import.meta.env.VITE_VISUAL_COMPOSER_URL?.trim()
+const visualComposerUrl =
+  visualComposerUrlValue && URL.canParse(visualComposerUrlValue)
+    ? new URL(visualComposerUrlValue)
+    : null
+const isSupportedPreviewUrl =
+  visualComposerUrl?.protocol === "http:" || visualComposerUrl?.protocol === "https:"
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -24,7 +30,11 @@ function HomePage() {
   const [chatOpen, setChatOpen] = useState(false)
 
   useEffect(() => {
-    if (iframeRef.current && iframeRef.current.contentWindow) {
+    if (
+      isSupportedPreviewUrl &&
+      visualComposerUrl &&
+      iframeRef.current?.contentWindow
+    ) {
       iframeRef.current.contentWindow.postMessage(blocks, visualComposerUrl.origin)
     }
   }, [blocks])
@@ -53,17 +63,21 @@ function HomePage() {
                 position: "relative",
               }}
             >
-              <UrlAppBar url={visualComposerUrl.origin} />
-              <iframe
-                ref={iframeRef}
-                src={visualComposerUrl.href}
-                style={{
-                  width: "100%",
-                  height: "calc(100vh - 112px)",
-                  border: "none",
-                }}
-                title="Visual Composer"
-              />
+              {isSupportedPreviewUrl && visualComposerUrl && (
+                <>
+                  <UrlAppBar url={visualComposerUrl.origin} />
+                  <iframe
+                    ref={iframeRef}
+                    src={visualComposerUrl.href}
+                    style={{
+                      width: "100%",
+                      height: "calc(100vh - 112px)",
+                      border: "none",
+                    }}
+                    title="Visual Composer"
+                  />
+                </>
+              )}
               {isDragging && (
                 <div
                   data-testid="iframe-drag-overlay"

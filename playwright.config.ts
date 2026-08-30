@@ -17,6 +17,9 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run dev",
+    env: {
+      VITE_VISUAL_COMPOSER_URL: "http://localhost:3001?editMode=true",
+    },
     url: "http://localhost:3000",
     reuseExistingServer: false,
     timeout: 120_000,
