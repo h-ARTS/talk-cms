@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector } from "react-redux"
-import TreeItem from "@mui/lab/TreeItem"
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView"
 import { RootState } from "@/store/index"
 import { Block } from "@/types/index"
 import {
@@ -8,9 +8,8 @@ import {
   IndeterminateCheckBoxOutlined as MinusSquare,
   DisabledByDefaultOutlined as CloseSquare,
 } from "@mui/icons-material"
-import { Box, Grid, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import StyledTreeItem from "./StyledTreeItem"
-import { TreeView } from "@mui/lab"
 
 interface BlockNode extends Block {
   children: BlockNode[]
@@ -66,7 +65,7 @@ const BlockTreeView: React.FC<BlockTreeViewProps> = ({
     return nodes.map((node) => (
       <StyledTreeItem
         key={node.id}
-        nodeId={node.id}
+        itemId={node.id}
         label={node.type}
         onClick={() => handleItemClick(node)}
       >
@@ -76,25 +75,27 @@ const BlockTreeView: React.FC<BlockTreeViewProps> = ({
   }
 
   return (
-    <Grid pl={4} pr={4}>
-      <Box py={2}>
+    <Box sx={{ pl: 4, pr: 4 }}>
+      <Box sx={{ py: 2 }}>
         <Typography variant="subtitle1">
           <strong>Block Hierarchy</strong>
         </Typography>
       </Box>
-      <Box py={1}>
-        <TreeView
+      <Box sx={{ py: 1 }}>
+        <SimpleTreeView
           aria-label="customized"
-          defaultExpanded={tree.map((block) => block.id)}
-          defaultCollapseIcon={<MinusSquare />}
-          defaultExpandIcon={<PlusSquare />}
-          defaultEndIcon={<CloseSquare />}
+          defaultExpandedItems={tree.map((block) => block.id)}
+          slots={{
+            collapseIcon: MinusSquare,
+            expandIcon: PlusSquare,
+            endIcon: CloseSquare,
+          }}
           sx={{ height: 264, flexGrow: 1, maxWidth: 400 }}
         >
           {renderTree(tree)}
-        </TreeView>
+        </SimpleTreeView>
       </Box>
-    </Grid>
+    </Box>
   )
 }
 

@@ -1,5 +1,5 @@
 import React from "react"
-import TreeItem, { TreeItemProps, treeItemClasses } from "@mui/lab/TreeItem"
+import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/x-tree-view/TreeItem"
 import { alpha, styled } from "@mui/material/styles"
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
@@ -10,7 +10,7 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
       opacity: 0.3,
     },
   },
-  [`& .${treeItemClasses.group}`]: {
+  [`& .${treeItemClasses.groupTransition}`]: {
     marginLeft: 15,
     paddingLeft: 18,
     borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
