@@ -1,7 +1,5 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
 import AddIcon from "@mui/icons-material/Add"
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined"
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
@@ -102,22 +100,6 @@ export default function BlockDefinitionsPage() {
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-      <Box
-        component="header"
-        sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "background.paper" }}
-      >
-        <Container maxWidth="xl">
-          <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", py: 2 }}>
-            <Button component={Link} to="/" startIcon={<ArrowBackIcon />}>
-              Page editor
-            </Button>
-            <Typography variant="subtitle2" color="text.secondary">
-              Talk CMS · Content model
-            </Typography>
-          </Stack>
-        </Container>
-      </Box>
-
       <Container maxWidth="xl" sx={{ py: { xs: 4, md: 7 } }}>
         <Stack
           direction={{ xs: "column", md: "row" }}
