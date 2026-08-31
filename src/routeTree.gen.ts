@@ -9,138 +9,181 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiBlockBuilderRouteImport } from './routes/api/block-builder'
-import { Route as ApiBlockDefinitionsRouteImport } from './routes/api/block-definitions'
-import { Route as ApiHelloRouteImport } from './routes/api/hello'
-import { Route as BlocksIndexRouteImport } from './routes/blocks/index'
+import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as appBlocksIndexRouteImport } from './routes/(app)/blocks/index'
+import { Route as ApiInternalBlockBuilderRouteImport } from './routes/api/internal/block-builder'
+import { Route as ApiInternalBlockDefinitionsRouteImport } from './routes/api/internal/block-definitions'
+import { Route as ApiInternalHelloRouteImport } from './routes/api/internal/hello'
+import { Route as ApiInternalPagesRouteImport } from './routes/api/internal/pages'
+import { Route as ApiContentV1PagesPageIdRouteImport } from './routes/api/content/v1/pages/$pageId'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const appIndexRoute = appIndexRouteImport.update({
+  id: '/(app)/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBlockBuilderRoute = ApiBlockBuilderRouteImport.update({
-  id: '/api/block-builder',
-  path: '/api/block-builder',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiBlockDefinitionsRoute = ApiBlockDefinitionsRouteImport.update({
-  id: '/api/block-definitions',
-  path: '/api/block-definitions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHelloRoute = ApiHelloRouteImport.update({
-  id: '/api/hello',
-  path: '/api/hello',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlocksIndexRoute = BlocksIndexRouteImport.update({
-  id: '/blocks/',
+const appBlocksIndexRoute = appBlocksIndexRouteImport.update({
+  id: '/(app)/blocks/',
   path: '/blocks/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInternalBlockBuilderRoute = ApiInternalBlockBuilderRouteImport.update({
+  id: '/api/internal/block-builder',
+  path: '/api/internal/block-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInternalBlockDefinitionsRoute =
+  ApiInternalBlockDefinitionsRouteImport.update({
+    id: '/api/internal/block-definitions',
+    path: '/api/internal/block-definitions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiInternalHelloRoute = ApiInternalHelloRouteImport.update({
+  id: '/api/internal/hello',
+  path: '/api/internal/hello',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInternalPagesRoute = ApiInternalPagesRouteImport.update({
+  id: '/api/internal/pages',
+  path: '/api/internal/pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContentV1PagesPageIdRoute = ApiContentV1PagesPageIdRouteImport.update({
+  id: '/api/content/v1/pages/$pageId',
+  path: '/api/content/v1/pages/$pageId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/api/block-builder': typeof ApiBlockBuilderRoute
-  '/api/block-definitions': typeof ApiBlockDefinitionsRoute
-  '/api/hello': typeof ApiHelloRoute
-  '/blocks/': typeof BlocksIndexRoute
+  '/': typeof appIndexRoute
+  '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
+  '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
+  '/api/internal/hello': typeof ApiInternalHelloRoute
+  '/api/internal/pages': typeof ApiInternalPagesRoute
+  '/blocks/': typeof appBlocksIndexRoute
+  '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/api/block-builder': typeof ApiBlockBuilderRoute
-  '/api/block-definitions': typeof ApiBlockDefinitionsRoute
-  '/api/hello': typeof ApiHelloRoute
-  '/blocks': typeof BlocksIndexRoute
+  '/': typeof appIndexRoute
+  '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
+  '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
+  '/api/internal/hello': typeof ApiInternalHelloRoute
+  '/api/internal/pages': typeof ApiInternalPagesRoute
+  '/blocks': typeof appBlocksIndexRoute
+  '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/api/block-builder': typeof ApiBlockBuilderRoute
-  '/api/block-definitions': typeof ApiBlockDefinitionsRoute
-  '/api/hello': typeof ApiHelloRoute
-  '/blocks/': typeof BlocksIndexRoute
+  '/(app)/': typeof appIndexRoute
+  '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
+  '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
+  '/api/internal/hello': typeof ApiInternalHelloRoute
+  '/api/internal/pages': typeof ApiInternalPagesRoute
+  '/(app)/blocks/': typeof appBlocksIndexRoute
+  '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/api/block-builder'
-    | '/api/block-definitions'
-    | '/api/hello'
+    | '/api/internal/block-builder'
+    | '/api/internal/block-definitions'
+    | '/api/internal/hello'
+    | '/api/internal/pages'
     | '/blocks/'
+    | '/api/content/v1/pages/$pageId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/api/block-builder'
-    | '/api/block-definitions'
-    | '/api/hello'
+    | '/api/internal/block-builder'
+    | '/api/internal/block-definitions'
+    | '/api/internal/hello'
+    | '/api/internal/pages'
     | '/blocks'
+    | '/api/content/v1/pages/$pageId'
   id:
     | '__root__'
-    | '/'
-    | '/api/block-builder'
-    | '/api/block-definitions'
-    | '/api/hello'
-    | '/blocks/'
+    | '/(app)/'
+    | '/api/internal/block-builder'
+    | '/api/internal/block-definitions'
+    | '/api/internal/hello'
+    | '/api/internal/pages'
+    | '/(app)/blocks/'
+    | '/api/content/v1/pages/$pageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ApiBlockBuilderRoute: typeof ApiBlockBuilderRoute
-  ApiBlockDefinitionsRoute: typeof ApiBlockDefinitionsRoute
-  ApiHelloRoute: typeof ApiHelloRoute
-  BlocksIndexRoute: typeof BlocksIndexRoute
+  appIndexRoute: typeof appIndexRoute
+  ApiInternalBlockBuilderRoute: typeof ApiInternalBlockBuilderRoute
+  ApiInternalBlockDefinitionsRoute: typeof ApiInternalBlockDefinitionsRoute
+  ApiInternalHelloRoute: typeof ApiInternalHelloRoute
+  ApiInternalPagesRoute: typeof ApiInternalPagesRoute
+  appBlocksIndexRoute: typeof appBlocksIndexRoute
+  ApiContentV1PagesPageIdRoute: typeof ApiContentV1PagesPageIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/(app)/': {
+      id: '/(app)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof appIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/block-builder': {
-      id: '/api/block-builder'
-      path: '/api/block-builder'
-      fullPath: '/api/block-builder'
-      preLoaderRoute: typeof ApiBlockBuilderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/block-definitions': {
-      id: '/api/block-definitions'
-      path: '/api/block-definitions'
-      fullPath: '/api/block-definitions'
-      preLoaderRoute: typeof ApiBlockDefinitionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/hello': {
-      id: '/api/hello'
-      path: '/api/hello'
-      fullPath: '/api/hello'
-      preLoaderRoute: typeof ApiHelloRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blocks/': {
-      id: '/blocks/'
+    '/(app)/blocks/': {
+      id: '/(app)/blocks/'
       path: '/blocks'
       fullPath: '/blocks/'
-      preLoaderRoute: typeof BlocksIndexRouteImport
+      preLoaderRoute: typeof appBlocksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/internal/block-builder': {
+      id: '/api/internal/block-builder'
+      path: '/api/internal/block-builder'
+      fullPath: '/api/internal/block-builder'
+      preLoaderRoute: typeof ApiInternalBlockBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/internal/block-definitions': {
+      id: '/api/internal/block-definitions'
+      path: '/api/internal/block-definitions'
+      fullPath: '/api/internal/block-definitions'
+      preLoaderRoute: typeof ApiInternalBlockDefinitionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/internal/hello': {
+      id: '/api/internal/hello'
+      path: '/api/internal/hello'
+      fullPath: '/api/internal/hello'
+      preLoaderRoute: typeof ApiInternalHelloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/internal/pages': {
+      id: '/api/internal/pages'
+      path: '/api/internal/pages'
+      fullPath: '/api/internal/pages'
+      preLoaderRoute: typeof ApiInternalPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content/v1/pages/$pageId': {
+      id: '/api/content/v1/pages/$pageId'
+      path: '/api/content/v1/pages/$pageId'
+      fullPath: '/api/content/v1/pages/$pageId'
+      preLoaderRoute: typeof ApiContentV1PagesPageIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ApiBlockBuilderRoute: ApiBlockBuilderRoute,
-  ApiBlockDefinitionsRoute: ApiBlockDefinitionsRoute,
-  ApiHelloRoute: ApiHelloRoute,
-  BlocksIndexRoute: BlocksIndexRoute,
+  appIndexRoute: appIndexRoute,
+  ApiInternalBlockBuilderRoute: ApiInternalBlockBuilderRoute,
+  ApiInternalBlockDefinitionsRoute: ApiInternalBlockDefinitionsRoute,
+  ApiInternalHelloRoute: ApiInternalHelloRoute,
+  ApiInternalPagesRoute: ApiInternalPagesRoute,
+  appBlocksIndexRoute: appBlocksIndexRoute,
+  ApiContentV1PagesPageIdRoute: ApiContentV1PagesPageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

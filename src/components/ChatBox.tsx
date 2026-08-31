@@ -41,7 +41,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
   const handleSubmit = async (input: string) => {
     setLoading(true)
     try {
-      const response = await axios.post<unknown>("/api/block-builder", { input })
+      const response = await axios.post<unknown>("/api/internal/block-builder", {
+        input,
+      })
       const blocks = validateStoredBlocks(response.data, registry)
       if (!blocks.success) throw new Error(blocks.message)
       dispatch(setBlocks(blocks.data))
@@ -62,7 +64,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
     }
   }
 
-  const handleKeyDown = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     handleSubmit(inputValue)
   }
@@ -75,6 +77,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
+    void event
     if (reason === "clickaway") {
       return
     }
@@ -107,7 +110,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
             pt: 1,
           }}
         >
-          <form onSubmit={handleKeyDown}>
+          <form onSubmit={handleSubmitForm}>
             <Box
               sx={{
                 display: "flex",

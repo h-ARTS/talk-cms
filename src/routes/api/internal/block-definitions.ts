@@ -7,7 +7,7 @@ import {
   updateBlockDescriptor,
 } from "@/blocks/server/definition-store"
 
-export const Route = createFileRoute("/api/block-definitions")({
+export const Route = createFileRoute("/api/internal/block-definitions")({
   server: {
     handlers: {
       GET: async () => Response.json(await listBlockDescriptors()),

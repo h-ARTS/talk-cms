@@ -85,7 +85,7 @@ describe("BlockDefinitionsPage", () => {
 
     await waitFor(() =>
       expect(fetchMock).toHaveBeenCalledWith(
-        "/api/block-definitions",
+        "/api/internal/block-definitions",
         expect.objectContaining({ method: "POST" })
       )
     )

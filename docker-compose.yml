@@ -1,4 +1,32 @@
 services:
+  mongodb:
+    image: mongo:8.0.29
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:-talk-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-talk-root-local-only}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-talk_cms}
+      MONGODB_APP_USERNAME: ${MONGODB_APP_USERNAME:-talk-app}
+      MONGODB_APP_PASSWORD: ${MONGODB_APP_PASSWORD:-talk-app-local-only}
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - ./docker/mongodb/init-app-user.js:/docker-entrypoint-initdb.d/init-app-user.js:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet
+          --username "$$MONGO_INITDB_ROOT_USERNAME"
+          --password "$$MONGO_INITDB_ROOT_PASSWORD"
+          --authenticationDatabase admin
+          --eval "quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   talk-cms:
     build:
       context: .
@@ -6,6 +34,12 @@ services:
     env_file:
       - path: .env.local
         required: false
+    environment:
+      MONGODB_URI: ${MONGODB_URI:-mongodb://talk-app:talk-app-local-only@mongodb:27017/talk_cms?authSource=talk_cms}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-talk_cms}
+    depends_on:
+      mongodb:
+        condition: service_healthy
     ports:
       - "3000:3000"
     volumes:
@@ -13,3 +47,4 @@ services:
 
 volumes:
   block-definitions:
+  mongodb-data:

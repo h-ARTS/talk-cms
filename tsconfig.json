@@ -19,6 +19,7 @@
       "@/blocks/*": ["./src/blocks/*"],
       "@/store/*": ["./src/store/*"],
       "@/hooks/*": ["./src/hooks/*"],
+      "@/pages/*": ["./src/pages/*"],
       "@/styles/*": ["./styles/*"],
       "@/types/*": ["./types/*"]
     },

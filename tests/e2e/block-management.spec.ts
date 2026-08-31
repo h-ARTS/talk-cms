@@ -22,14 +22,14 @@ test("keeps page and API routes separate and manages definitions", async ({
   page,
   request,
 }) => {
-  await request.delete("/api/block-definitions?name=CampaignHero")
+  await request.delete("/api/internal/block-definitions?name=CampaignHero")
 
-  const createResponse = await request.post("/api/block-definitions", {
+  const createResponse = await request.post("/api/internal/block-definitions", {
     data: campaignHero,
   })
   expect(createResponse.status()).toBe(201)
 
-  const duplicateResponse = await request.post("/api/block-definitions", {
+  const duplicateResponse = await request.post("/api/internal/block-definitions", {
     data: { ...campaignHero, name: "campaignhero" },
   })
   expect(duplicateResponse.status()).toBe(409)
@@ -49,7 +49,7 @@ test("keeps page and API routes separate and manages definitions", async ({
   await page.getByTestId("block-delete-CampaignHero").click()
   await expect(page.getByTestId("block-row-CampaignHero")).toHaveCount(0)
 
-  const listResponse = await request.get("/api/block-definitions")
+  const listResponse = await request.get("/api/internal/block-definitions")
   expect(listResponse.status()).toBe(200)
   await expect(listResponse.json()).resolves.toEqual([])
 })
