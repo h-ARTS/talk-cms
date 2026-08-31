@@ -1,18 +1,14 @@
 import React from "react"
-// Mui
 import { Box, Typography } from "@mui/material"
-// Components
-import Headline from "./blockComponents/Headline"
-import Card from "./blockComponents/Card"
-import Grid from "./blockComponents/Grid"
-import Teaser from "./blockComponents/Teaser"
-// Redux
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/index"
 import { setBlockContent } from "@/store/pageBuilderSlice"
+import GenericBlockEditor from "@/blocks/core/editor/GenericBlockEditor"
+import { useBlockRegistry } from "@/blocks/client/block-registry-context"
 
 const BlockEditor: React.FC = () => {
   const dispatch = useDispatch()
+  const { registry } = useBlockRegistry()
   const activeBlock = useSelector(
     (state: RootState) => state.pageBuilder.activeBlock
   )
@@ -28,43 +24,20 @@ const BlockEditor: React.FC = () => {
     )
   }
 
-  const handleBlockInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {
-      target: { checked?: boolean }
-    }
-  ) => {
-    const { name, value, checked } = event.target
-    const newContent = {
-      ...block?.content,
-      [name]: name === "fluid" ? checked : value,
-    }
-    dispatch(setBlockContent({ id: activeBlock.id, content: newContent }))
-  }
+  const definition = registry.get(activeBlock.type)
 
-  const blockComponentMap: Record<string, React.ReactElement> = {
-    headline: (
-      <Headline
-        onInputChange={handleBlockInputChange}
-        values={block?.content}
-      />
-    ),
-    card: (
-      <Card onInputChange={handleBlockInputChange} values={block?.content} />
-    ),
-    grid: (
-      <Grid onInputChange={handleBlockInputChange} values={block?.content} />
-    ),
-    teaser: (
-      <Teaser onInputChange={handleBlockInputChange} values={block?.content} />
-    ),
+  if (!block || !definition) {
+    return <div>Unsupported block type: {activeBlock.type}</div>
   }
 
   return (
-    <div>
-      {blockComponentMap[activeBlock.type.toLowerCase()] || (
-        <div>Unsupported block type: {activeBlock.type}</div>
-      )}
-    </div>
+    <GenericBlockEditor
+      definition={definition}
+      content={block.content}
+      onChange={(content) =>
+        dispatch(setBlockContent({ id: activeBlock.id, content }))
+      }
+    />
   )
 }
 
