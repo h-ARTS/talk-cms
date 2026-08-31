@@ -22,7 +22,7 @@ const BlockEditor: React.FC = () => {
 
   if (!activeBlock) {
     return (
-      <Box px={3} my={2}>
+      <Box sx={{ px: 3, my: 2 }}>
         <Typography variant="subtitle2">Select a block to edit</Typography>
       </Box>
     )
@@ -41,7 +41,7 @@ const BlockEditor: React.FC = () => {
     dispatch(setBlockContent({ id: activeBlock.id, content: newContent }))
   }
 
-  const blockComponentMap: Record<string, JSX.Element> = {
+  const blockComponentMap: Record<string, React.ReactElement> = {
     headline: (
       <Headline
         onInputChange={handleBlockInputChange}

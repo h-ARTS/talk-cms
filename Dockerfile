@@ -1,26 +1,19 @@
-# Set the base image
-FROM node:14-alpine
-
-# Set the working directory
+FROM node:24-alpine AS dependencies
 WORKDIR /app
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+FROM dependencies AS build
+COPY . .
+RUN pnpm build
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
-
-# Copy only the files needed for building and running the app
-COPY .next/ .next/
-COPY public/ public/
-COPY next.config.js ./
-
-# Set the MONGODB_URI environment variable
-ARG MONGODB_URI
-ENV MONGODB_URI=${MONGODB_URI}
-
-# Expose the port the app will run on
+FROM node:24-alpine AS production
+WORKDIR /app
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
+COPY --from=build --chown=node:node /app/.output ./.output
+USER node
 EXPOSE 3000
-
-# Start the application
-CMD ["npm", "start"]
+CMD ["node", ".output/server/index.mjs"]

@@ -9,7 +9,6 @@ import { setBlocks } from "@/store/pageBuilderSlice"
 import { useDispatch } from "react-redux"
 // Mui
 import Alert from "@mui/material/Alert"
-import ClickAwayListener from "@mui/core/ClickAwayListener"
 import SendIcon from "@mui/icons-material/Send"
 import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
@@ -58,7 +57,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
     }
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+  const handleKeyDown = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     handleSubmit(inputValue)
   }
@@ -84,8 +83,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
 
   return (
     <>
-      <ClickAwayListener onClickAway={handleClickAway}>
-        <Box
+      <Box
           sx={{
             position: "fixed",
             bottom: theme.spacing(2),
@@ -116,9 +114,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
               }}
             >
               <TextField
-                InputProps={{
-                  inputRef,
-                }}
+                inputRef={inputRef}
                 placeholder="What do you want to build?"
                 minRows={1}
                 maxRows={5}
@@ -131,6 +127,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
                 onChange={(e) => setInputValue(e.target.value)}
               />
               <IconButton
+                aria-label="Submit prompt"
                 color="primary"
                 onClick={() => handleSubmit(inputRef.current?.value || "")}
               >
@@ -142,8 +139,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
             onHistoryItemClick={handleSubmit}
             onHistoryRemoveItem={handleRemoveHistoryItem}
           />
-        </Box>
-      </ClickAwayListener>
+      </Box>
       {chatOpen && (
         <div
           style={{
@@ -154,7 +150,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
             bottom: 0,
             zIndex: 998,
           }}
-          onClick={handleClickAway}
+          onMouseDown={handleClickAway}
         ></div>
       )}
       <Snackbar
@@ -162,7 +158,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
         open={!!alert}
         autoHideDuration={10000}
         onClose={handleCloseAlert}
-        TransitionComponent={Slide}
+        slots={{ transition: Slide }}
       >
         <Alert severity={alert?.type as AlertColor} onClose={handleCloseAlert}>
           {alert?.message}

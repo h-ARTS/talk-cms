@@ -1,5 +1,5 @@
 import React from "react"
-import { TextField, Grid, Box } from "@mui/material"
+import { TextField, Box } from "@mui/material"
 import { useInputChange } from "@/hooks/useInputChange"
 
 type CardProps = {
@@ -17,8 +17,8 @@ const Card: React.FC<CardProps> = ({ onInputChange, values }) => {
   const handleInputChange = useInputChange(onInputChange)
 
   return (
-    <Grid px={3}>
-      <Box my={2}>
+    <Box sx={{ px: 3 }}>
+      <Box sx={{ my: 2 }}>
         <TextField
           label="Card Title"
           name="title"
@@ -28,7 +28,7 @@ const Card: React.FC<CardProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box my={2}>
+      <Box sx={{ my: 2 }}>
         <TextField
           label="Card Content"
           name="content"
@@ -39,7 +39,7 @@ const Card: React.FC<CardProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box my={2}>
+      <Box sx={{ my: 2 }}>
         <TextField
           label="Card Image"
           name="image_url"
@@ -49,7 +49,7 @@ const Card: React.FC<CardProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box mt={2} mb={4}>
+      <Box sx={{ mt: 2, mb: 4 }}>
         <TextField
           label="Button Label"
           name="btn_label"
@@ -59,7 +59,7 @@ const Card: React.FC<CardProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-    </Grid>
+    </Box>
   )
 }
 

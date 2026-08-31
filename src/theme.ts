@@ -1,6 +1,5 @@
 // src/theme.ts
 import { createTheme, ThemeOptions } from "@mui/material"
-import type {} from "@mui/lab/themeAugmentation"
 
 const lightTheme: ThemeOptions = {
   palette: {

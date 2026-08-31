@@ -17,6 +17,7 @@ const FloatingChatButton: React.FC<FloatingChatButtonProps> = ({
 
   return (
     <Fab
+      aria-label={chatOpen ? "Close chat" : "Open chat"}
       color="primary"
       onClick={() => onChatOpen(!chatOpen)}
       style={{

@@ -1,11 +1,11 @@
-/* Change the divider's width and color */
-.SplitPane .Resizer {
+.resize-handle {
   background: #ddd;
   width: 6px;
+  flex: 0 0 6px;
   cursor: col-resize;
 }
 
-/* Add hover effect to the divider */
-.SplitPane .Resizer:hover {
+.resize-handle:hover,
+.resize-handle[data-resize-handle-active] {
   background: #aaa;
 }

@@ -68,8 +68,8 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
         ))}
       </List>
       <Divider />
-      <Box px={2}>
-        <Typography my={2} variant="subtitle2">
+      <Box sx={{ px: 2 }}>
+        <Typography sx={{ my: 2 }} variant="subtitle2">
           Add Block:
         </Typography>
         <ButtonGroup variant="outlined" disableElevation>

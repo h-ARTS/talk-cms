@@ -35,10 +35,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
     <>
       <Typography
         variant="overline"
-        display="block"
-        px={2}
-        pt={2}
-        sx={{ lineHeight: 1 }}
+        sx={{ display: "block", px: 2, pt: 2, lineHeight: 1 }}
       >
         Prompt History
       </Typography>

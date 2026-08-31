@@ -19,9 +19,9 @@ const Teaser: React.FC<TeaserProps> = ({ onInputChange, values }) => {
   const handleInputChange = useInputChange(onInputChange)
 
   return (
-    <Grid px={3}>
-      <Grid container columnGap={2} my={2}>
-        <Grid item xs>
+    <Box sx={{ px: 3 }}>
+      <Grid container columnSpacing={2} sx={{ my: 2 }}>
+        <Grid size={6}>
           <TextField
             fullWidth
             label="Margin"
@@ -30,12 +30,14 @@ const Teaser: React.FC<TeaserProps> = ({ onInputChange, values }) => {
             name="margin"
             value={margin}
             onChange={handleInputChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              },
             }}
           />
         </Grid>
-        <Grid item xs>
+        <Grid size={6}>
           <TextField
             fullWidth
             label="Padding"
@@ -44,13 +46,15 @@ const Teaser: React.FC<TeaserProps> = ({ onInputChange, values }) => {
             name="padding"
             value={padding}
             onChange={handleInputChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              },
             }}
           />
         </Grid>
       </Grid>
-      <Box my={2}>
+      <Box sx={{ my: 2 }}>
         <TextField
           fullWidth
           label="Background Color"
@@ -60,7 +64,7 @@ const Teaser: React.FC<TeaserProps> = ({ onInputChange, values }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Box pt={1} mb={3}>
+      <Box sx={{ pt: 1, mb: 3 }}>
         <FormControlLabel
           control={
             <Switch
@@ -72,7 +76,7 @@ const Teaser: React.FC<TeaserProps> = ({ onInputChange, values }) => {
           label="Fluid"
         />
       </Box>
-    </Grid>
+    </Box>
   )
 }
 
