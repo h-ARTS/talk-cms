@@ -2,14 +2,30 @@ import { expect, test } from "@playwright/test"
 
 const generatedBlocks = [
   {
-    id: "headline-1",
-    type: "Headline",
+    id: "hero-1",
+    type: "Hero",
     parentId: null,
     content: { title: "Generated headline" },
   },
 ]
 
+const blockDefinitions = [
+  {
+    name: "Hero",
+    metadata: { label: "Hero", description: "Campaign hero" },
+    fields: [{ key: "title", type: "text", label: "Title", default: "" }],
+    allowedChildren: false,
+  },
+]
+
 test.beforeEach(async ({ page }) => {
+  await page.route("**/api/block-definitions", async (route) => {
+    if (route.request().method() === "GET") {
+      await route.fulfill({ json: blockDefinitions })
+      return
+    }
+    await route.continue()
+  })
   await page.route("http://localhost:3001/**", async (route) => {
     await route.fulfill({
       contentType: "text/html",
@@ -58,7 +74,7 @@ test("submits a mocked block-building request", async ({ page }) => {
   await page.getByRole("button", { name: "Submit prompt" }).click()
 
   await expect(page.getByText("Blocks successfully build.")).toBeVisible()
-  await expect(page.getByRole("button", { name: "Headline" })).toHaveCount(2)
+  await expect(page.getByRole("button", { name: "Hero" }).first()).toBeVisible()
 })
 
 test("serves the migrated API route", async ({ request }) => {

@@ -125,7 +125,7 @@ const pageBuilderSlice = createSlice({
  */
 export const updateBlockContent = createAsyncThunk(
   "pageBuilder/updateBlockContent",
-  async (payload: { id: string; content: any }, { dispatch }) => {
+    async (payload: { id: string; content: Record<string, unknown> }, { dispatch }) => {
     dispatch(setBlockContent(payload))
   }
 )
@@ -138,7 +138,7 @@ export const updateBlockContent = createAsyncThunk(
  */
 export const setBlockContent = createAction<{
   id: string
-  content: any
+  content: Record<string, unknown>
 }>("pageBuilder/setBlockContent")
 
 export const {

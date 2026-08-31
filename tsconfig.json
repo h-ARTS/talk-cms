@@ -16,6 +16,7 @@
     "jsx": "react-jsx",
     "paths": {
       "@/components/*": ["./src/components/*"],
+      "@/blocks/*": ["./src/blocks/*"],
       "@/store/*": ["./src/store/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/styles/*": ["./styles/*"],

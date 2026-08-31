@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
+    "start": "pnpm build && node .output/server/index.mjs",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -35,7 +35,8 @@
     "react-dnd-html5-backend": "16.0.1",
     "react-dom": "19.2.8",
     "react-redux": "9.3.0",
-    "react-resizable-panels": "^4.12.3"
+    "react-resizable-panels": "^4.12.3",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

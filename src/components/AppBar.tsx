@@ -13,6 +13,8 @@ import {
   Drawer,
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
+import ViewQuiltOutlinedIcon from "@mui/icons-material/ViewQuiltOutlined"
+import { Link } from "@tanstack/react-router"
 import BlockTreeView from "./BlockTreeView"
 // redux
 import { useDispatch } from "react-redux"
@@ -61,6 +63,14 @@ const TopAppBar: React.FC = () => {
             />
           </Box>
           <Box sx={{ mx: 2 }}>
+            <Button
+              component={Link}
+              to="/blocks"
+              color="inherit"
+              startIcon={<ViewQuiltOutlinedIcon />}
+            >
+              Block definitions
+            </Button>
             <Button color="inherit">Save</Button>
             <Button color="inherit">Publish</Button>
           </Box>

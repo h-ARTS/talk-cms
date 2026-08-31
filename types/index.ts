@@ -1,20 +1,12 @@
 export type ActiveBlock = {
   id: string
-  type: BlockType
+  type: string
 }
 
-export interface Block {
+export type Block = {
   id: string
-  type: BlockType
+  type: string
   parentId: string | null
-  content: { [key: string]: any }
+  content: Record<string, unknown>
   children?: Block[]
-}
-
-export enum BlockType {
-  Headline = "Headline",
-  Grid = "Grid",
-  Teaser = "Teaser",
-  Card = "Card",
-  Carousel = "Carousel",
 }

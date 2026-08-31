@@ -11,6 +11,7 @@ import DndProviderWrapper from "@/components/DndProviderWrapper"
 import Layout from "@/components/Layout"
 import store from "@/store/index"
 import splitPaneCss from "../../styles/split-pane.css?url"
+import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
 
 export const Route = createRootRoute({
   head: () => ({
@@ -51,7 +52,9 @@ function RootDocument({ children }: { children: ReactNode }) {
       <body>
         <Provider store={store}>
           <Layout>
-            <DndProviderWrapper>{children}</DndProviderWrapper>
+            <BlockRegistryProvider>
+              <DndProviderWrapper>{children}</DndProviderWrapper>
+            </BlockRegistryProvider>
           </Layout>
         </Provider>
         <Scripts />

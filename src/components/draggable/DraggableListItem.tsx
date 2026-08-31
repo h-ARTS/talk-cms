@@ -12,11 +12,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import { useDispatch } from "react-redux"
 import { setActiveBlock } from "@/store/pageBuilderSlice"
 // Types
-import { BlockType } from "@/types/index"
 
 type DraggableListItemProps = {
   id: string
-  type: BlockType
+  type: string
   index: number
   moveCard: (draggedId: string, hoverIndex: number) => void
   onClick: (id: string) => void
@@ -36,7 +35,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
 
   const [, drop] = useDrop({
     accept: "card",
-    hover(item: any) {
+    hover(item: { id: string; index: number }) {
       if (!ref.current) {
         return
       }

@@ -63,6 +63,19 @@ The server listens on [http://localhost:3000](http://localhost:3000).
 
 The TanStack Start home and API routes are defined in `src/routes`.
 
+## Defining blocks
+
+Navigate to `/blocks` or select **Block definitions** in the application bar.
+This page lets content teams create, edit, and remove their own block models,
+including text, long text, URL, color, number, and toggle fields. There are no
+hard-coded block definitions; a fresh installation starts with an empty library.
+
+Definitions are stored as JSON in `data/block-definitions.json` and compiled
+into strict Zod schemas at runtime. The page editor and AI block builder consume
+the same definitions, defaults, validation rules, and nested-block policies.
+The UI is served by the `/blocks` page route, while JSON CRUD remains separate
+under `/api/block-definitions`.
+
 ### Validation
 
 ```sh
@@ -76,11 +89,11 @@ pnpm build
 ### Production
 
 ```sh
-pnpm build
 pnpm start
 ```
 
-The production entry point is `.output/server/index.mjs` and uses port 3000.
+The start command builds the application and launches the production entry point
+at `.output/server/index.mjs` on port 3000.
 
 ### Docker
 

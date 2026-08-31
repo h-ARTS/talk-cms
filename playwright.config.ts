@@ -19,6 +19,8 @@ export default defineConfig({
     command: "pnpm dev",
     env: {
       VITE_VISUAL_COMPOSER_URL: "http://localhost:3001?editMode=true",
+      BLOCK_DEFINITIONS_FILE:
+        "/var/folders/zr/wdph4q613m5brhzczkbs62y80000gq/T/opencode/talk-cms-e2e-block-definitions.json",
     },
     url: "http://localhost:3000",
     reuseExistingServer: false,
