@@ -45,19 +45,29 @@ describeWithMongo("MongoDbPageRepository", () => {
     try {
       await repository.create(page)
       await expect(repository.findById(page.id)).resolves.toEqual(page)
-      await expect(repository.findById(`missing-${page.id}`)).resolves.toBeNull()
+      await expect(repository.list()).resolves.toContainEqual(page)
 
       await verificationClient.connect()
-      const storedPage = await verificationClient
+      const collection = verificationClient
         .db(databaseName)
-        .collection<{ _id: string }>("pages")
-        .findOne({ _id: page.id })
-
-      expect(storedPage).toMatchObject({
+        .collection<{ _id: string; blocks: Page["blocks"]; createdAt: Date }>("pages")
+      await expect(collection.findOne({ _id: page.id })).resolves.toMatchObject({
         _id: page.id,
         blocks: page.blocks,
         createdAt: page.createdAt,
       })
+
+      await expect(repository.update(page.id, [])).resolves.toBe(true)
+      await expect(repository.findById(page.id)).resolves.toMatchObject({ blocks: [] })
+      await expect(collection.findOne({ _id: page.id })).resolves.toMatchObject({
+        _id: page.id,
+        blocks: [],
+        createdAt: page.createdAt,
+      })
+      await expect(repository.delete(page.id)).resolves.toBe(true)
+      await expect(repository.findById(page.id)).resolves.toBeNull()
+      await expect(repository.findById(`missing-${page.id}`)).resolves.toBeNull()
+      await expect(collection.findOne({ _id: page.id })).resolves.toBeNull()
     } finally {
       await verificationClient
         .db(databaseName)

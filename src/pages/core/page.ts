@@ -17,3 +17,15 @@ export interface PageRepository {
 export interface PageReader {
   findById(id: string): Promise<Page | null>
 }
+
+export interface PageLister {
+  list(): Promise<Page[]>
+}
+
+export interface PageUpdater {
+  update(id: string, blocks: Block[]): Promise<boolean>
+}
+
+export interface PageDeleter {
+  delete(id: string): Promise<boolean>
+}
