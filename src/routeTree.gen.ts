@@ -15,6 +15,9 @@ import { Route as ApiInternalBlockBuilderRouteImport } from './routes/api/intern
 import { Route as ApiInternalBlockDefinitionsRouteImport } from './routes/api/internal/block-definitions'
 import { Route as ApiInternalHelloRouteImport } from './routes/api/internal/hello'
 import { Route as ApiInternalPagesRouteImport } from './routes/api/internal/pages'
+import { Route as appContentPagesIndexRouteImport } from './routes/(app)/content/pages/index'
+import { Route as appContentPagesPageIdRouteImport } from './routes/(app)/content/pages/$pageId'
+import { Route as appContentPagesNewRouteImport } from './routes/(app)/content/pages/new'
 import { Route as ApiContentV1PagesPageIdRouteImport } from './routes/api/content/v1/pages/$pageId'
 
 const appIndexRoute = appIndexRouteImport.update({
@@ -48,6 +51,21 @@ const ApiInternalPagesRoute = ApiInternalPagesRouteImport.update({
   path: '/api/internal/pages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const appContentPagesIndexRoute = appContentPagesIndexRouteImport.update({
+  id: '/(app)/content/pages/',
+  path: '/content/pages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appContentPagesPageIdRoute = appContentPagesPageIdRouteImport.update({
+  id: '/(app)/content/pages/$pageId',
+  path: '/content/pages/$pageId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appContentPagesNewRoute = appContentPagesNewRouteImport.update({
+  id: '/(app)/content/pages/new',
+  path: '/content/pages/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiContentV1PagesPageIdRoute = ApiContentV1PagesPageIdRouteImport.update({
   id: '/api/content/v1/pages/$pageId',
   path: '/api/content/v1/pages/$pageId',
@@ -61,6 +79,9 @@ export interface FileRoutesByFullPath {
   '/api/internal/hello': typeof ApiInternalHelloRoute
   '/api/internal/pages': typeof ApiInternalPagesRoute
   '/blocks/': typeof appBlocksIndexRoute
+  '/content/pages/$pageId': typeof appContentPagesPageIdRoute
+  '/content/pages/new': typeof appContentPagesNewRoute
+  '/content/pages/': typeof appContentPagesIndexRoute
   '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRoutesByTo {
@@ -70,6 +91,9 @@ export interface FileRoutesByTo {
   '/api/internal/hello': typeof ApiInternalHelloRoute
   '/api/internal/pages': typeof ApiInternalPagesRoute
   '/blocks': typeof appBlocksIndexRoute
+  '/content/pages/$pageId': typeof appContentPagesPageIdRoute
+  '/content/pages/new': typeof appContentPagesNewRoute
+  '/content/pages': typeof appContentPagesIndexRoute
   '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRoutesById {
@@ -80,6 +104,9 @@ export interface FileRoutesById {
   '/api/internal/hello': typeof ApiInternalHelloRoute
   '/api/internal/pages': typeof ApiInternalPagesRoute
   '/(app)/blocks/': typeof appBlocksIndexRoute
+  '/(app)/content/pages/$pageId': typeof appContentPagesPageIdRoute
+  '/(app)/content/pages/new': typeof appContentPagesNewRoute
+  '/(app)/content/pages/': typeof appContentPagesIndexRoute
   '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRouteTypes {
@@ -91,6 +118,9 @@ export interface FileRouteTypes {
     | '/api/internal/hello'
     | '/api/internal/pages'
     | '/blocks/'
+    | '/content/pages/$pageId'
+    | '/content/pages/new'
+    | '/content/pages/'
     | '/api/content/v1/pages/$pageId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -100,6 +130,9 @@ export interface FileRouteTypes {
     | '/api/internal/hello'
     | '/api/internal/pages'
     | '/blocks'
+    | '/content/pages/$pageId'
+    | '/content/pages/new'
+    | '/content/pages'
     | '/api/content/v1/pages/$pageId'
   id:
     | '__root__'
@@ -109,6 +142,9 @@ export interface FileRouteTypes {
     | '/api/internal/hello'
     | '/api/internal/pages'
     | '/(app)/blocks/'
+    | '/(app)/content/pages/$pageId'
+    | '/(app)/content/pages/new'
+    | '/(app)/content/pages/'
     | '/api/content/v1/pages/$pageId'
   fileRoutesById: FileRoutesById
 }
@@ -119,6 +155,9 @@ export interface RootRouteChildren {
   ApiInternalHelloRoute: typeof ApiInternalHelloRoute
   ApiInternalPagesRoute: typeof ApiInternalPagesRoute
   appBlocksIndexRoute: typeof appBlocksIndexRoute
+  appContentPagesPageIdRoute: typeof appContentPagesPageIdRoute
+  appContentPagesNewRoute: typeof appContentPagesNewRoute
+  appContentPagesIndexRoute: typeof appContentPagesIndexRoute
   ApiContentV1PagesPageIdRoute: typeof ApiContentV1PagesPageIdRoute
 }
 
@@ -166,6 +205,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiInternalPagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(app)/content/pages/': {
+      id: '/(app)/content/pages/'
+      path: '/content/pages'
+      fullPath: '/content/pages/'
+      preLoaderRoute: typeof appContentPagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/content/pages/$pageId': {
+      id: '/(app)/content/pages/$pageId'
+      path: '/content/pages/$pageId'
+      fullPath: '/content/pages/$pageId'
+      preLoaderRoute: typeof appContentPagesPageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/content/pages/new': {
+      id: '/(app)/content/pages/new'
+      path: '/content/pages/new'
+      fullPath: '/content/pages/new'
+      preLoaderRoute: typeof appContentPagesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/content/v1/pages/$pageId': {
       id: '/api/content/v1/pages/$pageId'
       path: '/api/content/v1/pages/$pageId'
@@ -183,6 +243,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiInternalHelloRoute: ApiInternalHelloRoute,
   ApiInternalPagesRoute: ApiInternalPagesRoute,
   appBlocksIndexRoute: appBlocksIndexRoute,
+  appContentPagesPageIdRoute: appContentPagesPageIdRoute,
+  appContentPagesNewRoute: appContentPagesNewRoute,
+  appContentPagesIndexRoute: appContentPagesIndexRoute,
   ApiContentV1PagesPageIdRoute: ApiContentV1PagesPageIdRoute,
 }
 export const routeTree = rootRouteImport
