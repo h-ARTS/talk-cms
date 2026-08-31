@@ -8,3 +8,8 @@ services:
         required: false
     ports:
       - "3000:3000"
+    volumes:
+      - block-definitions:/app/data
+
+volumes:
+  block-definitions:

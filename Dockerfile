@@ -14,6 +14,8 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 COPY --from=build --chown=node:node /app/.output ./.output
+COPY --from=build --chown=node:node /app/data ./data
+VOLUME ["/app/data"]
 USER node
 EXPOSE 3000
 CMD ["node", ".output/server/index.mjs"]
