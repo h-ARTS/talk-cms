@@ -16,7 +16,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    command: "pnpm dev",
     env: {
       VITE_VISUAL_COMPOSER_URL: "http://localhost:3001?editMode=true",
     },

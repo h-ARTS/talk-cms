@@ -18,7 +18,7 @@ Talk is an experimental headless CMS designed for seamless integration with Chat
 ### Prerequisites
 
 - Node.js 24 (Node.js 22.22.2 remains supported)
-- npm 10.9.4 or newer
+- pnpm 11.1.2
 - A modern web browser
 
 The supported Node.js versions include the requirements of TanStack Start, Vite,
@@ -33,10 +33,10 @@ git clone https://github.com/your-username/talk-cms.git
 cd talk-cms
 ```
 
-2. Install dependencies with npm:
+2. Install dependencies with pnpm:
 
 ```sh
-npm install
+pnpm install
 ```
 
 3. To use the block-builder API, create `.env.local` in the project root:
@@ -56,7 +56,7 @@ are not required to run or test the rest of the application.
 ### Development
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 The server listens on [http://localhost:3000](http://localhost:3000).
@@ -66,18 +66,18 @@ The TanStack Start home and API routes are defined in `src/routes`.
 ### Validation
 
 ```sh
-npm run lint
-npm run typecheck
-npm test
-npm run test:e2e
-npm run build
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm test:e2e
+pnpm build
 ```
 
 ### Production
 
 ```sh
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
 The production entry point is `.output/server/index.mjs` and uses port 3000.

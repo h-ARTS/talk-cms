@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.1.2",
   "engines": {
     "node": "^22.22.2 || >=24.0.0",
-    "npm": ">=10.9.4"
+    "pnpm": ">=11.1.2 <12"
   },
   "scripts": {
     "dev": "vite --port 3000",

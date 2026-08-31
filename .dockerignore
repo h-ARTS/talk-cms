@@ -4,6 +4,6 @@
 .env*
 coverage
 node_modules
-npm-debug.log*
+pnpm-debug.log*
 preview.png
 preview_dark.png
