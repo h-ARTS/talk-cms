@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiBlockBuilderRouteImport } from './routes/api/block-builder'
+import { Route as ApiBlockDefinitionsRouteImport } from './routes/api/block-definitions'
 import { Route as ApiHelloRouteImport } from './routes/api/hello'
+import { Route as BlocksIndexRouteImport } from './routes/blocks/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,40 +25,74 @@ const ApiBlockBuilderRoute = ApiBlockBuilderRouteImport.update({
   path: '/api/block-builder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBlockDefinitionsRoute = ApiBlockDefinitionsRouteImport.update({
+  id: '/api/block-definitions',
+  path: '/api/block-definitions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHelloRoute = ApiHelloRouteImport.update({
   id: '/api/hello',
   path: '/api/hello',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlocksIndexRoute = BlocksIndexRouteImport.update({
+  id: '/blocks/',
+  path: '/blocks/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/block-builder': typeof ApiBlockBuilderRoute
+  '/api/block-definitions': typeof ApiBlockDefinitionsRoute
   '/api/hello': typeof ApiHelloRoute
+  '/blocks/': typeof BlocksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/block-builder': typeof ApiBlockBuilderRoute
+  '/api/block-definitions': typeof ApiBlockDefinitionsRoute
   '/api/hello': typeof ApiHelloRoute
+  '/blocks': typeof BlocksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/block-builder': typeof ApiBlockBuilderRoute
+  '/api/block-definitions': typeof ApiBlockDefinitionsRoute
   '/api/hello': typeof ApiHelloRoute
+  '/blocks/': typeof BlocksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/block-builder' | '/api/hello'
+  fullPaths:
+    | '/'
+    | '/api/block-builder'
+    | '/api/block-definitions'
+    | '/api/hello'
+    | '/blocks/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/block-builder' | '/api/hello'
-  id: '__root__' | '/' | '/api/block-builder' | '/api/hello'
+  to:
+    | '/'
+    | '/api/block-builder'
+    | '/api/block-definitions'
+    | '/api/hello'
+    | '/blocks'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/block-builder'
+    | '/api/block-definitions'
+    | '/api/hello'
+    | '/blocks/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiBlockBuilderRoute: typeof ApiBlockBuilderRoute
+  ApiBlockDefinitionsRoute: typeof ApiBlockDefinitionsRoute
   ApiHelloRoute: typeof ApiHelloRoute
+  BlocksIndexRoute: typeof BlocksIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +111,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiBlockBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/block-definitions': {
+      id: '/api/block-definitions'
+      path: '/api/block-definitions'
+      fullPath: '/api/block-definitions'
+      preLoaderRoute: typeof ApiBlockDefinitionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/hello': {
       id: '/api/hello'
       path: '/api/hello'
       fullPath: '/api/hello'
       preLoaderRoute: typeof ApiHelloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blocks/': {
+      id: '/blocks/'
+      path: '/blocks'
+      fullPath: '/blocks/'
+      preLoaderRoute: typeof BlocksIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +138,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiBlockBuilderRoute: ApiBlockBuilderRoute,
+  ApiBlockDefinitionsRoute: ApiBlockDefinitionsRoute,
   ApiHelloRoute: ApiHelloRoute,
+  BlocksIndexRoute: BlocksIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
