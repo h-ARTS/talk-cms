@@ -17,11 +17,12 @@ Talk is an experimental headless CMS designed for seamless integration with Chat
 
 ### Prerequisites
 
-- Node.js 22.22.2 or newer
-- npm 10 or newer
+- Node.js 24 (Node.js 22.22.2 remains supported)
+- npm 10.9.4 or newer
 - A modern web browser
 
-The Node.js minimum includes the requirements of TanStack Start, Vite, ESLint, and jsdom.
+The supported Node.js versions include the requirements of TanStack Start, Vite,
+ESLint, and jsdom. The Docker image uses Node.js 24.
 
 ### Installation
 

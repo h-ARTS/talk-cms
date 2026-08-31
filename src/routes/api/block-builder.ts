@@ -235,7 +235,8 @@ async function getRandomUnsplashImage(): Promise<string> {
         params: {
           query: "hero headline",
           orientation: "landscape",
-        }
+        },
+      }
     )
 
     return result.data.urls?.regular ?? ""

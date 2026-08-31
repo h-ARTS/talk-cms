@@ -5,6 +5,7 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default tseslint.config(
+  {
     ignores: [
       ".output/**",
       "coverage/**",
@@ -12,6 +13,7 @@ export default tseslint.config(
       "node_modules/**",
       "src/routeTree.gen.ts",
     ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

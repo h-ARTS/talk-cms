@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22.22.2",
-    "npm": ">=10.0.0"
+    "node": "^22.22.2 || >=24.0.0",
+    "npm": ">=10.9.4"
   },
   "scripts": {
     "dev": "vite --port 3000",
@@ -43,7 +43,7 @@
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.6",
-    "@types/node": "26.4.0",
+    "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@vitejs/plugin-react": "6.1.1",
@@ -51,7 +51,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.5",
     "globals": "17.11.0",
-    "jsdom": "30.0.1",
+    "jsdom": "29.0.1",
     "nitro": "npm:nitro-nightly@3.0.1-20260828-140537-5d83475c",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",
