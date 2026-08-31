@@ -19,6 +19,8 @@ import Snackbar from "@mui/material/Snackbar"
 import { AlertColor, useTheme } from "@mui/material"
 // Components
 import ChatHistory from "./ChatHistory"
+import { validateStoredBlocks } from "@/blocks/core/validation"
+import { useBlockRegistry } from "@/blocks/client/block-registry-context"
 
 interface ChatBoxProps {
   chatOpen: boolean
@@ -27,6 +29,7 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
   const theme = useTheme()
+  const { registry } = useBlockRegistry()
   const inputRef = useRef<HTMLInputElement>(null)
   const dispatch = useDispatch()
   const [inputValue, setInputValue] = useState("")
@@ -38,8 +41,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
   const handleSubmit = async (input: string) => {
     setLoading(true)
     try {
-      const response = await axios.post("/api/block-builder", { input })
-      dispatch(setBlocks(response.data))
+      const response = await axios.post<unknown>("/api/block-builder", { input })
+      const blocks = validateStoredBlocks(response.data, registry)
+      if (!blocks.success) throw new Error(blocks.message)
+      dispatch(setBlocks(blocks.data))
       dispatch(addMessageToHistory(input))
       setInputValue("")
       setAlert({
