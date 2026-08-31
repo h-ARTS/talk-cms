@@ -24,9 +24,14 @@ import { toggleThemeMode } from "@/store/themeSlice"
 import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
 import { Block } from "@/types/index"
 import type { RootState } from "@/store/index"
-import { savePage } from "@/pages/client/page-api"
+import { savePage, updatePage, type SavedPage } from "@/pages/client/page-api"
 
-const TopAppBar: React.FC = () => {
+type TopAppBarProps = {
+  pageId?: string
+  onPageCreated?: (page: SavedPage) => Promise<void>
+}
+
+const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
   const dispatch = useDispatch()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -51,11 +56,21 @@ const TopAppBar: React.FC = () => {
   const handleSave = async () => {
     setSaving(true)
     try {
-      await savePage(blocks)
+      if (pageId) await updatePage(pageId, blocks)
+      else if (onPageCreated) await onPageCreated(await savePage(blocks))
+      else await savePage(blocks)
       setSaveResult({ severity: "success", message: "Page saved." })
     } catch (error) {
       console.error("Failed to save page:", error)
-      setSaveResult({ severity: "error", message: "The page could not be saved." })
+      setSaveResult({
+        severity: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : pageId
+              ? "The page could not be updated."
+              : "The page could not be saved.",
+      })
     } finally {
       setSaving(false)
     }

@@ -1,7 +1,12 @@
 import { compileBlockDefinition } from "@/blocks/core/compiler"
 import { createBlockRegistry } from "@/blocks/core/registry"
 import type { Page, PageRepository } from "@/pages/core/page"
-import { createPagesPostHandler } from "../../src/routes/api/internal/pages"
+import {
+  createPagesDeleteHandler,
+  createPagesGetHandler,
+  createPagesPostHandler,
+  createPagesPutHandler,
+} from "../../src/routes/api/internal/pages"
 
 const registry = createBlockRegistry([
   compileBlockDefinition({
@@ -22,11 +27,15 @@ class RecordingPageRepository implements PageRepository {
   }
 }
 
-function createRequest(body: unknown): Request {
-  return new Request("http://localhost/api/internal/pages", {
-    method: "POST",
+function createRequest(
+  body: unknown,
+  method = "POST",
+  query = ""
+): Request {
+  return new Request(`http://localhost/api/internal/pages${query}`, {
+    method,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    body: body === undefined ? undefined : JSON.stringify(body),
   })
 }
 
@@ -89,5 +98,126 @@ describe("pages POST handler", () => {
 
     expect(response.status).toBe(500)
     expect(await response.json()).toEqual({ error: "The page could not be saved." })
+  })
+})
+
+describe("pages GET handler", () => {
+  test("returns saved pages", async () => {
+    const pages: Page[] = [{ id: "page-1", blocks, createdAt: new Date("2026-08-31T10:00:00.000Z") }]
+    const response = await createPagesGetHandler({ pageLister: { list: async () => pages } })()
+
+    expect(response.status).toBe(200)
+    expect(await response.json()).toEqual([
+      { id: "page-1", blocks, createdAt: "2026-08-31T10:00:00.000Z" },
+    ])
+  })
+
+  test("reports repository failures", async () => {
+    const response = await createPagesGetHandler({
+      pageLister: { list: async () => { throw new Error("database unavailable") } },
+    })()
+
+    expect(response.status).toBe(500)
+    expect(await response.json()).toEqual({ error: "The pages could not be loaded." })
+  })
+})
+
+describe("pages PUT handler", () => {
+  test("validates and updates an existing page", async () => {
+    let updatedBlocks: unknown
+    const response = await createPagesPutHandler({
+      loadRegistry: async () => registry,
+      pageUpdater: {
+        update: async (id, value) => {
+          expect(id).toBe("page-1")
+          updatedBlocks = value
+          return true
+        },
+      },
+    })(createRequest({ blocks }, "PUT", "?id=page-1"))
+
+    expect(response.status).toBe(204)
+    expect(updatedBlocks).toEqual(blocks)
+  })
+
+  test("returns not found when the page does not exist", async () => {
+    const response = await createPagesPutHandler({
+      loadRegistry: async () => registry,
+      pageUpdater: { update: async () => false },
+    })(createRequest({ blocks }, "PUT", "?id=missing"))
+
+    expect(response.status).toBe(404)
+  })
+
+  test("rejects malformed JSON", async () => {
+    const response = await createPagesPutHandler({
+      loadRegistry: async () => registry,
+      pageUpdater: { update: async () => true },
+    })(new Request("http://localhost/api/internal/pages?id=page-1", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: "{",
+    }))
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toEqual({ error: "A valid JSON body is required" })
+  })
+
+  test("reports repository failures", async () => {
+    const response = await createPagesPutHandler({
+      loadRegistry: async () => registry,
+      pageUpdater: {
+        update: async () => {
+          throw new Error("database unavailable")
+        },
+      },
+    })(createRequest({ blocks }, "PUT", "?id=page-1"))
+
+    expect(response.status).toBe(500)
+  })
+})
+
+describe("pages DELETE handler", () => {
+  test("deletes an existing page", async () => {
+    let deletedId: string | undefined
+    const response = await createPagesDeleteHandler({
+      pageDeleter: {
+        delete: async (id) => {
+          deletedId = id
+          return true
+        },
+      },
+    })(createRequest(undefined, "DELETE", "?id=page-1"))
+
+    expect(response.status).toBe(204)
+    expect(deletedId).toBe("page-1")
+  })
+
+  test("requires a page ID", async () => {
+    const response = await createPagesDeleteHandler({
+      pageDeleter: { delete: async () => true },
+    })(createRequest(undefined, "DELETE"))
+
+    expect(response.status).toBe(400)
+  })
+
+  test("returns not found when the page does not exist", async () => {
+    const response = await createPagesDeleteHandler({
+      pageDeleter: { delete: async () => false },
+    })(createRequest(undefined, "DELETE", "?id=missing"))
+
+    expect(response.status).toBe(404)
+  })
+
+  test("reports repository failures", async () => {
+    const response = await createPagesDeleteHandler({
+      pageDeleter: {
+        delete: async () => {
+          throw new Error("database unavailable")
+        },
+      },
+    })(createRequest(undefined, "DELETE", "?id=page-1"))
+
+    expect(response.status).toBe(500)
   })
 })

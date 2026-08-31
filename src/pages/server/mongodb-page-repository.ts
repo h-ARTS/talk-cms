@@ -1,5 +1,12 @@
 import { MongoClient, type Collection } from "mongodb"
-import type { Page, PageReader, PageRepository } from "../core/page"
+import type {
+  Page,
+  PageDeleter,
+  PageLister,
+  PageReader,
+  PageRepository,
+  PageUpdater,
+} from "../core/page"
 
 const localMongoDbUri =
   "mongodb://talk-app:talk-app-local-only@localhost:27017/talk_cms?authSource=talk_cms"
@@ -8,7 +15,9 @@ type PageDocument = Omit<Page, "id"> & {
   _id: string
 }
 
-export class MongoDbPageRepository implements PageRepository, PageReader {
+export class MongoDbPageRepository
+  implements PageRepository, PageReader, PageLister, PageUpdater, PageDeleter
+{
   private readonly client: MongoClient
   private connection?: Promise<MongoClient>
 
@@ -49,6 +58,29 @@ export class MongoDbPageRepository implements PageRepository, PageReader {
     }
   }
 
+  async list(): Promise<Page[]> {
+    const collection = await this.getCollection()
+    const documents = await collection.find().sort({ createdAt: -1, _id: -1 }).toArray()
+
+    return documents.map((document) => ({
+      id: document._id,
+      blocks: document.blocks,
+      createdAt: document.createdAt,
+    }))
+  }
+
+  async update(id: string, blocks: Page["blocks"]): Promise<boolean> {
+    const collection = await this.getCollection()
+    const result = await collection.updateOne({ _id: id }, { $set: { blocks } })
+    return result.matchedCount === 1
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const collection = await this.getCollection()
+    const result = await collection.deleteOne({ _id: id })
+    return result.deletedCount === 1
+  }
+
   async close(): Promise<void> {
     await this.client.close()
     this.connection = undefined
@@ -75,6 +107,18 @@ export function getPageRepository(): PageRepository {
 }
 
 export function getPageReader(): PageReader {
+  return getConfiguredRepository()
+}
+
+export function getPageLister(): PageLister {
+  return getConfiguredRepository()
+}
+
+export function getPageUpdater(): PageUpdater {
+  return getConfiguredRepository()
+}
+
+export function getPageDeleter(): PageDeleter {
   return getConfiguredRepository()
 }
 

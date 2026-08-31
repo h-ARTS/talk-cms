@@ -130,8 +130,11 @@ never remove a volume that contains data you need.
 App UI files live in the pathless `src/routes/(app)` route group. The group keeps
 the browser-facing URLs unchanged:
 
-- `/` serves the page editor.
+- `/` serves the end-user dashboard.
 - `/blocks` serves block-definition management.
+- `/content/pages` lists saved pages.
+- `/content/pages/:pageId` opens a saved page in the visual composer.
+- `/content/pages/new` opens an empty page in the visual composer.
 
 ### Internal Backend API
 
@@ -140,7 +143,7 @@ It may change together with the editor without public compatibility guarantees:
 
 - `GET`, `POST`, `PUT`, and `DELETE /api/internal/block-definitions` manage block definitions.
 - `POST /api/internal/block-builder` generates validated, flattened page blocks.
-- `POST /api/internal/pages` validates and persists the editor's current page.
+- `GET`, `POST`, `PUT`, and `DELETE /api/internal/pages` list, create, update, and remove pages.
 - `GET /api/internal/hello` returns `{ "name": "John Doe" }`.
 
 ### Public Content API

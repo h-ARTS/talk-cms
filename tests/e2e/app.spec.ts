@@ -32,10 +32,19 @@ test.beforeEach(async ({ page }) => {
       body: "<!doctype html><html><body>Visual composer preview</body></html>",
     })
   })
+  await page.route("**/api/content/v1/pages/editor-page", async (route) => {
+    await route.fulfill({
+      json: {
+        id: "editor-page",
+        blocks: [],
+        createdAt: "2026-08-31T10:00:00.000Z",
+      },
+    })
+  })
 })
 
 test("loads the editor and supports theme and pane resizing", async ({ page }) => {
-  await page.goto("/")
+  await page.goto("/content/pages/editor-page")
   await page.waitForLoadState("networkidle")
 
   await expect(page).toHaveTitle("Talk CMS")
@@ -67,7 +76,7 @@ test("submits a mocked block-building request", async ({ page }) => {
     await route.fulfill({ json: generatedBlocks })
   })
 
-  await page.goto("/")
+  await page.goto("/content/pages/editor-page")
   await page.waitForLoadState("networkidle")
   await page.getByRole("button", { name: "Open chat" }).click()
   await page.getByPlaceholder("What do you want to build?").fill("Build a hero")
@@ -81,12 +90,15 @@ test("saves the creator's current page without using the block builder", async (
   page,
 }) => {
   let savedRequest: unknown
-  await page.route("**/api/internal/pages", async (route) => {
+  await page.route("**/api/internal/pages*", async (route) => {
     savedRequest = route.request().postDataJSON()
-    await route.fulfill({ status: 201, json: { id: "page-1", blocks: [] } })
+    await route.fulfill({
+      status: 201,
+      json: { id: "page-1", blocks: [], createdAt: "2026-08-31T10:00:00.000Z" },
+    })
   })
 
-  await page.goto("/")
+  await page.goto("/content/pages/editor-page")
   await page.waitForLoadState("networkidle")
   await page.getByRole("button", { name: "Save" }).click()
 
