@@ -11,7 +11,7 @@ import {
 import { Box, Typography } from "@mui/material"
 import StyledTreeItem from "./StyledTreeItem"
 
-interface BlockNode extends Block {
+type BlockNode = Block & {
   children: BlockNode[]
 }
 

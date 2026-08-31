@@ -14,14 +14,14 @@ import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/store/index"
 import { addBlock, deleteBlock, moveBlock } from "@/store/pageBuilderSlice"
 // Types
-import { Block, BlockType } from "@/types/index"
+import { useBlockRegistry } from "@/blocks/client/block-registry-context"
 // Components
 import DraggableListItem from "../draggable/DraggableListItem"
 import BlockEditor from "../BlockEditor"
 
 interface BlockTreeProps {
   parentId: string | null
-  onAddBlock?: (type: BlockType, parentId: string | null) => void
+  onAddBlock?: (type: string, parentId: string | null) => void
   onDeleteBlock?: (parentId: string | null) => void
   onNavigate: (id: string) => void
 }
@@ -29,16 +29,31 @@ interface BlockTreeProps {
 const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
   const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
   const dispatch = useDispatch()
+  const { registry, loading } = useBlockRegistry()
 
   const childBlocks = blocks.filter((block) => block.parentId === parentId)
+  const parentBlock = blocks.find((block) => block.id === parentId)
+  const availableDefinitions =
+    parentId === null
+      ? registry.getAllowedDefinitions()
+      : parentBlock
+        ? registry.getAllowedDefinitions(parentBlock.type)
+        : []
 
-  const handleAddBlock = (type: BlockType, parentId: string | null) => {
-    const newBlock: Block = {
-      id: Date.now().toString(),
+  const handleAddBlock = (type: string, parentId: string | null) => {
+    const parent = blocks.find((block) => block.id === parentId)
+    if (
+      parentId !== null &&
+      (!parent || !registry.allowsChild(parent.type, type))
+    ) {
+      return
+    }
+
+    const newBlock = registry.createBlock(
       type,
       parentId,
-      content: {},
-    }
+      crypto.randomUUID()
+    )
     dispatch(addBlock({ parent: parentId, block: newBlock }))
   }
 
@@ -72,13 +87,21 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
         <Typography sx={{ my: 2 }} variant="subtitle2">
           Add Block:
         </Typography>
-        <ButtonGroup variant="outlined" disableElevation>
-          {Object.values(BlockType).map((type) => (
-            <Button key={type} onClick={() => handleAddBlock(type, parentId)}>
-              {type}
+        <ButtonGroup variant="outlined" disableElevation disabled={loading}>
+          {availableDefinitions.map((definition) => (
+            <Button
+              key={definition.name}
+              onClick={() => handleAddBlock(definition.name, parentId)}
+            >
+              {definition.metadata.label}
             </Button>
           ))}
         </ButtonGroup>
+        {!loading && availableDefinitions.length === 0 && (
+          <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
+            No block definitions are available. Create one from Block definitions.
+          </Typography>
+        )}
       </Box>
     </>
   )
