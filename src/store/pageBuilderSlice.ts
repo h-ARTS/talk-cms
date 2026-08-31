@@ -46,6 +46,11 @@ const pageBuilderSlice = createSlice({
     setBlocks: (state, action: PayloadAction<Block[]>) => {
       state.blocks = action.payload
     },
+    loadSavedPage: (state, action: PayloadAction<Block[]>) => {
+      state.blocks = action.payload
+      state.activeBlock = null
+      state.navigationHistory = []
+    },
     /**
      * Moves a block to a new position in the blocks array
      *
@@ -144,6 +149,7 @@ export const setBlockContent = createAction<{
 export const {
   addBlock,
   setBlocks,
+  loadSavedPage,
   moveBlock,
   deleteBlock,
   setActiveBlock,
