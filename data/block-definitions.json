@@ -7,5 +7,64 @@
     },
     "fields": [],
     "allowedChildren": true
+  },
+  {
+    "name": "Card",
+    "metadata": {
+      "label": "Card",
+      "category": "Editorial"
+    },
+    "fields": [
+      {
+        "key": "heading",
+        "label": "heading",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "body",
+        "label": "body",
+        "type": "textarea",
+        "default": ""
+      }
+    ],
+    "allowedChildren": false
+  },
+  {
+    "name": "Grid",
+    "metadata": {
+      "label": "Grid",
+      "category": "Layout"
+    },
+    "fields": [],
+    "allowedChildren": true
+  },
+  {
+    "name": "Teaser",
+    "metadata": {
+      "label": "Teaser",
+      "category": "Campaign"
+    },
+    "fields": [
+      {
+        "key": "imageUrl",
+        "label": "imageUrl",
+        "type": "url",
+        "default": ""
+      },
+      {
+        "key": "headline",
+        "label": "headline",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "subtitle",
+        "label": "subtitle",
+        "type": "text",
+        "default": ""
+      }
+    ],
+    "allowedChildren": false
   }
 ]

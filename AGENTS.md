@@ -2,17 +2,17 @@
 
 ## How to work
 
-- **ALWAYS** make new git worktrees and use the skill `using-git-worktrees`
+- **ALWAYS** make new git worktrees and use the skill `using-git-worktrees`. The worktree MUST be located in the root directory of this project.
 
 <!-- gitnexus:start -->
 
-## GitNexus — Code Intelligence
+# GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **talk-cms** (693 symbols, 1281 relationships, 56 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **talk-cms** (731 symbols, 1350 relationships, 59 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
-### Always Do
+## Always Do
 
 - **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
 - **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
@@ -20,14 +20,14 @@ This project is indexed by GitNexus as **talk-cms** (693 symbols, 1281 relations
 - When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
 - When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
 
-### Never Do
+## Never Do
 
 - NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
 - NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
 - NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
 - NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
 
-### Resources
+## Resources
 
 | Resource                                  | Use for                                  |
 | ----------------------------------------- | ---------------------------------------- |
@@ -36,7 +36,7 @@ This project is indexed by GitNexus as **talk-cms** (693 symbols, 1281 relations
 | `gitnexus://repo/talk-cms/processes`      | All execution flows                      |
 | `gitnexus://repo/talk-cms/process/{name}` | Step-by-step execution trace             |
 
-### CLI
+## CLI
 
 | Task                                         | Read this skill file                                        |
 | -------------------------------------------- | ----------------------------------------------------------- |
