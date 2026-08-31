@@ -11,20 +11,30 @@ import {
   Switch,
   FormControlLabel,
   Drawer,
+  Snackbar,
+  Alert,
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import ViewQuiltOutlinedIcon from "@mui/icons-material/ViewQuiltOutlined"
 import { Link } from "@tanstack/react-router"
 import BlockTreeView from "./BlockTreeView"
 // redux
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { toggleThemeMode } from "@/store/themeSlice"
 import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
 import { Block } from "@/types/index"
+import type { RootState } from "@/store/index"
+import { savePage } from "@/pages/client/page-api"
 
 const TopAppBar: React.FC = () => {
   const dispatch = useDispatch()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveResult, setSaveResult] = useState<{
+    severity: "success" | "error"
+    message: string
+  } | null>(null)
+  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen)
@@ -36,6 +46,19 @@ const TopAppBar: React.FC = () => {
 
   const handleNavigationHistoryChange = (history: string[]) => {
     dispatch(setNavigationHistory(history))
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await savePage(blocks)
+      setSaveResult({ severity: "success", message: "Page saved." })
+    } catch (error) {
+      console.error("Failed to save page:", error)
+      setSaveResult({ severity: "error", message: "The page could not be saved." })
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -71,7 +94,9 @@ const TopAppBar: React.FC = () => {
             >
               Block definitions
             </Button>
-            <Button color="inherit">Save</Button>
+            <Button color="inherit" disabled={saving} onClick={handleSave}>
+              {saving ? "Saving…" : "Save"}
+            </Button>
             <Button color="inherit">Publish</Button>
           </Box>
         </Toolbar>
@@ -82,6 +107,18 @@ const TopAppBar: React.FC = () => {
           onNavigationHistoryChange={handleNavigationHistoryChange}
         />
       </Drawer>
+      <Snackbar
+        open={saveResult !== null}
+        autoHideDuration={6000}
+        onClose={() => setSaveResult(null)}
+      >
+        <Alert
+          severity={saveResult?.severity ?? "success"}
+          onClose={() => setSaveResult(null)}
+        >
+          {saveResult?.message}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

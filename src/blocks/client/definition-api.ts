@@ -4,12 +4,12 @@ import {
 } from "../core/descriptor"
 
 export async function createDefinition(descriptor: BlockDescriptor) {
-  return requestDefinition("/api/block-definitions", "POST", descriptor)
+  return requestDefinition("/api/internal/block-definitions", "POST", descriptor)
 }
 
 export async function updateDefinition(descriptor: BlockDescriptor) {
   return requestDefinition(
-    `/api/block-definitions?name=${encodeURIComponent(descriptor.name)}`,
+    `/api/internal/block-definitions?name=${encodeURIComponent(descriptor.name)}`,
     "PUT",
     descriptor
   )
@@ -17,7 +17,7 @@ export async function updateDefinition(descriptor: BlockDescriptor) {
 
 export async function deleteDefinition(name: string) {
   const response = await fetch(
-    `/api/block-definitions?name=${encodeURIComponent(name)}`,
+    `/api/internal/block-definitions?name=${encodeURIComponent(name)}`,
     { method: "DELETE" }
   )
   if (!response.ok) throw new Error(await readError(response))

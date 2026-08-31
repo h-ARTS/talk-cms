@@ -18,7 +18,7 @@ type Block = {
   content: JsonObject
 }
 
-export const Route = createFileRoute("/api/block-builder")({
+export const Route = createFileRoute("/api/internal/block-builder")({
   server: {
     handlers: {
       POST: async ({ request }) => {

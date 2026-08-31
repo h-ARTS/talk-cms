@@ -21,7 +21,7 @@ export function BlockRegistryProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await fetch("/api/block-definitions")
+      const response = await fetch("/api/internal/block-definitions")
       const value: unknown = await response.json()
       if (!response.ok) throw new Error("Could not load block definitions")
       if (!Array.isArray(value)) throw new Error("Invalid block definition response")
@@ -71,7 +71,7 @@ export function BlockRegistryProvider({ children }: { children: ReactNode }) {
 
 async function loadDescriptors() {
   try {
-    const response = await fetch("/api/block-definitions")
+    const response = await fetch("/api/internal/block-definitions")
     const value: unknown = await response.json()
     if (!response.ok) throw new Error("Could not load block definitions")
     if (!Array.isArray(value)) throw new Error("Invalid block definition response")

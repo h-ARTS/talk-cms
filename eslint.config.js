@@ -50,5 +50,14 @@ export default tseslint.config(
     rules: {
       "react-refresh/only-export-components": "off",
     },
-  }
+  },
+  {
+    files: ["docker/mongodb/*.js"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        db: "readonly",
+      },
+    },
+  },
 )

@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "name": "Container",
+    "metadata": {
+      "label": "Container",
+      "category": "Layout"
+    },
+    "fields": [],
+    "allowedChildren": true
+  }
+]

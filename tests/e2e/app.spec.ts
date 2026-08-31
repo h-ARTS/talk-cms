@@ -19,7 +19,7 @@ const blockDefinitions = [
 ]
 
 test.beforeEach(async ({ page }) => {
-  await page.route("**/api/block-definitions", async (route) => {
+  await page.route("**/api/internal/block-definitions", async (route) => {
     if (route.request().method() === "GET") {
       await route.fulfill({ json: blockDefinitions })
       return
@@ -63,7 +63,7 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
 })
 
 test("submits a mocked block-building request", async ({ page }) => {
-  await page.route("**/api/block-builder", async (route) => {
+  await page.route("**/api/internal/block-builder", async (route) => {
     await route.fulfill({ json: generatedBlocks })
   })
 
@@ -77,9 +77,33 @@ test("submits a mocked block-building request", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Hero" }).first()).toBeVisible()
 })
 
+test("saves the creator's current page without using the block builder", async ({
+  page,
+}) => {
+  let savedRequest: unknown
+  await page.route("**/api/internal/pages", async (route) => {
+    savedRequest = route.request().postDataJSON()
+    await route.fulfill({ status: 201, json: { id: "page-1", blocks: [] } })
+  })
+
+  await page.goto("/")
+  await page.waitForLoadState("networkidle")
+  await page.getByRole("button", { name: "Save" }).click()
+
+  await expect(page.getByText("Page saved.")).toBeVisible()
+  expect(savedRequest).toEqual({ blocks: [] })
+})
+
 test("serves the migrated API route", async ({ request }) => {
-  const response = await request.get("/api/hello")
+  const response = await request.get("/api/internal/hello")
 
   expect(response.ok()).toBeTruthy()
   await expect(response.json()).resolves.toEqual({ name: "John Doe" })
+})
+
+test("mounts the public content API separately", async ({ request }) => {
+  const response = await request.get("/api/content/v1/pages/missing-page")
+
+  expect(response.status()).toBe(404)
+  await expect(response.json()).resolves.toEqual({ error: "Page not found" })
 })

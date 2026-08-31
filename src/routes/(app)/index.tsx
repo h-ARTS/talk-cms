@@ -18,7 +18,7 @@ const isSupportedPreviewUrl =
     visualComposerUrl?.protocol === 'http:' ||
     visualComposerUrl?.protocol === 'https:'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/(app)/')({
     component: HomePage,
 })
 
