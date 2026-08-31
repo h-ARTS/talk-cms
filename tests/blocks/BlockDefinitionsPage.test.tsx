@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { Provider } from "react-redux"
 import { RouterProvider, createMemoryHistory, createRouter } from "@tanstack/react-router"
 import store from "@/store/index"
@@ -89,5 +90,30 @@ describe("BlockDefinitionsPage", () => {
       )
     )
     expect(await screen.findByTestId("block-row-CampaignHero")).toBeVisible()
+  })
+
+  test("keeps focus while typing a content field key", async () => {
+    const user = userEvent.setup()
+    const router = createRouter({
+      routeTree,
+      history: createMemoryHistory({ initialEntries: ["/blocks"] }),
+    })
+
+    render(
+      <Provider store={store}>
+        <BlockRegistryProvider>
+          <RouterProvider router={router} />
+        </BlockRegistryProvider>
+      </Provider>
+    )
+
+    await screen.findByTestId("empty-block-list")
+    await user.click(screen.getByTestId("block-create-button"))
+    const fieldKeyInput = screen.getByTestId("field-key-0")
+
+    await user.type(fieldKeyInput, "headline")
+
+    expect(fieldKeyInput).toHaveValue("headline")
+    expect(fieldKeyInput).toHaveFocus()
   })
 })

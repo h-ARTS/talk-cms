@@ -186,7 +186,7 @@ export default function BlockDefinitionForm({
         <Stack spacing={2}>
           {fields.map((field, index) => (
             <Paper
-              key={`${index}-${field.key}`}
+              key={index}
               variant="outlined"
               sx={{ p: 2.5, borderRadius: 2, bgcolor: "action.hover" }}
             >

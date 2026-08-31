@@ -89,11 +89,11 @@ pnpm build
 ### Production
 
 ```sh
-pnpm build
 pnpm start
 ```
 
-The production entry point is `.output/server/index.mjs` and uses port 3000.
+The start command builds the application and launches the production entry point
+at `.output/server/index.mjs` on port 3000.
 
 ### Docker
 
