@@ -5,19 +5,13 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default tseslint.config(
-  {
     ignores: [
       ".output/**",
       "coverage/**",
       "dist/**",
       "node_modules/**",
-      "pages/index.tsx",
-      "src/components/BlockTreeView.tsx",
-      "src/components/ChatBox.tsx",
-      "src/components/StyledTreeItem.tsx",
       "src/routeTree.gen.ts",
     ],
-  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
