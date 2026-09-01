@@ -10,6 +10,8 @@ import { Provider } from "react-redux"
 import DndProviderWrapper from "@/components/DndProviderWrapper"
 import Layout from "@/components/Layout"
 import store from "@/store/index"
+import { TooltipProvider } from "@/ui/tooltip"
+import globalsCss from "@/styles/globals.css?url"
 import splitPaneCss from "../../styles/split-pane.css?url"
 import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
 
@@ -28,6 +30,7 @@ export const Route = createRootRoute({
       },
     ],
     links: [
+      { rel: "stylesheet", href: globalsCss },
       { rel: "stylesheet", href: splitPaneCss },
       { rel: "icon", href: "/favicon.ico" },
     ],
@@ -44,21 +47,35 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: ReactNode }) {
+  // jsdom cannot track focus/active-element when a nested <html>/<body> is rendered
+  // inside the test container, which deadlocks Radix UI focus handling in tests.
+  // Render the bare providers there; the real document shell only exists in the browser/SSR.
+  if (import.meta.env.MODE === "test") {
+    return <RootProviders>{children}</RootProviders>
+  }
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <Provider store={store}>
-          <Layout>
-            <BlockRegistryProvider>
-              <DndProviderWrapper>{children}</DndProviderWrapper>
-            </BlockRegistryProvider>
-          </Layout>
-        </Provider>
+        <RootProviders>{children}</RootProviders>
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function RootProviders({ children }: { children: ReactNode }) {
+  return (
+    <Provider store={store}>
+      <TooltipProvider delayDuration={200}>
+        <Layout>
+          <BlockRegistryProvider>
+            <DndProviderWrapper>{children}</DndProviderWrapper>
+          </BlockRegistryProvider>
+        </Layout>
+      </TooltipProvider>
+    </Provider>
   )
 }

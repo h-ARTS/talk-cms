@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as appUiShowcaseRouteImport } from './routes/(app)/ui-showcase'
 import { Route as appBlocksIndexRouteImport } from './routes/(app)/blocks/index'
 import { Route as ApiInternalBlockBuilderRouteImport } from './routes/api/internal/block-builder'
 import { Route as ApiInternalBlockDefinitionsRouteImport } from './routes/api/internal/block-definitions'
@@ -23,6 +24,11 @@ import { Route as ApiContentV1PagesPageIdRouteImport } from './routes/api/conten
 const appIndexRoute = appIndexRouteImport.update({
   id: '/(app)/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appUiShowcaseRoute = appUiShowcaseRouteImport.update({
+  id: '/(app)/ui-showcase',
+  path: '/ui-showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appBlocksIndexRoute = appBlocksIndexRouteImport.update({
@@ -73,6 +79,7 @@ const ApiContentV1PagesPageIdRoute = ApiContentV1PagesPageIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/ui-showcase': typeof appUiShowcaseRoute
   '/': typeof appIndexRoute
   '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
   '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRoutesByTo {
+  '/ui-showcase': typeof appUiShowcaseRoute
   '/': typeof appIndexRoute
   '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
   '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(app)/ui-showcase': typeof appUiShowcaseRoute
   '/(app)/': typeof appIndexRoute
   '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
   '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
@@ -112,6 +121,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/ui-showcase'
     | '/'
     | '/api/internal/block-builder'
     | '/api/internal/block-definitions'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/api/content/v1/pages/$pageId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/ui-showcase'
     | '/'
     | '/api/internal/block-builder'
     | '/api/internal/block-definitions'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/api/content/v1/pages/$pageId'
   id:
     | '__root__'
+    | '/(app)/ui-showcase'
     | '/(app)/'
     | '/api/internal/block-builder'
     | '/api/internal/block-definitions'
@@ -149,6 +161,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  appUiShowcaseRoute: typeof appUiShowcaseRoute
   appIndexRoute: typeof appIndexRoute
   ApiInternalBlockBuilderRoute: typeof ApiInternalBlockBuilderRoute
   ApiInternalBlockDefinitionsRoute: typeof ApiInternalBlockDefinitionsRoute
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof appIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/ui-showcase': {
+      id: '/(app)/ui-showcase'
+      path: '/ui-showcase'
+      fullPath: '/ui-showcase'
+      preLoaderRoute: typeof appUiShowcaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/blocks/': {
@@ -237,6 +257,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  appUiShowcaseRoute: appUiShowcaseRoute,
   appIndexRoute: appIndexRoute,
   ApiInternalBlockBuilderRoute: ApiInternalBlockBuilderRoute,
   ApiInternalBlockDefinitionsRoute: ApiInternalBlockDefinitionsRoute,
