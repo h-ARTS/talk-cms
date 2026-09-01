@@ -1,20 +1,14 @@
 import React, { useEffect } from "react"
-// Mui
-import { Box, Typography, Tabs, Tab } from "@mui/material"
-import { useTheme } from "@mui/system"
-// Tabs
 import TabConfig from "./tabs/TabConfig"
 import BlockTree from "./tabs/BlockTree"
-// Redux
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "@/store/index"
 import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
 import Breadcrumb from "./Breadcrumb"
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs"
+
 const SidebarRight: React.FC = () => {
-  const [value, setValue] = React.useState(0)
-  const theme = useTheme()
-  const currentMode = theme.palette.mode
   const navigationHistory = useSelector(
     (state: RootState) => state.pageBuilder.navigationHistory
   )
@@ -41,40 +35,31 @@ const SidebarRight: React.FC = () => {
       ? navigationHistory[navigationHistory.length - 1]
       : null
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
-
   return (
-    <Box
-      sx={{
-        width: "100%",
-        backgroundColor: currentMode === "dark" ? "dark" : "white",
-      }}
-    >
-      <Typography
-        variant="h6"
-        component="div"
-        sx={{ textAlign: "center", py: 2 }}
-      >
-        Landingpage
-      </Typography>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="fullWidth"
-      >
-        <Tab label="Blocks" />
-        <Tab label="Config" />
+    <div className="flex h-full w-full flex-col bg-card">
+      <p className="border-b border-border py-3 text-center font-display text-sm font-semibold tracking-tight">
+        Landing page
+      </p>
+      <Tabs defaultValue="blocks" className="flex min-h-0 flex-1 flex-col">
+        <div className="border-b border-border px-2 pt-2">
+          <TabsList className="w-full">
+            <TabsTrigger value="blocks" className="flex-1">
+              Blocks
+            </TabsTrigger>
+            <TabsTrigger value="config" className="flex-1">
+              Config
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        {navigationHistory.length > 0 && <Breadcrumb />}
+        <TabsContent value="blocks" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+          <BlockTree parentId={currentView} onNavigate={handleNavigate} />
+        </TabsContent>
+        <TabsContent value="config" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+          <TabConfig />
+        </TabsContent>
       </Tabs>
-      {navigationHistory.length > 0 && <Breadcrumb />}
-      {value === 0 && (
-        <BlockTree parentId={currentView} onNavigate={handleNavigate} />
-      )}
-      {value === 1 && <TabConfig />}
-    </Box>
+    </div>
   )
 }
 

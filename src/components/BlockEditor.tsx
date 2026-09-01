@@ -1,5 +1,4 @@
 import React from "react"
-import { Box, Typography } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/index"
 import { setBlockContent } from "@/store/pageBuilderSlice"
@@ -18,16 +17,20 @@ const BlockEditor: React.FC = () => {
 
   if (!activeBlock) {
     return (
-      <Box sx={{ px: 3, my: 2 }}>
-        <Typography variant="subtitle2">Select a block to edit</Typography>
-      </Box>
+      <div className="px-4 py-3">
+        <p className="text-sm font-medium text-muted-foreground">Select a block to edit</p>
+      </div>
     )
   }
 
   const definition = registry.get(activeBlock.type)
 
   if (!block || !definition) {
-    return <div>Unsupported block type: {activeBlock.type}</div>
+    return (
+      <div className="px-4 py-3 text-sm text-destructive">
+        Unsupported block type: {activeBlock.type}
+      </div>
+    )
   }
 
   return (

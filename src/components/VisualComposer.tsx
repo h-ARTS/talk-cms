@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "@tanstack/react-router"
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"
-import { Alert, Box, Button, CircularProgress } from "@mui/material"
+import { ArrowLeftIcon } from "lucide-react"
 import { useDispatch } from "react-redux"
-import { useTheme } from "@mui/system"
 import { Group, Panel, Separator } from "react-resizable-panels"
 import ChatBox from "@/components/ChatBox"
 import FloatingChatButton from "@/components/FloatingChatButton"
@@ -13,6 +11,10 @@ import UrlAppBar from "@/components/UrlAppBar"
 import useTransformedBlocks from "@/hooks/useTransformedBlocks"
 import { loadPage } from "@/pages/client/page-api"
 import { loadSavedPage } from "@/store/pageBuilderSlice"
+
+import { Alert, AlertDescription, AlertTitle } from "@/ui/alert"
+import { Button } from "@/ui/button"
+import { Spinner } from "@/ui/spinner"
 
 const visualComposerUrlValue = import.meta.env.VITE_VISUAL_COMPOSER_URL?.trim()
 const visualComposerUrl =
@@ -25,7 +27,6 @@ const isSupportedPreviewUrl =
 export default function VisualComposer({ pageId }: { pageId?: string }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const theme = useTheme()
   const [isDragging, setIsDragging] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -72,29 +73,42 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   }, [postBlocks])
 
   if (loading) {
-    return <Box sx={{ minHeight: "100vh", display: "grid", placeItems: "center" }}><CircularProgress /></Box>
+    return (
+      <div className="grid min-h-screen place-items-center bg-background">
+        <Spinner size={32} />
+      </div>
+    )
   }
 
   if (error) {
     return (
-      <Box sx={{ maxWidth: 680, mx: "auto", py: 8, px: 3 }}>
-        <Button component={Link} to="/content/pages" startIcon={<ArrowBackIcon />} sx={{ mb: 3 }}>
-          Back to pages
+      <div className="mx-auto max-w-2xl px-6 py-14">
+        <Button variant="ghost" asChild className="mb-5">
+          <Link to="/content/pages">
+            <ArrowLeftIcon />
+            Back to pages
+          </Link>
         </Button>
-        <Alert severity="error">{error}</Alert>
-      </Box>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load page</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
     )
   }
 
   return (
     <>
-      <main style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <main className="flex min-h-screen flex-col bg-background">
         {pageId && (
-          <Box sx={{ px: 2, py: 1, borderBottom: 1, borderColor: "divider" }}>
-            <Button component={Link} to="/content/pages" startIcon={<ArrowBackIcon />}>
-              Back to pages
+          <div className="border-b border-border px-3 py-1.5">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/content/pages">
+                <ArrowLeftIcon />
+                Back to pages
+              </Link>
             </Button>
-          </Box>
+          </div>
         )}
         <TopAppBar
           pageId={pageId}
@@ -106,13 +120,20 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             })
           }}
         />
-        <div style={{ flexGrow: 1, display: "flex", height: pageId ? "calc(100vh - 113px)" : "calc(100vh - 64px)" }}>
-          <Group orientation="horizontal" onLayoutChanged={() => setIsDragging(false)} style={{ height: "100%", width: "100%" }}>
+        <div
+          className="flex flex-1"
+          style={{ height: pageId ? "calc(100vh - 113px)" : "calc(100vh - 56px)" }}
+        >
+          <Group
+            orientation="horizontal"
+            onLayoutChanged={() => setIsDragging(false)}
+            style={{ height: "100%", width: "100%" }}
+          >
             <Panel
               defaultSize="75%"
               minSize="300px"
+              className="bg-muted"
               style={{
-                backgroundColor: theme.palette.mode === "dark" ? "#292929" : "whitesmoke",
                 height: "100%",
                 overflow: "auto",
                 boxSizing: "border-box",
@@ -122,13 +143,32 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
               {isSupportedPreviewUrl && visualComposerUrl && (
                 <>
                   <UrlAppBar url={visualComposerUrl.origin} />
-                  <iframe ref={iframeRef} src={visualComposerUrl.href} onLoad={postBlocks} style={{ width: "100%", height: "calc(100% - 48px)", border: "none" }} title="Visual Composer" />
+                  <iframe
+                    ref={iframeRef}
+                    src={visualComposerUrl.href}
+                    onLoad={postBlocks}
+                    style={{ width: "100%", height: "calc(100% - 48px)", border: "none" }}
+                    title="Visual Composer"
+                  />
                 </>
               )}
-              {isDragging && <div data-testid="iframe-drag-overlay" style={{ position: "absolute", inset: 0, zIndex: 9999 }} />}
+              {isDragging && (
+                <div
+                  data-testid="iframe-drag-overlay"
+                  style={{ position: "absolute", inset: 0, zIndex: 9999 }}
+                />
+              )}
             </Panel>
-            <Separator className="resize-handle" onPointerDown={() => setIsDragging(true)} onPointerUp={() => setIsDragging(false)} onPointerCancel={() => setIsDragging(false)} />
-            <Panel minSize="300px" style={{ height: "100%", overflow: "auto", boxSizing: "border-box" }}>
+            <Separator
+              className="resize-handle"
+              onPointerDown={() => setIsDragging(true)}
+              onPointerUp={() => setIsDragging(false)}
+              onPointerCancel={() => setIsDragging(false)}
+            />
+            <Panel
+              minSize="300px"
+              style={{ height: "100%", overflow: "auto", boxSizing: "border-box" }}
+            >
               <RightSidebar />
             </Panel>
           </Group>
