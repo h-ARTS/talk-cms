@@ -1,5 +1,6 @@
 import React from "react"
-import { render, fireEvent } from "@testing-library/react"
+import { render } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { Provider } from "react-redux"
 import store from "@/store/index"
 import SidebarRight from "@/components/SidebarRight"
@@ -31,16 +32,19 @@ describe("SidebarRight", () => {
       </Provider>
     )
 
-  test("renders tabs and switches between them", () => {
-    const { getByText, queryByText } = renderSidebarRight()
+  test("renders tabs and switches between them", async () => {
+    const user = userEvent.setup()
+    const { getByRole, findByText } = renderSidebarRight()
 
-    // Check initial tab state
-    expect(getByText("Blocks")).toBeInTheDocument()
-    expect(getByText("Config")).toBeInTheDocument()
-    expect(queryByText("Config content goes here.")).not.toBeInTheDocument()
+    const blocksTab = getByRole("tab", { name: "Blocks" })
+    const configTab = getByRole("tab", { name: "Config" })
+    expect(blocksTab).toHaveAttribute("data-state", "active")
+    expect(configTab).toHaveAttribute("data-state", "inactive")
 
     // Switch to Config tab
-    fireEvent.click(getByText("Config"))
-    expect(queryByText("Config content goes here.")).toBeInTheDocument()
+    await user.click(configTab)
+    expect(configTab).toHaveAttribute("data-state", "active")
+    expect(blocksTab).toHaveAttribute("data-state", "inactive")
+    expect(await findByText("Config content goes here.")).toBeInTheDocument()
   })
 })
