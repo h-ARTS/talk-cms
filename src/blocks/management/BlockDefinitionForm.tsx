@@ -1,27 +1,27 @@
 import { useState } from "react"
-import AddIcon from "@mui/icons-material/Add"
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined"
-import {
-  Alert,
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { PlusIcon, Trash2Icon } from "lucide-react"
+
 import {
   parseBlockDescriptor,
   type BlockDescriptor,
   type FieldDescriptor,
 } from "../core/descriptor"
+
+import { Alert, AlertDescription, AlertTitle } from "@/ui/alert"
+import { Button } from "@/ui/button"
+import { Card, CardContent } from "@/ui/card"
+import { Input } from "@/ui/input"
+import { Label } from "@/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select"
+import { Separator } from "@/ui/separator"
+import { Switch } from "@/ui/switch"
+import { Textarea } from "@/ui/textarea"
 
 type BlockDefinitionFormProps = {
   definition: BlockDescriptor | null
@@ -50,6 +50,15 @@ const emptyField = (): FieldDraft => ({
   min: "",
   max: "",
 })
+
+const fieldTypeOptions: { value: FieldDescriptor["type"]; label: string }[] = [
+  { value: "text", label: "Short text" },
+  { value: "textarea", label: "Long text" },
+  { value: "url", label: "URL" },
+  { value: "color", label: "Color" },
+  { value: "number", label: "Number" },
+  { value: "boolean", label: "Toggle" },
+]
 
 export default function BlockDefinitionForm({
   definition,
@@ -113,235 +122,294 @@ export default function BlockDefinitionForm({
     }
   }
 
+  const toggleAllowedChild = (childName: string) => {
+    setAllowedChildren((current) =>
+      current.includes(childName)
+        ? current.filter((c) => c !== childName)
+        : [...current, childName]
+    )
+  }
+
   return (
-    <Paper elevation={0} sx={{ border: 1, borderColor: "divider", borderRadius: 3 }}>
-      <Box sx={{ p: { xs: 2.5, md: 4 } }}>
-        <Typography variant="overline" color="primary.main">
+    <Card>
+      <CardContent className="p-6 md:p-8">
+        <p className="text-xs font-medium uppercase tracking-widest text-primary">
           {definition ? "Edit definition" : "New definition"}
-        </Typography>
-        <Typography variant="h4" sx={{ mt: 0.5, mb: 1 }}>
+        </p>
+        <h2 className="mt-1 font-display text-2xl font-bold tracking-tight">
           {definition ? definition.metadata.label : "Create a content block"}
-        </Typography>
-        <Typography color="text.secondary" sx={{ mb: 4 }}>
+        </h2>
+        <p className="mb-6 mt-2 text-sm text-muted-foreground">
           Describe the fields your marketing team will fill in when composing a page.
-        </Typography>
+        </p>
 
-        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+        {error && (
+          <Alert variant="destructive" className="mb-5">
+            <AlertTitle>Invalid definition</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <Stack spacing={2.5}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <TextField
-              fullWidth
-              required
-              label="Technical name"
-              value={name}
-              disabled={Boolean(definition)}
-              helperText="Stable identifier, for example HeroBanner"
-              onChange={(event) => setName(event.target.value)}
-              slotProps={{ htmlInput: { "data-testid": "block-name" } }}
+        <div className="flex flex-col gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-1.5">
+              <Label htmlFor="block-name">
+                Technical name <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="block-name"
+                required
+                value={name}
+                disabled={Boolean(definition)}
+                onChange={(e) => setName(e.target.value)}
+                data-testid="block-name"
+              />
+              <p className="text-xs text-muted-foreground">
+                Stable identifier, for example HeroBanner
+              </p>
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="block-label">
+                Display name <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="block-label"
+                required
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                data-testid="block-label"
+              />
+            </div>
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="block-desc">Description</Label>
+            <Textarea
+              id="block-desc"
+              rows={2}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
-            <TextField
-              fullWidth
-              required
-              label="Display name"
-              value={label}
-              onChange={(event) => setLabel(event.target.value)}
-              slotProps={{ htmlInput: { "data-testid": "block-label" } }}
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="block-category">Category</Label>
+            <Input
+              id="block-category"
+              placeholder="Campaign, Editorial, Layout..."
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
             />
-          </Stack>
-          <TextField
-            fullWidth
-            multiline
-            minRows={2}
-            label="Description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Category"
-            placeholder="Campaign, Editorial, Layout..."
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-          />
-        </Stack>
+          </div>
+        </div>
 
-        <Divider sx={{ my: 4 }} />
-        <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-          <Box>
-            <Typography variant="h6">Content fields</Typography>
-            <Typography variant="body2" color="text.secondary">
+        <Separator className="my-7" />
+
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h3 className="font-display text-base font-semibold">Content fields</h3>
+            <p className="text-sm text-muted-foreground">
               These become the inputs shown in the visual editor.
-            </Typography>
-          </Box>
+            </p>
+          </div>
           <Button
-            startIcon={<AddIcon />}
+            variant="outline"
+            size="sm"
             onClick={() => setFields((current) => [...current, emptyField()])}
             data-testid="add-field"
           >
+            <PlusIcon />
             Add field
           </Button>
-        </Stack>
+        </div>
 
-        <Stack spacing={2}>
+        <div className="flex flex-col gap-3">
           {fields.map((field, index) => (
-            <Paper
+            <div
               key={index}
-              variant="outlined"
-              sx={{ p: 2.5, borderRadius: 2, bgcolor: "action.hover" }}
+              className="rounded-lg border border-border bg-muted/40 p-4"
             >
-              <Stack spacing={2}>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <TextField
-                    required
-                    fullWidth
-                    label="Field key"
-                    value={field.key}
-                    onChange={(event) => updateField(index, { key: event.target.value }, setFields)}
-                    slotProps={{ htmlInput: { "data-testid": `field-key-${index}` } }}
-                  />
-                  <TextField
-                    required
-                    fullWidth
-                    label="Field label"
-                    value={field.label}
-                    onChange={(event) => updateField(index, { label: event.target.value }, setFields)}
-                    slotProps={{ htmlInput: { "data-testid": `field-label-${index}` } }}
-                  />
-                  <FormControl fullWidth>
-                    <InputLabel>Input type</InputLabel>
+              <div className="flex flex-col gap-4">
+                <div className="grid gap-4 sm:grid-cols-[1fr_1fr_auto_auto]">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor={`field-key-${index}`}>
+                      Field key <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id={`field-key-${index}`}
+                      required
+                      value={field.key}
+                      onChange={(e) => updateField(index, { key: e.target.value }, setFields)}
+                      data-testid={`field-key-${index}`}
+                    />
+                  </div>
+                  <div className="grid gap-1.5">
+                    <Label htmlFor={`field-label-${index}`}>
+                      Field label <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id={`field-label-${index}`}
+                      required
+                      value={field.label}
+                      onChange={(e) => updateField(index, { label: e.target.value }, setFields)}
+                      data-testid={`field-label-${index}`}
+                    />
+                  </div>
+                  <div className="grid gap-1.5">
+                    <Label>Input type</Label>
                     <Select
-                      label="Input type"
                       value={field.type}
-                      onChange={(event) =>
+                      onValueChange={(value) =>
                         updateField(
                           index,
                           {
-                            type: event.target.value as FieldDescriptor["type"],
-                            defaultValue: event.target.value === "boolean" ? false : "",
+                            type: value as FieldDescriptor["type"],
+                            defaultValue: value === "boolean" ? false : "",
                           },
                           setFields
                         )
                       }
-                      inputProps={{ "data-testid": `field-type-${index}` }}
                     >
-                      <MenuItem value="text">Short text</MenuItem>
-                      <MenuItem value="textarea">Long text</MenuItem>
-                      <MenuItem value="url">URL</MenuItem>
-                      <MenuItem value="color">Color</MenuItem>
-                      <MenuItem value="number">Number</MenuItem>
-                      <MenuItem value="boolean">Toggle</MenuItem>
+                      <SelectTrigger data-testid={`field-type-${index}`} className="w-full min-w-[130px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fieldTypeOptions.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
-                  </FormControl>
-                  <Button
-                    color="error"
-                    aria-label={`Remove field ${index + 1}`}
-                    onClick={() => setFields((current) => current.filter((_, itemIndex) => itemIndex !== index))}
-                  >
-                    <DeleteOutlineIcon />
-                  </Button>
-                </Stack>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      type="button"
+                      aria-label={`Remove field ${index + 1}`}
+                      onClick={() =>
+                        setFields((current) => current.filter((_, i) => i !== index))
+                      }
+                      className="inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors duration-200 hover:bg-destructive/10 hover:text-destructive focus-visible:outline-2 focus-visible:outline-ring [&_svg]:size-4"
+                    >
+                      <Trash2Icon />
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
                   {field.type === "boolean" ? (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={field.defaultValue === true}
-                          onChange={(event) =>
-                            updateField(index, { defaultValue: event.target.checked }, setFields)
-                          }
-                        />
-                      }
-                      label="Enabled by default"
-                    />
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        id={`field-default-${index}`}
+                        checked={field.defaultValue === true}
+                        onCheckedChange={(checked) =>
+                          updateField(index, { defaultValue: checked }, setFields)
+                        }
+                      />
+                      <Label htmlFor={`field-default-${index}`} className="cursor-pointer">
+                        Enabled by default
+                      </Label>
+                    </div>
                   ) : (
-                    <TextField
-                      fullWidth
-                      label="Default value"
-                      type={field.type === "number" ? "number" : "text"}
-                      value={field.defaultValue}
-                      onChange={(event) =>
-                        updateField(index, { defaultValue: event.target.value }, setFields)
-                      }
-                      slotProps={{ htmlInput: { "data-testid": `field-default-${index}` } }}
-                    />
+                    <div className="grid gap-1.5">
+                      <Label htmlFor={`field-default-${index}`}>Default value</Label>
+                      <Input
+                        id={`field-default-${index}`}
+                        type={field.type === "number" ? "number" : "text"}
+                        value={String(field.defaultValue)}
+                        onChange={(e) =>
+                          updateField(index, { defaultValue: e.target.value }, setFields)
+                        }
+                        data-testid={`field-default-${index}`}
+                      />
+                    </div>
                   )}
                   {field.type === "number" && (
                     <>
-                      <TextField
-                        label="Minimum"
-                        type="number"
-                        value={field.min}
-                        onChange={(event) => updateField(index, { min: event.target.value }, setFields)}
-                      />
-                      <TextField
-                        label="Maximum"
-                        type="number"
-                        value={field.max}
-                        onChange={(event) => updateField(index, { max: event.target.value }, setFields)}
-                      />
+                      <div className="grid gap-1.5">
+                        <Label htmlFor={`field-min-${index}`}>Minimum</Label>
+                        <Input
+                          id={`field-min-${index}`}
+                          type="number"
+                          value={field.min}
+                          onChange={(e) => updateField(index, { min: e.target.value }, setFields)}
+                        />
+                      </div>
+                      <div className="grid gap-1.5">
+                        <Label htmlFor={`field-max-${index}`}>Maximum</Label>
+                        <Input
+                          id={`field-max-${index}`}
+                          type="number"
+                          value={field.max}
+                          onChange={(e) => updateField(index, { max: e.target.value }, setFields)}
+                        />
+                      </div>
                     </>
                   )}
-                </Stack>
-              </Stack>
-            </Paper>
+                </div>
+              </div>
+            </div>
           ))}
-        </Stack>
+        </div>
 
-        <Divider sx={{ my: 4 }} />
-        <Typography variant="h6" sx={{ mb: 2 }}>Nested blocks</Typography>
-        <FormControl fullWidth>
-          <InputLabel>Allowed children</InputLabel>
+        <Separator className="my-7" />
+
+        <h3 className="mb-3 font-display text-base font-semibold">Nested blocks</h3>
+        <div className="grid gap-1.5">
+          <Label>Allowed children</Label>
           <Select
             value={childMode}
-            label="Allowed children"
-            onChange={(event) => setChildMode(event.target.value as typeof childMode)}
+            onValueChange={(value) => setChildMode(value as typeof childMode)}
           >
-            <MenuItem value="none">No nested blocks</MenuItem>
-            <MenuItem value="any">Any defined block</MenuItem>
-            <MenuItem value="specific">Specific blocks</MenuItem>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No nested blocks</SelectItem>
+              <SelectItem value="any">Any defined block</SelectItem>
+              <SelectItem value="specific">Specific blocks</SelectItem>
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
+
         {childMode === "specific" && (
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>Block types</InputLabel>
-            <Select
-              multiple
-              value={allowedChildren}
-              label="Block types"
-              onChange={(event) =>
-                setAllowedChildren(
-                  typeof event.target.value === "string"
-                    ? event.target.value.split(",")
-                    : event.target.value
-                )
-              }
-            >
+          <div className="mt-4 grid gap-2">
+            <Label>Block types</Label>
+            <div className="flex flex-col gap-1 rounded-lg border border-border p-3">
               {availableBlocks
                 .filter((candidate) => candidate.name !== definition?.name)
                 .map((candidate) => (
-                  <MenuItem key={candidate.name} value={candidate.name}>
+                  <label
+                    key={candidate.name}
+                    className="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors duration-150 hover:bg-accent"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={allowedChildren.includes(candidate.name)}
+                      onChange={() => toggleAllowedChild(candidate.name)}
+                      className="size-4 cursor-pointer accent-[#22c55e]"
+                    />
                     {candidate.metadata.label}
-                  </MenuItem>
+                  </label>
                 ))}
-            </Select>
-          </FormControl>
+            </div>
+          </div>
         )}
 
-        <Stack direction="row" spacing={1.5} sx={{ justifyContent: "flex-end", mt: 4 }}>
-          {definition && <Button onClick={onCancel}>Cancel</Button>}
+        <div className="mt-8 flex justify-end gap-2">
+          {definition && (
+            <Button variant="ghost" onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
           <Button
-            variant="contained"
-            size="large"
+            size="lg"
             disabled={saving}
             onClick={() => void submit()}
             data-testid="save-block-definition"
           >
             {saving ? "Saving..." : definition ? "Save changes" : "Create block"}
           </Button>
-        </Stack>
-      </Box>
-    </Paper>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
