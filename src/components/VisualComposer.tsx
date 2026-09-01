@@ -99,7 +99,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
 
   return (
     <>
-      <main className="flex min-h-screen flex-col bg-background">
+      <main className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
         {pageId && (
           <div className="border-b border-border px-3 py-1.5">
             <Button variant="ghost" size="sm" asChild>
@@ -120,14 +120,11 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             })
           }}
         />
-        <div
-          className="flex flex-1"
-          style={{ height: pageId ? "calc(100vh - 113px)" : "calc(100vh - 56px)" }}
-        >
+        <div className="flex min-h-0 flex-1">
           <Group
             orientation="horizontal"
             onLayoutChanged={() => setIsDragging(false)}
-            style={{ height: "100%", width: "100%" }}
+            className="h-full min-h-0 w-full"
           >
             <Panel
               defaultSize="75%"

@@ -13,7 +13,7 @@ import { Button } from "@/ui/button"
 import { Switch } from "@/ui/switch"
 import { Label } from "@/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/ui/tooltip"
-import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar"
+import { Avatar, AvatarFallback } from "@/ui/avatar"
 import { Toaster, type ToastItem } from "@/ui/toast"
 
 type TopAppBarProps = {
@@ -84,7 +84,6 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Avatar>
-              <AvatarImage src="/path/to/avatar/image" alt="User Avatar" />
               <AvatarFallback>TC</AvatarFallback>
             </Avatar>
           </TooltipTrigger>
