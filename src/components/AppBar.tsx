@@ -22,6 +22,8 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
   const blocks = usePageBuilderStore((state) => state.blocks)
   const pageName = usePageBuilderStore((state) => state.pageName)
   const mode = useThemeStore((state) => state.mode)
+  const settingsLoaded = useThemeStore((state) => state.settingsLoaded)
+  const themeSaving = useThemeStore((state) => state.themeSaving)
   const toggleThemeMode = useThemeStore((state) => state.toggleThemeMode)
 
   const pushToast = (variant: ToastItem["variant"], title: string) => {
@@ -74,6 +76,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
             id="dark-mode-toggle"
             checked={mode === "dark"}
             onCheckedChange={toggleThemeMode}
+            disabled={!settingsLoaded || themeSaving}
             aria-label="Toggle dark mode"
           />
           <Label

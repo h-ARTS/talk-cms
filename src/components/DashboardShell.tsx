@@ -4,6 +4,7 @@ import {
   FileTextIcon,
   BlocksIcon,
   MenuIcon,
+  SettingsIcon,
   XIcon,
 } from "lucide-react"
 import { useRouterState } from "@tanstack/react-router"
@@ -13,6 +14,7 @@ const navigation = [
   { label: "Dashboard", to: "/", icon: LayoutDashboardIcon },
   { label: "Pages", to: "/content/pages", icon: FileTextIcon },
   { label: "Block definitions", to: "/blocks", icon: BlocksIcon },
+  { label: "Settings", to: "/settings", icon: SettingsIcon },
 ] as const
 
 function NavigationContent({

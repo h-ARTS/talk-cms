@@ -19,6 +19,19 @@ const blockDefinitions = [
 ]
 
 test.beforeEach(async ({ page }) => {
+  await page.route("**/api/internal/settings", async (route) => {
+    if (route.request().method() === "PATCH") {
+      await route.fulfill({ json: route.request().postDataJSON() })
+      return
+    }
+    await route.fulfill({
+      json: {
+        themeMode: "dark",
+        visualComposerUrl: "http://localhost:3001?editMode=true",
+        updatedAt: null,
+      },
+    })
+  })
   await page.route("**/api/internal/block-definitions", async (route) => {
     if (route.request().method() === "GET") {
       await route.fulfill({ json: blockDefinitions })

@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as appSettingsRouteImport } from './routes/(app)/settings'
 import { Route as appUiShowcaseRouteImport } from './routes/(app)/ui-showcase'
 import { Route as appBlocksIndexRouteImport } from './routes/(app)/blocks/index'
 import { Route as ApiInternalBlockBuilderRouteImport } from './routes/api/internal/block-builder'
 import { Route as ApiInternalBlockDefinitionsRouteImport } from './routes/api/internal/block-definitions'
 import { Route as ApiInternalHelloRouteImport } from './routes/api/internal/hello'
 import { Route as ApiInternalPagesRouteImport } from './routes/api/internal/pages'
+import { Route as ApiInternalSettingsRouteImport } from './routes/api/internal/settings'
 import { Route as appContentPagesIndexRouteImport } from './routes/(app)/content/pages/index'
 import { Route as appContentPagesPageIdRouteImport } from './routes/(app)/content/pages/$pageId'
 import { Route as appContentPagesNewRouteImport } from './routes/(app)/content/pages/new'
@@ -24,6 +26,11 @@ import { Route as ApiContentV1PagesPageIdRouteImport } from './routes/api/conten
 const appIndexRoute = appIndexRouteImport.update({
   id: '/(app)/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appSettingsRoute = appSettingsRouteImport.update({
+  id: '/(app)/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appUiShowcaseRoute = appUiShowcaseRouteImport.update({
@@ -57,6 +64,11 @@ const ApiInternalPagesRoute = ApiInternalPagesRouteImport.update({
   path: '/api/internal/pages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiInternalSettingsRoute = ApiInternalSettingsRouteImport.update({
+  id: '/api/internal/settings',
+  path: '/api/internal/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const appContentPagesIndexRoute = appContentPagesIndexRouteImport.update({
   id: '/(app)/content/pages/',
   path: '/content/pages/',
@@ -79,12 +91,14 @@ const ApiContentV1PagesPageIdRoute = ApiContentV1PagesPageIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/settings': typeof appSettingsRoute
   '/ui-showcase': typeof appUiShowcaseRoute
   '/': typeof appIndexRoute
   '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
   '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
   '/api/internal/hello': typeof ApiInternalHelloRoute
   '/api/internal/pages': typeof ApiInternalPagesRoute
+  '/api/internal/settings': typeof ApiInternalSettingsRoute
   '/blocks/': typeof appBlocksIndexRoute
   '/content/pages/$pageId': typeof appContentPagesPageIdRoute
   '/content/pages/new': typeof appContentPagesNewRoute
@@ -92,12 +106,14 @@ export interface FileRoutesByFullPath {
   '/api/content/v1/pages/$pageId': typeof ApiContentV1PagesPageIdRoute
 }
 export interface FileRoutesByTo {
+  '/settings': typeof appSettingsRoute
   '/ui-showcase': typeof appUiShowcaseRoute
   '/': typeof appIndexRoute
   '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
   '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
   '/api/internal/hello': typeof ApiInternalHelloRoute
   '/api/internal/pages': typeof ApiInternalPagesRoute
+  '/api/internal/settings': typeof ApiInternalSettingsRoute
   '/blocks': typeof appBlocksIndexRoute
   '/content/pages/$pageId': typeof appContentPagesPageIdRoute
   '/content/pages/new': typeof appContentPagesNewRoute
@@ -106,12 +122,14 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(app)/settings': typeof appSettingsRoute
   '/(app)/ui-showcase': typeof appUiShowcaseRoute
   '/(app)/': typeof appIndexRoute
   '/api/internal/block-builder': typeof ApiInternalBlockBuilderRoute
   '/api/internal/block-definitions': typeof ApiInternalBlockDefinitionsRoute
   '/api/internal/hello': typeof ApiInternalHelloRoute
   '/api/internal/pages': typeof ApiInternalPagesRoute
+  '/api/internal/settings': typeof ApiInternalSettingsRoute
   '/(app)/blocks/': typeof appBlocksIndexRoute
   '/(app)/content/pages/$pageId': typeof appContentPagesPageIdRoute
   '/(app)/content/pages/new': typeof appContentPagesNewRoute
@@ -121,12 +139,14 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/settings'
     | '/ui-showcase'
     | '/'
     | '/api/internal/block-builder'
     | '/api/internal/block-definitions'
     | '/api/internal/hello'
     | '/api/internal/pages'
+    | '/api/internal/settings'
     | '/blocks/'
     | '/content/pages/$pageId'
     | '/content/pages/new'
@@ -134,12 +154,14 @@ export interface FileRouteTypes {
     | '/api/content/v1/pages/$pageId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/settings'
     | '/ui-showcase'
     | '/'
     | '/api/internal/block-builder'
     | '/api/internal/block-definitions'
     | '/api/internal/hello'
     | '/api/internal/pages'
+    | '/api/internal/settings'
     | '/blocks'
     | '/content/pages/$pageId'
     | '/content/pages/new'
@@ -147,12 +169,14 @@ export interface FileRouteTypes {
     | '/api/content/v1/pages/$pageId'
   id:
     | '__root__'
+    | '/(app)/settings'
     | '/(app)/ui-showcase'
     | '/(app)/'
     | '/api/internal/block-builder'
     | '/api/internal/block-definitions'
     | '/api/internal/hello'
     | '/api/internal/pages'
+    | '/api/internal/settings'
     | '/(app)/blocks/'
     | '/(app)/content/pages/$pageId'
     | '/(app)/content/pages/new'
@@ -161,12 +185,14 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  appSettingsRoute: typeof appSettingsRoute
   appUiShowcaseRoute: typeof appUiShowcaseRoute
   appIndexRoute: typeof appIndexRoute
   ApiInternalBlockBuilderRoute: typeof ApiInternalBlockBuilderRoute
   ApiInternalBlockDefinitionsRoute: typeof ApiInternalBlockDefinitionsRoute
   ApiInternalHelloRoute: typeof ApiInternalHelloRoute
   ApiInternalPagesRoute: typeof ApiInternalPagesRoute
+  ApiInternalSettingsRoute: typeof ApiInternalSettingsRoute
   appBlocksIndexRoute: typeof appBlocksIndexRoute
   appContentPagesPageIdRoute: typeof appContentPagesPageIdRoute
   appContentPagesNewRoute: typeof appContentPagesNewRoute
@@ -181,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof appIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/settings': {
+      id: '/(app)/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof appSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/ui-showcase': {
@@ -225,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiInternalPagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/internal/settings': {
+      id: '/api/internal/settings'
+      path: '/api/internal/settings'
+      fullPath: '/api/internal/settings'
+      preLoaderRoute: typeof ApiInternalSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(app)/content/pages/': {
       id: '/(app)/content/pages/'
       path: '/content/pages'
@@ -257,12 +297,14 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  appSettingsRoute: appSettingsRoute,
   appUiShowcaseRoute: appUiShowcaseRoute,
   appIndexRoute: appIndexRoute,
   ApiInternalBlockBuilderRoute: ApiInternalBlockBuilderRoute,
   ApiInternalBlockDefinitionsRoute: ApiInternalBlockDefinitionsRoute,
   ApiInternalHelloRoute: ApiInternalHelloRoute,
   ApiInternalPagesRoute: ApiInternalPagesRoute,
+  ApiInternalSettingsRoute: ApiInternalSettingsRoute,
   appBlocksIndexRoute: appBlocksIndexRoute,
   appContentPagesPageIdRoute: appContentPagesPageIdRoute,
   appContentPagesNewRoute: appContentPagesNewRoute,

@@ -21,6 +21,7 @@
       "@/store/*": ["./src/store/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/pages/*": ["./src/pages/*"],
+      "@/settings/*": ["./src/settings/*"],
       "@/styles/*": ["./src/styles/*"],
       "@/types/*": ["./types/*"]
     },

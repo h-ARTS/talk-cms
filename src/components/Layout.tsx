@@ -8,6 +8,13 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const themeMode = useThemeStore((state) => state.mode)
+  const loadSettings = useThemeStore((state) => state.loadSettings)
+
+  useEffect(() => {
+    void loadSettings().catch((error: unknown) => {
+      console.error("Failed to hydrate account settings:", error)
+    })
+  }, [loadSettings])
 
   useEffect(() => {
     const root = document.documentElement

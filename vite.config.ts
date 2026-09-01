@@ -23,6 +23,7 @@ export default defineConfig({
       "@/store": r("./src/store"),
       "@/hooks": r("./src/hooks"),
       "@/pages": r("./src/pages"),
+      "@/settings": r("./src/settings"),
       "@/styles": r("./src/styles"),
       "@/types": r("./types"),
     },
