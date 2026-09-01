@@ -9,35 +9,36 @@ import RightSidebar from "@/components/SidebarRight"
 import UrlAppBar from "@/components/UrlAppBar"
 import useTransformedBlocks from "@/hooks/useTransformedBlocks"
 import { loadPage } from "@/pages/client/page-api"
-import { usePageBuilderStore } from "@/store/index"
+import { usePageBuilderStore, useThemeStore } from "@/store/index"
 
 import { Alert, AlertDescription, AlertTitle } from "@/ui/alert"
 import { Button } from "@/ui/button"
 import { Spinner } from "@/ui/spinner"
 
-const visualComposerUrlValue = import.meta.env.VITE_VISUAL_COMPOSER_URL?.trim()
-const visualComposerUrl =
-  visualComposerUrlValue && URL.canParse(visualComposerUrlValue)
-    ? new URL(visualComposerUrlValue)
-    : null
-const isSupportedPreviewUrl =
-  visualComposerUrl?.protocol === "http:" || visualComposerUrl?.protocol === "https:"
+const fallbackVisualComposerUrl = import.meta.env.VITE_VISUAL_COMPOSER_URL?.trim() || null
 
 export default function VisualComposer({ pageId }: { pageId?: string }) {
   const navigate = useNavigate()
   const loadSavedPage = usePageBuilderStore((state) => state.loadSavedPage)
+  const configuredVisualComposerUrl = useThemeStore(
+    (state) => state.visualComposerUrl
+  )
+  const settingsLoaded = useThemeStore((state) => state.settingsLoaded)
   const [isDragging, setIsDragging] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const blocks = useTransformedBlocks()
+  const visualComposerUrl = readVisualComposerUrl(
+    settingsLoaded ? configuredVisualComposerUrl : fallbackVisualComposerUrl
+  )
 
   const postBlocks = useCallback(() => {
-    if (isSupportedPreviewUrl && visualComposerUrl && iframeRef.current?.contentWindow) {
+    if (visualComposerUrl && iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage(blocks, visualComposerUrl.origin)
     }
-  }, [blocks])
+  }, [blocks, visualComposerUrl])
 
   useEffect(() => {
     let active = true
@@ -139,7 +140,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
                 position: "relative",
               }}
             >
-              {isSupportedPreviewUrl && visualComposerUrl && (
+              {visualComposerUrl && (
                 <>
                   <UrlAppBar url={visualComposerUrl.origin} />
                   <iframe
@@ -177,4 +178,10 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
       {chatOpen && <ChatBox chatOpen={chatOpen} onChatOpen={setChatOpen} />}
     </>
   )
+}
+
+function readVisualComposerUrl(value: string | null): URL | null {
+  if (!value || !URL.canParse(value)) return null
+  const url = new URL(value)
+  return url.protocol === "http:" || url.protocol === "https:" ? url : null
 }
