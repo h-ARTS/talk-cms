@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test"
 
 const port = process.env.PLAYWRIGHT_PORT ?? "3000"
+const webServerCommand = process.env.PLAYWRIGHT_PRODUCTION
+  ? `${process.env.PLAYWRIGHT_SKIP_BUILD ? "" : "pnpm build && "}PORT=${port} node .output/server/index.mjs`
+  : `pnpm dev --port ${port}`
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -18,7 +21,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm dev --port ${port}`,
+    command: webServerCommand,
     env: {
       VITE_VISUAL_COMPOSER_URL: "http://localhost:3001?editMode=true",
       BLOCK_DEFINITIONS_FILE:

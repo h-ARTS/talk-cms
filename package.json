@@ -9,12 +9,12 @@
     "pnpm": ">=11.1.2 <12"
   },
   "scripts": {
-    "dev": "vite --port 3000",
+    "dev": "vite",
     "build": "vite build",
     "start": "pnpm build && node .output/server/index.mjs",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:mongodb": "MONGODB_INTEGRATION_TEST=true vitest run tests/pages/mongodb-page-repository.integration.test.ts",
+    "test:mongodb": "MONGODB_INTEGRATION_TEST=true vitest run tests/pages/mongodb-page-repository.integration.test.ts tests/settings/mongodb-account-settings-repository.integration.test.ts",
     "test:e2e": "playwright test",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
