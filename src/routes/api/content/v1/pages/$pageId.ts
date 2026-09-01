@@ -7,6 +7,8 @@ type PageGetDependencies = {
   reader: PageReader
 }
 
+const CORS_HEADERS = { "Access-Control-Allow-Origin": "*" }
+
 export const Route = createFileRoute("/api/content/v1/pages/$pageId")({
   server: {
     handlers: {
@@ -20,21 +22,30 @@ export function createPageGetHandler(dependencies?: PageGetDependencies) {
     try {
       const pageId = parsePageSlug(pageIdOrSlug)
       if (!pageId) {
-        return Response.json({ error: "Page not found" }, { status: 404 })
+        return Response.json(
+          { error: "Page not found" },
+          { status: 404, headers: CORS_HEADERS }
+        )
       }
 
       // Saved pages remain readable until publish-state gating is introduced.
       const page = await (dependencies?.reader ?? getPageReader()).findById(pageId)
       if (!page) {
-        return Response.json({ error: "Page not found" }, { status: 404 })
+        return Response.json(
+          { error: "Page not found" },
+          { status: 404, headers: CORS_HEADERS }
+        )
       }
 
-      return Response.json({ ...page, slug: createPageSlug(page) })
+      return Response.json(
+        { ...page, slug: createPageSlug(page) },
+        { headers: CORS_HEADERS }
+      )
     } catch (error) {
       console.error("Failed to load page:", error)
       return Response.json(
         { error: "The page could not be loaded." },
-        { status: 500 }
+        { status: 500, headers: CORS_HEADERS }
       )
     }
   }
