@@ -29,6 +29,8 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
     (state) => state.setNavigationHistory
   )
   const mode = useThemeStore((state) => state.mode)
+  const settingsLoaded = useThemeStore((state) => state.settingsLoaded)
+  const themeSaving = useThemeStore((state) => state.themeSaving)
   const toggleThemeMode = useThemeStore((state) => state.toggleThemeMode)
 
   const pushToast = (variant: ToastItem["variant"], title: string) => {
@@ -99,6 +101,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
             id="dark-mode-toggle"
             checked={mode === "dark"}
             onCheckedChange={toggleThemeMode}
+            disabled={!settingsLoaded || themeSaving}
             aria-label="Toggle dark mode"
           />
           <Label htmlFor="dark-mode-toggle" className="hidden cursor-pointer items-center gap-1 text-xs text-muted-foreground lg:flex">
