@@ -44,6 +44,7 @@ pnpm install
 
 ```dotenv
 VITE_VISUAL_COMPOSER_URL=https://your-preview-site.example?editMode=true
+TALK_CMS_ACCOUNT_EMAIL=admin@talk.local
 OPENAI_API_KEY=your_openai_api_key
 OPENAI_ORG_ID=your_optional_openai_organization_id
 UNSPLASH_ACCESS_KEY=your_unsplash_access_key
@@ -51,8 +52,12 @@ MONGODB_URI=mongodb://talk-app:talk-app-local-only@localhost:27017/talk_cms?auth
 MONGODB_DATABASE=talk_cms
 ```
 
-`VITE_VISUAL_COMPOSER_URL` controls the site shown in the visual-composer iframe.
-When it is omitted or invalid, the preview area remains empty. The OpenAI and
+The Settings page stores the preferred visual-composer URL and appearance in the
+configured account's `settings` object in MongoDB's `user-accounts` collection.
+Until IAM supplies a signed-in account, `TALK_CMS_ACCOUNT_EMAIL` selects that
+account; development defaults to `admin@talk.local`, while production requires
+the variable. `VITE_VISUAL_COMPOSER_URL` is used only while account settings are
+loading; after hydration, a saved empty URL intentionally leaves the preview area empty. The OpenAI and
 Unsplash values are only used by `/api/internal/block-builder`. MongoDB is
 used independently by `POST /api/internal/pages` when the editor's Save action runs.
 Copy `.env.example` to `.env.local` for the complete local configuration.
@@ -135,6 +140,7 @@ the browser-facing URLs unchanged:
 - `/content/pages` lists saved pages.
 - `/content/pages/:pageId` opens a saved page in the visual composer.
 - `/content/pages/new` opens an empty page in the visual composer.
+- `/settings` manages account appearance and visual-composer configuration.
 
 ### Internal Backend API
 
@@ -144,6 +150,7 @@ It may change together with the editor without public compatibility guarantees:
 - `GET`, `POST`, `PUT`, and `DELETE /api/internal/block-definitions` manage block definitions.
 - `POST /api/internal/block-builder` generates validated, flattened page blocks.
 - `GET`, `POST`, `PUT`, and `DELETE /api/internal/pages` list, create, update, and remove pages.
+- `GET`, `PATCH`, and `PUT /api/internal/settings` load and update account settings.
 - `GET /api/internal/hello` returns `{ "name": "John Doe" }`.
 
 ### Public Content API
