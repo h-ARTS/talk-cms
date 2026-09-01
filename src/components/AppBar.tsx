@@ -1,6 +1,13 @@
 import React, { useState } from "react"
 import { Link } from "@tanstack/react-router"
-import { BlocksIcon, MoonIcon, SunIcon } from "lucide-react"
+import {
+  ArrowLeftIcon,
+  BlocksIcon,
+  MessageSquareIcon,
+  MoonIcon,
+  PanelLeftCloseIcon,
+  SunIcon,
+} from "lucide-react"
 import { usePageBuilderStore, useThemeStore } from "@/store/index"
 import { savePage, updatePage, type SavedPage } from "@/pages/client/page-api"
 
@@ -12,11 +19,18 @@ import { Avatar, AvatarFallback } from "@/ui/avatar"
 import { Toaster, type ToastItem } from "@/ui/toast"
 
 type TopAppBarProps = {
+  isAiSidebarOpen: boolean
+  onToggleAiSidebar: () => void
   pageId?: string
   onPageCreated?: (page: SavedPage) => Promise<void>
 }
 
-const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
+const TopAppBar: React.FC<TopAppBarProps> = ({
+  isAiSidebarOpen,
+  onToggleAiSidebar,
+  pageId,
+  onPageCreated,
+}) => {
   const [saving, setSaving] = useState(false)
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const blocks = usePageBuilderStore((state) => state.blocks)
@@ -57,7 +71,32 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
 
   return (
     <>
-      <header className="flex h-14 items-center gap-2 border-b border-border bg-card px-3">
+      <header className="flex h-14 items-center gap-1 border-b border-border bg-card px-1 sm:gap-2 sm:px-3">
+        <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
+          <Link to="/content/pages">
+            <ArrowLeftIcon />
+            <span className="hidden sm:inline">Back to pages</span>
+            <span className="sr-only sm:hidden">Back to pages</span>
+          </Link>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="px-2 sm:px-3"
+          onClick={onToggleAiSidebar}
+          aria-expanded={isAiSidebarOpen}
+          aria-controls="ai-chat"
+        >
+          {isAiSidebarOpen ? <PanelLeftCloseIcon /> : <MessageSquareIcon />}
+          <span className="hidden md:inline">
+            {isAiSidebarOpen ? "Close AI assistant" : "Open AI assistant"}
+          </span>
+          <span className="sr-only md:hidden">
+            {isAiSidebarOpen ? "Close AI assistant" : "Open AI assistant"}
+          </span>
+        </Button>
+
         <p className="min-w-0 flex-1 truncate font-display text-sm font-semibold tracking-tight text-muted-foreground">
           /home
         </p>
@@ -71,7 +110,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
           <TooltipContent>Username</TooltipContent>
         </Tooltip>
 
-        <div className="ml-2 flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:ml-2">
           <Switch
             id="dark-mode-toggle"
             checked={mode === "dark"}
@@ -92,18 +131,26 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
           </Label>
         </div>
 
-        <div className="mx-1 flex items-center gap-1">
-          <Button variant="ghost" size="sm" asChild>
+        <div className="flex items-center gap-1 sm:mx-1">
+          <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
             <Link to="/blocks">
               <BlocksIcon />
               <span className="hidden md:inline">Block definitions</span>
               <span className="sr-only md:hidden">Block definitions</span>
             </Link>
           </Button>
-          <Button variant="ghost" size="sm" disabled={saving} onClick={handleSave}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="px-2 sm:px-3"
+            disabled={saving}
+            onClick={handleSave}
+          >
             {saving ? "Saving…" : "Save"}
           </Button>
-          <Button size="sm">Publish</Button>
+          <Button size="sm" className="px-2 sm:px-3">
+            Publish
+          </Button>
         </div>
       </header>
 

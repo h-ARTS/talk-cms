@@ -64,7 +64,14 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
   await expect(page).toHaveTitle("Talk CMS")
   await expect(page.getByTitle("Visual Composer")).toBeVisible()
   await expect(page.getByRole("complementary", { name: "AI page assistant" })).toBeVisible()
-  await expect(page.getByRole("button", { name: "Open chat" })).toHaveCount(0)
+  await page.getByRole("button", { name: "Close AI assistant" }).click()
+  await expect(page.getByRole("complementary", { name: "AI page assistant" })).toHaveCount(0)
+  await expect(page.getByRole("button", { name: "Open AI assistant" })).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  )
+  await page.getByRole("button", { name: "Open AI assistant" }).click()
+  await expect(page.getByRole("complementary", { name: "AI page assistant" })).toBeVisible()
   await expect(page.getByRole("button", { name: "menu" })).toHaveCount(0)
 
   const previewPanel = page.getByTitle("Visual Composer").locator("..")
@@ -75,6 +82,13 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
 
   const separator = page.locator(".resize-handle").first()
   await expect(separator).toHaveCSS("width", "6px")
+  await separator.focus()
+  await page.keyboard.press("Home")
+  await expect(page.getByRole("button", { name: "Open AI assistant" })).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  )
+  await page.getByRole("button", { name: "Open AI assistant" }).click()
   const assistantPanel = page.getByRole("complementary", {
     name: "AI page assistant",
   })
@@ -125,6 +139,29 @@ test("keeps the assistant and block editor available on mobile", async ({
   ).toHaveCount(1)
   await expect(page.getByRole("tab", { name: "Blocks" })).toBeVisible()
   await expect(page.getByLabel("Your instructions")).toBeVisible()
+  await page.getByRole("button", { name: "Close AI assistant" }).click()
+  await expect(
+    page.getByRole("complementary", { name: "AI page assistant" })
+  ).toBeHidden()
+  await expect(page.getByRole("tab", { name: "Blocks" })).toBeVisible()
+  await page.setViewportSize({ width: 1000, height: 900 })
+  await expect(page.getByRole("button", { name: "Open AI assistant" })).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  )
+  await page.getByRole("button", { name: "Open AI assistant" }).click()
+  await expect(page.getByLabel("Your instructions")).toBeVisible()
+})
+
+test("keeps editor actions usable at narrow mobile widths", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 })
+  await page.goto("/content/pages/editor-page")
+  await page.waitForLoadState("networkidle")
+
+  for (const name of ["Back to pages", "Close AI assistant", "Save", "Publish"]) {
+    await expect(page.getByRole(name === "Back to pages" ? "link" : "button", { name })).toBeInViewport()
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
 })
 
 test("saves the creator's current page without using the block builder", async ({
