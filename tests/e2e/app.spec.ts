@@ -50,6 +50,9 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
 
   await expect(page).toHaveTitle("Talk CMS")
   await expect(page.getByTitle("Visual Composer")).toBeVisible()
+  await expect(page.getByRole("complementary", { name: "AI page assistant" })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Open chat" })).toHaveCount(0)
+  await expect(page.getByRole("button", { name: "menu" })).toHaveCount(0)
 
   const previewPanel = page.getByTitle("Visual Composer").locator("..")
   await expect(previewPanel).toHaveCSS("background-color", "rgb(30, 41, 59)")
@@ -57,8 +60,12 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
   await page.getByLabel("Toggle dark mode").click()
   await expect(previewPanel).toHaveCSS("background-color", "rgb(241, 245, 249)")
 
-  const separator = page.locator(".resize-handle")
+  const separator = page.locator(".resize-handle").first()
   await expect(separator).toHaveCSS("width", "6px")
+  const assistantPanel = page.getByRole("complementary", {
+    name: "AI page assistant",
+  })
+  const initialAssistantWidth = (await assistantPanel.boundingBox())?.width
 
   const separatorBox = await separator.boundingBox()
   expect(separatorBox).not.toBeNull()
@@ -67,9 +74,12 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
   await page.mouse.move(separatorBox.x + 3, separatorBox.y + separatorBox.height / 2)
   await page.mouse.down()
   await expect(page.getByTestId("iframe-drag-overlay")).toBeVisible()
-  await page.mouse.move(separatorBox.x - 100, separatorBox.y + separatorBox.height / 2)
+  await page.mouse.move(separatorBox.x + 100, separatorBox.y + separatorBox.height / 2)
   await page.mouse.up()
   await expect(page.getByTestId("iframe-drag-overlay")).toHaveCount(0)
+  expect((await assistantPanel.boundingBox())?.width).toBeGreaterThan(
+    initialAssistantWidth ?? 0
+  )
 })
 
 test("submits a mocked block-building request", async ({ page }) => {
@@ -79,12 +89,29 @@ test("submits a mocked block-building request", async ({ page }) => {
 
   await page.goto("/content/pages/editor-page")
   await page.waitForLoadState("networkidle")
-  await page.getByRole("button", { name: "Open chat" }).click()
-  await page.getByPlaceholder("What do you want to build?").fill("Build a hero")
+  await page.getByLabel("Your instructions").fill("Build a hero")
   await page.getByRole("button", { name: "Submit prompt" }).click()
 
-  await expect(page.getByText("Blocks successfully built.")).toBeVisible()
+  await expect(
+    page
+      .getByRole("region", { name: "Notifications (F8)" })
+      .getByText("Page blocks created successfully.")
+  ).toBeVisible()
   await expect(page.getByRole("button", { name: "Hero" }).first()).toBeVisible()
+})
+
+test("keeps the assistant and block editor available on mobile", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 700, height: 900 })
+  await page.goto("/content/pages/editor-page")
+  await page.waitForLoadState("networkidle")
+
+  await expect(
+    page.getByRole("complementary", { name: "AI page assistant" })
+  ).toHaveCount(1)
+  await expect(page.getByRole("tab", { name: "Blocks" })).toBeVisible()
+  await expect(page.getByLabel("Your instructions")).toBeVisible()
 })
 
 test("saves the creator's current page without using the block builder", async ({

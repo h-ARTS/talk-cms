@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { Link } from "@tanstack/react-router"
-import { MenuIcon, BlocksIcon, MoonIcon, SunIcon, XIcon } from "lucide-react"
-import BlockTreeView from "./BlockTreeView"
+import { BlocksIcon, MoonIcon, SunIcon } from "lucide-react"
 import { usePageBuilderStore, useThemeStore } from "@/store/index"
-import { Block } from "@/types/index"
 import { savePage, updatePage, type SavedPage } from "@/pages/client/page-api"
 
 import { Button } from "@/ui/button"
@@ -19,25 +17,16 @@ type TopAppBarProps = {
 }
 
 const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
-  const [drawerOpen, setDrawerOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const blocks = usePageBuilderStore((state) => state.blocks)
   const pageName = usePageBuilderStore((state) => state.pageName)
-  const setActiveBlock = usePageBuilderStore((state) => state.setActiveBlock)
-  const setNavigationHistory = usePageBuilderStore(
-    (state) => state.setNavigationHistory
-  )
   const mode = useThemeStore((state) => state.mode)
   const toggleThemeMode = useThemeStore((state) => state.toggleThemeMode)
 
   const pushToast = (variant: ToastItem["variant"], title: string) => {
     const id = crypto.randomUUID()
     setToasts((current) => [...current, { id, variant, title }])
-  }
-
-  const handleSetActiveBlock = (block: Block) => {
-    setActiveBlock(block)
   }
 
   const handleSave = async () => {
@@ -67,20 +56,6 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
   return (
     <>
       <header className="flex h-14 items-center gap-2 border-b border-border bg-card px-3">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Block hierarchy"
-              onClick={() => setDrawerOpen(true)}
-            >
-              <MenuIcon />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Block hierarchy</TooltipContent>
-        </Tooltip>
-
         <p className="min-w-0 flex-1 truncate font-display text-sm font-semibold tracking-tight text-muted-foreground">
           /home
         </p>
@@ -101,8 +76,15 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
             onCheckedChange={toggleThemeMode}
             aria-label="Toggle dark mode"
           />
-          <Label htmlFor="dark-mode-toggle" className="hidden cursor-pointer items-center gap-1 text-xs text-muted-foreground lg:flex">
-            {mode === "dark" ? <MoonIcon className="size-3.5" /> : <SunIcon className="size-3.5" />}
+          <Label
+            htmlFor="dark-mode-toggle"
+            className="hidden cursor-pointer items-center gap-1 text-xs text-muted-foreground lg:flex"
+          >
+            {mode === "dark" ? (
+              <MoonIcon className="size-3.5" />
+            ) : (
+              <SunIcon className="size-3.5" />
+            )}
             Dark
           </Label>
         </div>
@@ -122,32 +104,10 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
         </div>
       </header>
 
-      {drawerOpen && (
-        <div className="fixed inset-0 z-50">
-          <div
-            className="absolute inset-0 bg-black/70"
-            aria-hidden
-            onClick={() => setDrawerOpen(false)}
-          />
-          <div className="absolute inset-y-0 left-0 w-72 overflow-y-auto border-r border-border bg-card shadow-xl">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <p className="font-display text-sm font-semibold">Blocks</p>
-              <Button variant="ghost" size="icon" aria-label="Close" onClick={() => setDrawerOpen(false)}>
-                <XIcon />
-              </Button>
-            </div>
-            <BlockTreeView
-              onBlockItemClick={handleSetActiveBlock}
-              onNavigationHistoryChange={(history) => {
-                setNavigationHistory(history)
-                setDrawerOpen(false)
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      <Toaster toasts={toasts} onDismiss={(id) => setToasts((c) => c.filter((t) => t.id !== id))} />
+      <Toaster
+        toasts={toasts}
+        onDismiss={(id) => setToasts((current) => current.filter((toast) => toast.id !== id))}
+      />
     </>
   )
 }

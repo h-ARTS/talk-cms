@@ -3,7 +3,6 @@ import { Link, useNavigate } from "@tanstack/react-router"
 import { ArrowLeftIcon } from "lucide-react"
 import { Group, Panel, Separator } from "react-resizable-panels"
 import ChatBox from "@/components/ChatBox"
-import FloatingChatButton from "@/components/FloatingChatButton"
 import TopAppBar from "@/components/AppBar"
 import RightSidebar from "@/components/SidebarRight"
 import UrlAppBar from "@/components/UrlAppBar"
@@ -27,7 +26,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   const navigate = useNavigate()
   const loadSavedPage = usePageBuilderStore((state) => state.loadSavedPage)
   const [isDragging, setIsDragging] = useState(false)
-  const [chatOpen, setChatOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -70,6 +69,15 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   useEffect(() => {
     postBlocks()
   }, [postBlocks])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)")
+    const updateViewport = () => setIsMobile(mediaQuery.matches)
+
+    updateViewport()
+    mediaQuery.addEventListener("change", updateViewport)
+    return () => mediaQuery.removeEventListener("change", updateViewport)
+  }, [])
 
   if (loading) {
     return (
@@ -119,17 +127,40 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             })
           }}
         />
-        <div className="min-h-0 flex-1 overflow-auto md:hidden">
-          <RightSidebar />
-        </div>
-        <div className="hidden min-h-0 flex-1 md:flex">
-          <Group
-            orientation="horizontal"
-            onLayoutChanged={() => setIsDragging(false)}
-            className="h-full min-h-0 w-full"
-          >
+        {isMobile ? (
+          <div className="grid min-h-0 flex-1 grid-rows-[minmax(360px,1fr)_minmax(280px,auto)] overflow-auto">
+            <ChatBox />
+            <div className="border-t border-border">
+              <RightSidebar />
+            </div>
+          </div>
+        ) : (
+          <div className="min-h-0 flex-1">
+            <Group
+              orientation="horizontal"
+              onLayoutChanged={() => setIsDragging(false)}
+              className="h-full min-h-0 w-full"
+            >
             <Panel
-              defaultSize="75%"
+              id="ai-chat"
+              defaultSize="320px"
+              minSize="280px"
+              maxSize="440px"
+              style={{ height: "100%", overflow: "hidden", boxSizing: "border-box" }}
+            >
+              <ChatBox />
+            </Panel>
+            <Separator
+              id="ai-chat-resize-handle"
+              aria-label="Resize AI assistant and preview"
+              className="resize-handle"
+              onPointerDown={() => setIsDragging(true)}
+              onPointerUp={() => setIsDragging(false)}
+              onPointerCancel={() => setIsDragging(false)}
+            />
+            <Panel
+              id="visual-preview"
+              defaultSize="55%"
               minSize="300px"
               className="bg-muted"
               style={{
@@ -159,22 +190,25 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
               )}
             </Panel>
             <Separator
+              id="properties-resize-handle"
+              aria-label="Resize preview and page properties"
               className="resize-handle"
               onPointerDown={() => setIsDragging(true)}
               onPointerUp={() => setIsDragging(false)}
               onPointerCancel={() => setIsDragging(false)}
             />
             <Panel
+              id="page-properties"
+              defaultSize="320px"
               minSize="300px"
               style={{ height: "100%", overflow: "auto", boxSizing: "border-box" }}
             >
               <RightSidebar />
             </Panel>
-          </Group>
-        </div>
+            </Group>
+          </div>
+        )}
       </main>
-      <FloatingChatButton chatOpen={chatOpen} onChatOpen={setChatOpen} />
-      {chatOpen && <ChatBox chatOpen={chatOpen} onChatOpen={setChatOpen} />}
     </>
   )
 }
