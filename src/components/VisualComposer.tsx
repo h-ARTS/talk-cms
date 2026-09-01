@@ -28,6 +28,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   const [isMobile, setIsMobile] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [loadedIframeUrl, setLoadedIframeUrl] = useState<string | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const aiSidebarRef = usePanelRef()
   const blocks = useTransformedBlocks()
@@ -49,10 +50,18 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   }
 
   const postBlocks = useCallback(() => {
-    if (visualComposerUrl && iframeRef.current?.contentWindow) {
+    if (
+      visualComposerUrl &&
+      loadedIframeUrl === visualComposerUrl.href &&
+      iframeRef.current?.contentWindow
+    ) {
       iframeRef.current.contentWindow.postMessage(blocks, visualComposerUrl.origin)
     }
-  }, [blocks, visualComposerUrl])
+  }, [blocks, loadedIframeUrl, visualComposerUrl])
+
+  const handleIframeLoad = useCallback(() => {
+    if (visualComposerUrl) setLoadedIframeUrl(visualComposerUrl.href)
+  }, [visualComposerUrl])
 
   useEffect(() => {
     let active = true
@@ -194,9 +203,10 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
                 <>
                   <UrlAppBar url={visualComposerUrl.origin} />
                   <iframe
+                    key={visualComposerUrl.href}
                     ref={iframeRef}
                     src={visualComposerUrl.href}
-                    onLoad={postBlocks}
+                    onLoad={handleIframeLoad}
                     style={{ width: "100%", height: "calc(100% - 48px)", border: "none" }}
                     title="Visual Composer"
                   />
