@@ -3,6 +3,10 @@ import type { Block } from "@/types/index"
 export type SavedPage = {
   id: string
   name: string | null
+  /**
+   * Canonical `$(uuid)-$(page-name)` slug, present on content API responses
+   */
+  slug?: string
   blocks: Block[]
   createdAt: string
 }
@@ -94,6 +98,7 @@ function isSavedPage(value: unknown): value is SavedPage {
     isRecord(value) &&
     typeof value.id === "string" &&
     (value.name === null || typeof value.name === "string") &&
+    (value.slug === undefined || typeof value.slug === "string") &&
     Array.isArray(value.blocks) &&
     value.blocks.every(isBlock) &&
     typeof value.createdAt === "string" &&

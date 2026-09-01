@@ -2,7 +2,7 @@ import type { Page, PageReader } from "@/pages/core/page"
 import { createPageGetHandler } from "../../src/routes/api/content/v1/pages/$pageId"
 
 const page: Page = {
-  id: "page-1",
+  id: "5df82e90-1887-4c0b-8ea3-0b3f6145ca12",
   name: "home",
   blocks: [
     {
@@ -28,8 +28,29 @@ describe("public content page GET handler", () => {
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({
       ...page,
+      slug: `${page.id}-home`,
       createdAt: page.createdAt.toISOString(),
     })
+  })
+
+  test("returns a saved page by combined slug", async () => {
+    const reader = createReader(async (id) => (id === page.id ? page : null))
+
+    const response = await createPageGetHandler({ reader })(
+      `${page.id}-home-page-v2`
+    )
+
+    expect(response.status).toBe(200)
+    expect(await response.json()).toMatchObject({ id: page.id })
+  })
+
+  test("returns 404 for a slug without a page id", async () => {
+    const reader = createReader(async () => null)
+
+    const response = await createPageGetHandler({ reader })("home-page-v2")
+
+    expect(response.status).toBe(404)
+    expect(await response.json()).toEqual({ error: "Page not found" })
   })
 
   test("returns 404 when the page does not exist", async () => {
