@@ -1,7 +1,5 @@
 import React from "react"
 import { render, fireEvent } from "@testing-library/react"
-import { Provider } from "react-redux"
-import store from "@/store/index"
 import SidebarRight from "@/components/SidebarRight"
 import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
 
@@ -24,11 +22,9 @@ describe("SidebarRight", () => {
 
   const renderSidebarRight = () =>
     render(
-      <Provider store={store}>
-        <BlockRegistryProvider>
-          <SidebarRight />
-        </BlockRegistryProvider>
-      </Provider>
+      <BlockRegistryProvider>
+        <SidebarRight />
+      </BlockRegistryProvider>
     )
 
   test("renders tabs and switches between them", () => {

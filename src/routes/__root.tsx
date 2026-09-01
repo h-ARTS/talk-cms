@@ -5,11 +5,9 @@ import {
   createRootRoute,
 } from "@tanstack/react-router"
 import type { ReactNode } from "react"
-import { Provider } from "react-redux"
 
 import DndProviderWrapper from "@/components/DndProviderWrapper"
 import Layout from "@/components/Layout"
-import store from "@/store/index"
 import splitPaneCss from "../../styles/split-pane.css?url"
 import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
 
@@ -50,13 +48,11 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <Provider store={store}>
-          <Layout>
-            <BlockRegistryProvider>
-              <DndProviderWrapper>{children}</DndProviderWrapper>
-            </BlockRegistryProvider>
-          </Layout>
-        </Provider>
+        <Layout>
+          <BlockRegistryProvider>
+            <DndProviderWrapper>{children}</DndProviderWrapper>
+          </BlockRegistryProvider>
+        </Layout>
         <Scripts />
       </body>
     </html>

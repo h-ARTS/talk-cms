@@ -1,7 +1,6 @@
 // components/Layout.tsx
 import React from "react"
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/index"
+import { useThemeStore } from "@/store/index"
 import { getTheme } from "../theme"
 import { CssBaseline, Box } from "@mui/material"
 import { ThemeProvider as MuiThemeProvider } from "@mui/system"
@@ -11,7 +10,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const themeMode = useSelector((state: RootState) => state.theme.mode)
+  const themeMode = useThemeStore((state) => state.mode)
   const theme = getTheme(themeMode)
 
   return (

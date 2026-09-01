@@ -18,12 +18,9 @@ import MenuIcon from "@mui/icons-material/Menu"
 import ViewQuiltOutlinedIcon from "@mui/icons-material/ViewQuiltOutlined"
 import { Link } from "@tanstack/react-router"
 import BlockTreeView from "./BlockTreeView"
-// redux
-import { useDispatch, useSelector } from "react-redux"
-import { toggleThemeMode } from "@/store/themeSlice"
-import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
+// store
+import { useThemeStore, usePageBuilderStore } from "@/store/index"
 import { Block } from "@/types/index"
-import type { RootState } from "@/store/index"
 import { savePage, updatePage, type SavedPage } from "@/pages/client/page-api"
 
 type TopAppBarProps = {
@@ -32,25 +29,29 @@ type TopAppBarProps = {
 }
 
 const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
-  const dispatch = useDispatch()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveResult, setSaveResult] = useState<{
     severity: "success" | "error"
     message: string
   } | null>(null)
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
+  const toggleThemeMode = useThemeStore((state) => state.toggleThemeMode)
+  const setActiveBlock = usePageBuilderStore((state) => state.setActiveBlock)
+  const setNavigationHistory = usePageBuilderStore(
+    (state) => state.setNavigationHistory
+  )
+  const blocks = usePageBuilderStore((state) => state.blocks)
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen)
   }
 
   const handleSetActiveBlock = (block: Block) => {
-    dispatch(setActiveBlock(block))
+    setActiveBlock(block)
   }
 
   const handleNavigationHistoryChange = (history: string[]) => {
-    dispatch(setNavigationHistory(history))
+    setNavigationHistory(history)
   }
 
   const handleSave = async () => {
@@ -96,7 +97,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
           </Tooltip>
           <Box sx={{ ml: 4 }}>
             <FormControlLabel
-              control={<Switch onChange={() => dispatch(toggleThemeMode())} />}
+              control={<Switch onChange={toggleThemeMode} />}
               label="Dark mode"
             />
           </Box>

@@ -1,7 +1,6 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView"
-import { RootState } from "@/store/index"
+import { usePageBuilderStore } from "@/store/index"
 import { Block } from "@/types/index"
 import {
   AddBoxOutlined as PlusSquare,
@@ -51,7 +50,7 @@ const BlockTreeView: React.FC<BlockTreeViewProps> = ({
   onBlockItemClick,
   onNavigationHistoryChange,
 }) => {
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
+  const blocks = usePageBuilderStore((state) => state.blocks)
 
   const tree = buildTree(blocks, null)
 
