@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/index"
+import { usePageBuilderStore } from "@/store/index"
 import { Block } from "@/types/index"
 
 const useTransformedBlocks = (): Block[] => {
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
+  const blocks = usePageBuilderStore((state) => state.blocks)
 
   const transformBlocks = (
     blocks: Block[],

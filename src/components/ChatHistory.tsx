@@ -1,7 +1,6 @@
 import React from "react"
-// Redux
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/index"
+// Store
+import { useChatHistoryStore } from "@/store/index"
 // Mui
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
@@ -21,7 +20,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
   onHistoryItemClick,
   onHistoryRemoveItem,
 }) => {
-  const history = useSelector((state: RootState) => state.chatHistory.history)
+  const history = useChatHistoryStore((state) => state.history)
 
   const handleHistoryItemClick = (index: number) => {
     onHistoryItemClick(history[index])

@@ -5,35 +5,36 @@ import { useTheme } from "@mui/system"
 // Tabs
 import TabConfig from "./tabs/TabConfig"
 import BlockTree from "./tabs/BlockTree"
-// Redux
-import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "@/store/index"
-import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
+// Store
+import { usePageBuilderStore } from "@/store/index"
 import Breadcrumb from "./Breadcrumb"
 
 const SidebarRight: React.FC = () => {
   const [value, setValue] = React.useState(0)
   const theme = useTheme()
   const currentMode = theme.palette.mode
-  const navigationHistory = useSelector(
-    (state: RootState) => state.pageBuilder.navigationHistory
+  const navigationHistory = usePageBuilderStore(
+    (state) => state.navigationHistory
   )
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
+  const blocks = usePageBuilderStore((state) => state.blocks)
   const currentBlock = blocks.find(
     (b) => b.id === navigationHistory[navigationHistory.length - 1]
   )
-  const dispatch = useDispatch()
+  const setActiveBlock = usePageBuilderStore((state) => state.setActiveBlock)
+  const setNavigationHistory = usePageBuilderStore(
+    (state) => state.setNavigationHistory
+  )
 
   useEffect(() => {
-    if (navigationHistory.length == 0) dispatch(setActiveBlock(null))
+    if (navigationHistory.length == 0) setActiveBlock(null)
     else if (currentBlock) {
       const { type, id } = currentBlock
-      dispatch(setActiveBlock({ type, id }))
+      setActiveBlock({ type, id })
     }
-  }, [currentBlock, dispatch, navigationHistory, navigationHistory.length])
+  }, [currentBlock, setActiveBlock, navigationHistory, navigationHistory.length])
 
   const handleNavigate = (id: string) => {
-    dispatch(setNavigationHistory([...navigationHistory, id]))
+    setNavigationHistory([...navigationHistory, id])
   }
 
   const currentView =

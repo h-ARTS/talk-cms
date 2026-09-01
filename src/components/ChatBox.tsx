@@ -1,12 +1,7 @@
 import axios from "axios"
 import React, { useRef, useState } from "react"
-// Redux
-import {
-  addMessageToHistory,
-  deleteMessageHistory,
-} from "@/store/chatHistorySlice"
-import { setBlocks } from "@/store/pageBuilderSlice"
-import { useDispatch } from "react-redux"
+// Store
+import { useChatHistoryStore, usePageBuilderStore } from "@/store/index"
 // Mui
 import Alert from "@mui/material/Alert"
 import SendIcon from "@mui/icons-material/Send"
@@ -31,7 +26,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
   const theme = useTheme()
   const { registry } = useBlockRegistry()
   const inputRef = useRef<HTMLInputElement>(null)
-  const dispatch = useDispatch()
+  const setBlocks = usePageBuilderStore((state) => state.setBlocks)
+  const addMessageToHistory = useChatHistoryStore(
+    (state) => state.addMessageToHistory
+  )
+  const deleteMessageHistory = useChatHistoryStore(
+    (state) => state.deleteMessageHistory
+  )
   const [inputValue, setInputValue] = useState("")
   const [loading, setLoading] = useState(false)
   const [alert, setAlert] = useState<{ message: string; type: string } | null>(
@@ -46,8 +47,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
       })
       const blocks = validateStoredBlocks(response.data, registry)
       if (!blocks.success) throw new Error(blocks.message)
-      dispatch(setBlocks(blocks.data))
-      dispatch(addMessageToHistory(input))
+      setBlocks(blocks.data)
+      addMessageToHistory(input)
       setInputValue("")
       setAlert({
         type: "success",
@@ -86,7 +87,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatOpen, onChatOpen }) => {
   }
 
   const handleRemoveHistoryItem = (index: number) => {
-    dispatch(deleteMessageHistory(index))
+    deleteMessageHistory(index)
   }
 
   return (

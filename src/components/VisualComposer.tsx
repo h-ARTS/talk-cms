@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "@tanstack/react-router"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import { Alert, Box, Button, CircularProgress } from "@mui/material"
-import { useDispatch } from "react-redux"
 import { useTheme } from "@mui/system"
 import { Group, Panel, Separator } from "react-resizable-panels"
 import ChatBox from "@/components/ChatBox"
@@ -12,7 +11,7 @@ import RightSidebar from "@/components/SidebarRight"
 import UrlAppBar from "@/components/UrlAppBar"
 import useTransformedBlocks from "@/hooks/useTransformedBlocks"
 import { loadPage } from "@/pages/client/page-api"
-import { loadSavedPage } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore } from "@/store/index"
 
 const visualComposerUrlValue = import.meta.env.VITE_VISUAL_COMPOSER_URL?.trim()
 const visualComposerUrl =
@@ -23,7 +22,7 @@ const isSupportedPreviewUrl =
   visualComposerUrl?.protocol === "http:" || visualComposerUrl?.protocol === "https:"
 
 export default function VisualComposer({ pageId }: { pageId?: string }) {
-  const dispatch = useDispatch()
+  const loadSavedPage = usePageBuilderStore((state) => state.loadSavedPage)
   const navigate = useNavigate()
   const theme = useTheme()
   const [isDragging, setIsDragging] = useState(false)
@@ -42,7 +41,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   useEffect(() => {
     let active = true
     if (!pageId) {
-      dispatch(loadSavedPage([]))
+      loadSavedPage([])
       queueMicrotask(() => {
         if (active) setLoading(false)
       })
@@ -53,7 +52,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
 
     void loadPage(pageId)
       .then((page) => {
-        if (active) dispatch(loadSavedPage(page.blocks))
+        if (active) loadSavedPage(page.blocks)
       })
       .catch((cause: unknown) => {
         if (active) setError(cause instanceof Error ? cause.message : "The page could not be loaded.")
@@ -65,7 +64,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
     return () => {
       active = false
     }
-  }, [dispatch, pageId])
+  }, [loadSavedPage, pageId])
 
   useEffect(() => {
     postBlocks()

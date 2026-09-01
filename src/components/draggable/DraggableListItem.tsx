@@ -8,9 +8,8 @@ import {
   ListItemText,
 } from "@mui/material"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
-// redux
-import { useDispatch } from "react-redux"
-import { setActiveBlock } from "@/store/pageBuilderSlice"
+// store
+import { usePageBuilderStore } from "@/store/index"
 // Types
 
 type DraggableListItemProps = {
@@ -30,7 +29,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
   onClick,
   onDelete,
 }) => {
-  const dispatch = useDispatch()
+  const setActiveBlock = usePageBuilderStore((state) => state.setActiveBlock)
   const ref = useRef<HTMLDivElement>(null)
 
   const [, drop] = useDrop({
@@ -67,7 +66,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
   const handleOnClick = (event: React.SyntheticEvent) => {
     event.stopPropagation()
     onClick(id)
-    dispatch(setActiveBlock({ id, type }))
+    setActiveBlock({ id, type })
   }
 
   return (
