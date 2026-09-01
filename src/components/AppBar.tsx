@@ -43,9 +43,11 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
   const handleSave = async () => {
     setSaving(true)
     try {
-      if (pageId) await updatePage(pageId, blocks, pageName)
-      else if (onPageCreated) await onPageCreated(await savePage(blocks, pageName))
-      else await savePage(blocks, pageName)
+      const normalizedPageName = pageName.trim() || null
+      if (pageId) await updatePage(pageId, blocks, normalizedPageName)
+      else if (onPageCreated) {
+        await onPageCreated(await savePage(blocks, normalizedPageName))
+      } else await savePage(blocks, normalizedPageName)
       pushToast("success", "Page saved.")
     } catch (error) {
       console.error("Failed to save page:", error)

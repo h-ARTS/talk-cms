@@ -36,6 +36,7 @@ test.beforeEach(async ({ page }) => {
     await route.fulfill({
       json: {
         id: "editor-page",
+        name: null,
         blocks: [],
         createdAt: "2026-08-31T10:00:00.000Z",
       },
@@ -51,10 +52,10 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
   await expect(page.getByTitle("Visual Composer")).toBeVisible()
 
   const previewPanel = page.getByTitle("Visual Composer").locator("..")
-  await expect(previewPanel).toHaveCSS("background-color", "rgb(41, 41, 41)")
+  await expect(previewPanel).toHaveCSS("background-color", "rgb(30, 41, 59)")
 
-  await page.getByLabel("Dark mode").click()
-  await expect(previewPanel).toHaveCSS("background-color", "rgb(245, 245, 245)")
+  await page.getByLabel("Toggle dark mode").click()
+  await expect(previewPanel).toHaveCSS("background-color", "rgb(241, 245, 249)")
 
   const separator = page.locator(".resize-handle")
   await expect(separator).toHaveCSS("width", "6px")
@@ -82,7 +83,7 @@ test("submits a mocked block-building request", async ({ page }) => {
   await page.getByPlaceholder("What do you want to build?").fill("Build a hero")
   await page.getByRole("button", { name: "Submit prompt" }).click()
 
-  await expect(page.getByText("Blocks successfully build.")).toBeVisible()
+  await expect(page.getByText("Blocks successfully built.")).toBeVisible()
   await expect(page.getByRole("button", { name: "Hero" }).first()).toBeVisible()
 })
 
@@ -94,7 +95,12 @@ test("saves the creator's current page without using the block builder", async (
     savedRequest = route.request().postDataJSON()
     await route.fulfill({
       status: 201,
-      json: { id: "page-1", blocks: [], createdAt: "2026-08-31T10:00:00.000Z" },
+      json: {
+        id: "page-1",
+        name: null,
+        blocks: [],
+        createdAt: "2026-08-31T10:00:00.000Z",
+      },
     })
   })
 
@@ -102,8 +108,8 @@ test("saves the creator's current page without using the block builder", async (
   await page.waitForLoadState("networkidle")
   await page.getByRole("button", { name: "Save" }).click()
 
-  await expect(page.getByText("Page saved.")).toBeVisible()
-  expect(savedRequest).toEqual({ blocks: [] })
+  await expect(page.getByText("Page saved.", { exact: true })).toBeVisible()
+  expect(savedRequest).toEqual({ blocks: [], name: null })
 })
 
 test("serves the migrated API route", async ({ request }) => {
