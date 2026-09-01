@@ -1,6 +1,7 @@
-import { Alert, Box } from "@mui/material"
 import type { BlockDefinition } from "../definition"
 import BlockField from "./BlockField"
+
+import { Alert, AlertDescription } from "@/ui/alert"
 
 type GenericBlockEditorProps = {
   definition: BlockDefinition
@@ -16,10 +17,12 @@ export default function GenericBlockEditor({
   const validation = definition.schema.safeParse(content)
 
   return (
-    <Box sx={{ px: 3 }}>
+    <div className="px-4 pb-4">
       {!validation.success && (
-        <Alert severity="warning" sx={{ mt: 2 }}>
-          This block contains values that do not match its definition.
+        <Alert variant="info" className="mt-3">
+          <AlertDescription>
+            This block contains values that do not match its definition.
+          </AlertDescription>
         </Alert>
       )}
       {Object.entries(definition.inputs).map(([name, input]) => (
@@ -33,6 +36,6 @@ export default function GenericBlockEditor({
           }
         />
       ))}
-    </Box>
+    </div>
   )
 }

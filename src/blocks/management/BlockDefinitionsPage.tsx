@@ -1,23 +1,6 @@
 import { useState } from "react"
-import AddIcon from "@mui/icons-material/Add"
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined"
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
-import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"
-import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Container,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material"
+import { PlusIcon, Trash2Icon, PencilIcon, BoxesIcon } from "lucide-react"
+
 import { usePageBuilderStore } from "@/store/index"
 import { useBlockRegistry } from "../client/block-registry-context"
 import {
@@ -30,6 +13,12 @@ import { compileBlockDefinition } from "../core/compiler"
 import { createBlockRegistry } from "../core/registry"
 import { validateStoredBlocks } from "../core/validation"
 import BlockDefinitionForm from "./BlockDefinitionForm"
+
+import { Alert, AlertDescription, AlertTitle } from "@/ui/alert"
+import { Badge } from "@/ui/badge"
+import { Button } from "@/ui/button"
+import { Card, CardContent, CardHeader } from "@/ui/card"
+import { Spinner } from "@/ui/spinner"
 
 export default function BlockDefinitionsPage() {
   const { descriptors, loading, error, refresh } = useBlockRegistry()
@@ -98,120 +87,118 @@ export default function BlockDefinitionsPage() {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 7 } }}>
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={3}
-          sx={{ justifyContent: "space-between", alignItems: { md: "flex-end" }, mb: 5 }}
-        >
-          <Box sx={{ maxWidth: 720 }}>
-            <Typography variant="overline" color="primary.main">Content architecture</Typography>
-            <Typography variant="h2" sx={{ fontSize: { xs: "2.4rem", md: "3.5rem" }, mb: 1.5 }}>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-7xl px-6 py-10 md:py-14">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-xs font-medium uppercase tracking-widest text-primary">
+              Content architecture
+            </p>
+            <h1 className="mt-2 font-display text-4xl font-bold tracking-tight md:text-5xl">
               Block definitions
-            </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400 }}>
-              Build the reusable content shapes your marketing team uses to compose campaigns and landing pages.
-            </Typography>
-          </Box>
+            </h1>
+            <p className="mt-3 text-lg text-muted-foreground">
+              Build the reusable content shapes your marketing team uses to compose
+              campaigns and landing pages.
+            </p>
+          </div>
           <Button
-            variant="contained"
-            size="large"
-            startIcon={<AddIcon />}
+            size="lg"
             onClick={() => {
               setSelected(null)
               setCreating(true)
             }}
             data-testid="block-create-button"
           >
+            <PlusIcon />
             Create definition
           </Button>
-        </Stack>
+        </div>
 
         {(error || message) && (
-          <Alert severity={error ? "error" : "info"} sx={{ mb: 3 }} onClose={() => setMessage(null)}>
-            {error ?? message}
+          <Alert
+            variant={error ? "destructive" : "info"}
+            className="mb-6"
+            onClose={() => setMessage(null)}
+          >
+            <AlertTitle>{error ? "Error" : "Notice"}</AlertTitle>
+            <AlertDescription>{error ?? message}</AlertDescription>
           </Alert>
         )}
 
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", lg: "minmax(320px, 0.8fr) minmax(560px, 1.6fr)" },
-            gap: 3,
-            alignItems: "start",
-          }}
-        >
-          <Paper elevation={0} sx={{ border: 1, borderColor: "divider", borderRadius: 3, overflow: "hidden" }}>
-            <Box sx={{ p: 3, borderBottom: 1, borderColor: "divider" }}>
-              <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                <Box>
-                  <Typography variant="h6">Definition library</Typography>
-                  <Typography variant="body2" color="text.secondary">
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(320px,0.8fr)_minmax(560px,1.6fr)]">
+          <Card className="overflow-hidden">
+            <CardHeader className="border-b border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-display text-base font-semibold">Definition library</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">
                     {descriptors.length} {descriptors.length === 1 ? "block" : "blocks"} available
-                  </Typography>
-                </Box>
-                <Inventory2OutlinedIcon color="action" />
-              </Stack>
-            </Box>
+                  </p>
+                </div>
+                <BoxesIcon className="size-5 text-muted-foreground" aria-hidden />
+              </div>
+            </CardHeader>
 
             {loading ? (
-              <Box sx={{ display: "grid", placeItems: "center", p: 6 }}><CircularProgress /></Box>
+              <div className="grid place-items-center p-10">
+                <Spinner />
+              </div>
             ) : descriptors.length === 0 ? (
-              <Box sx={{ p: 5, textAlign: "center" }} data-testid="empty-block-list">
-                <Typography variant="h6" gutterBottom>No definitions yet</Typography>
-                <Typography color="text.secondary">
+              <CardContent className="p-10 text-center" data-testid="empty-block-list">
+                <p className="font-display text-lg font-semibold">No definitions yet</p>
+                <p className="mt-1 text-sm text-muted-foreground">
                   Create your first block to make it available in the page editor.
-                </Typography>
-              </Box>
+                </p>
+              </CardContent>
             ) : (
-              <List disablePadding data-testid="block-list">
+              <ul className="divide-y divide-border" data-testid="block-list">
                 {descriptors.map((descriptor) => (
-                  <ListItem
+                  <li
                     key={descriptor.name}
-                    divider
                     data-testid={`block-row-${descriptor.name}`}
-                    secondaryAction={
-                      <Stack direction="row">
-                        <IconButton
-                          aria-label={`Edit ${descriptor.metadata.label}`}
-                          onClick={() => {
-                            setCreating(false)
-                            setSelected(descriptor)
-                          }}
-                        >
-                          <EditOutlinedIcon />
-                        </IconButton>
-                        <IconButton
-                          color="error"
-                          aria-label={`Delete ${descriptor.metadata.label}`}
-                          onClick={() => void remove(descriptor)}
-                          data-testid={`block-delete-${descriptor.name}`}
-                        >
-                          <DeleteOutlineIcon />
-                        </IconButton>
-                      </Stack>
-                    }
-                    sx={{ px: 3, py: 2 }}
+                    className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors duration-150 hover:bg-accent/40"
                   >
-                    <ListItemText
-                      primary={
-                        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                          <Typography sx={{ fontWeight: 700 }}>{descriptor.metadata.label}</Typography>
-                          {descriptor.metadata.category && (
-                            <Chip label={descriptor.metadata.category} size="small" variant="outlined" />
-                          )}
-                        </Stack>
-                      }
-                      secondary={`${descriptor.name} · ${descriptor.fields.length} fields`}
-                    />
-                  </ListItem>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="truncate font-semibold">{descriptor.metadata.label}</p>
+                        {descriptor.metadata.category && (
+                          <Badge variant="outline">{descriptor.metadata.category}</Badge>
+                        )}
+                      </div>
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {descriptor.name} · {descriptor.fields.length} fields
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <button
+                        type="button"
+                        aria-label={`Edit ${descriptor.metadata.label}`}
+                        onClick={() => {
+                          setCreating(false)
+                          setSelected(descriptor)
+                        }}
+                        className="inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring [&_svg]:size-4"
+                      >
+                        <PencilIcon />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Delete ${descriptor.metadata.label}`}
+                        onClick={() => void remove(descriptor)}
+                        data-testid={`block-delete-${descriptor.name}`}
+                        className="inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors duration-200 hover:bg-destructive/10 hover:text-destructive focus-visible:outline-2 focus-visible:outline-ring [&_svg]:size-4"
+                      >
+                        <Trash2Icon />
+                      </button>
+                    </div>
+                  </li>
                 ))}
-              </List>
+              </ul>
             )}
-          </Paper>
+          </Card>
 
-          {(creating || selected) ? (
+          {creating || selected ? (
             <BlockDefinitionForm
               key={selected?.name ?? "new-definition"}
               definition={selected}
@@ -224,21 +211,19 @@ export default function BlockDefinitionsPage() {
               }}
             />
           ) : (
-            <Paper
-              elevation={0}
-              sx={{ border: 1, borderStyle: "dashed", borderColor: "divider", borderRadius: 3, p: 7, textAlign: "center" }}
-            >
-              <Typography variant="h5" gutterBottom>Select a definition to edit</Typography>
-              <Typography color="text.secondary" sx={{ mb: 3 }}>
+            <Card className="border-dashed p-12 text-center">
+              <p className="font-display text-xl font-semibold">Select a definition to edit</p>
+              <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
                 Or create a new reusable content block from scratch.
-              </Typography>
-              <Button variant="outlined" startIcon={<AddIcon />} onClick={() => setCreating(true)}>
+              </p>
+              <Button variant="outline" className="mt-6" onClick={() => setCreating(true)}>
+                <PlusIcon />
                 Create definition
               </Button>
-            </Paper>
+            </Card>
           )}
-        </Box>
-      </Container>
-    </Box>
+        </div>
+      </div>
+    </div>
   )
 }

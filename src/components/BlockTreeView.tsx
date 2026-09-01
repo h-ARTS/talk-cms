@@ -1,14 +1,9 @@
 import React from "react"
-import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView"
 import { usePageBuilderStore } from "@/store/index"
 import { Block } from "@/types/index"
-import {
-  AddBoxOutlined as PlusSquare,
-  IndeterminateCheckBoxOutlined as MinusSquare,
-  DisabledByDefaultOutlined as CloseSquare,
-} from "@mui/icons-material"
-import { Box, Typography } from "@mui/material"
-import StyledTreeItem from "./StyledTreeItem"
+import { BlocksIcon } from "lucide-react"
+
+import { TreeView, type TreeNode } from "@/ui/tree-view"
 
 type BlockNode = Block & {
   children: BlockNode[]
@@ -30,6 +25,15 @@ function buildTree(blocks: Block[], parentId: string | null): BlockNode[] {
   return children as BlockNode[]
 }
 
+function toTreeNodes(nodes: BlockNode[]): TreeNode[] {
+  return nodes.map((node) => ({
+    id: node.id,
+    label: node.type,
+    icon: <BlocksIcon />,
+    children: node.children.length > 0 ? toTreeNodes(node.children) : undefined,
+  }))
+}
+
 function buildNavigationHistory(
   blocks: Block[],
   targetBlockId: string,
@@ -41,9 +45,8 @@ function buildNavigationHistory(
   if (block.parentId) {
     history.unshift(block.id)
     return buildNavigationHistory(blocks, block.parentId, history)
-  } else {
-    return [block.id, ...history]
   }
+  return [block.id, ...history]
 }
 
 const BlockTreeView: React.FC<BlockTreeViewProps> = ({
@@ -51,50 +54,33 @@ const BlockTreeView: React.FC<BlockTreeViewProps> = ({
   onNavigationHistoryChange,
 }) => {
   const blocks = usePageBuilderStore((state) => state.blocks)
+  const activeBlock = usePageBuilderStore((state) => state.activeBlock)
 
   const tree = buildTree(blocks, null)
+  const nodes = toTreeNodes(tree)
 
-  const handleItemClick = (block: Block) => {
+  const handleSelect = (node: TreeNode) => {
+    const block = blocks.find((b) => b.id === node.id)
+    if (!block) return
     onBlockItemClick(block)
-    const navigationHistory = buildNavigationHistory(blocks, block.id)
-    onNavigationHistoryChange(navigationHistory)
-  }
-
-  function renderTree(nodes: BlockNode[]) {
-    return nodes.map((node) => (
-      <StyledTreeItem
-        key={node.id}
-        itemId={node.id}
-        label={node.type}
-        onClick={() => handleItemClick(node)}
-      >
-        {node.children && renderTree(node.children)}
-      </StyledTreeItem>
-    ))
+    onNavigationHistoryChange(buildNavigationHistory(blocks, block.id))
   }
 
   return (
-    <Box sx={{ pl: 4, pr: 4 }}>
-      <Box sx={{ py: 2 }}>
-        <Typography variant="subtitle1">
-          <strong>Block Hierarchy</strong>
-        </Typography>
-      </Box>
-      <Box sx={{ py: 1 }}>
-        <SimpleTreeView
-          aria-label="customized"
-          defaultExpandedItems={tree.map((block) => block.id)}
-          slots={{
-            collapseIcon: MinusSquare,
-            expandIcon: PlusSquare,
-            endIcon: CloseSquare,
-          }}
-          sx={{ height: 264, flexGrow: 1, maxWidth: 400 }}
-        >
-          {renderTree(tree)}
-        </SimpleTreeView>
-      </Box>
-    </Box>
+    <div className="px-3 py-4">
+      <p className="mb-3 px-1 font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        Block hierarchy
+      </p>
+      {nodes.length === 0 ? (
+        <p className="px-1 text-sm text-muted-foreground">No blocks yet.</p>
+      ) : (
+        <TreeView
+          nodes={nodes}
+          selectedId={activeBlock?.id ?? null}
+          onSelect={handleSelect}
+        />
+      )}
+    </div>
   )
 }
 

@@ -1,21 +1,11 @@
 import React from "react"
-// Mui
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Divider,
-  List,
-  ListSubheader,
-  Typography,
-} from "@mui/material"
-// Store
 import { usePageBuilderStore } from "@/store/index"
-// Types
 import { useBlockRegistry } from "@/blocks/client/block-registry-context"
-// Components
 import DraggableListItem from "../draggable/DraggableListItem"
 import BlockEditor from "../BlockEditor"
+
+import { Button } from "@/ui/button"
+import { Separator } from "@/ui/separator"
 
 interface BlockTreeProps {
   parentId: string | null
@@ -66,44 +56,55 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
   }
 
   return (
-    <>
+    <div className="flex flex-col">
       <BlockEditor />
-      <Divider />
-      <List subheader={<ListSubheader>Childrens</ListSubheader>}>
-        {childBlocks.map((block, idx) => (
-          <DraggableListItem
-            key={block.id}
-            id={block.id}
-            index={idx}
-            type={block.type}
-            moveCard={handleMoveBlock}
-            onClick={() => onNavigate(block.id)}
-            onDelete={() => handleDeleteBlock(block.id)}
-          />
-        ))}
-      </List>
-      <Divider />
-      <Box sx={{ px: 2 }}>
-        <Typography sx={{ my: 2 }} variant="subtitle2">
-          Add Block:
-        </Typography>
-        <ButtonGroup variant="outlined" disableElevation disabled={loading}>
+      <Separator />
+      <div className="px-2 py-2">
+        <p className="px-2 pb-1.5 pt-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Children
+        </p>
+        <div className="flex flex-col gap-0.5">
+          {childBlocks.map((block, idx) => (
+            <DraggableListItem
+              key={block.id}
+              id={block.id}
+              index={idx}
+              type={block.type}
+              moveCard={handleMoveBlock}
+              onClick={() => onNavigate(block.id)}
+              onDelete={() => handleDeleteBlock(block.id)}
+            />
+          ))}
+          {childBlocks.length === 0 && (
+            <p className="px-2 py-2 text-sm text-muted-foreground">No blocks here yet.</p>
+          )}
+        </div>
+      </div>
+      <Separator />
+      <div className="px-4 py-3">
+        <p className="mb-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Add block
+        </p>
+        <div className="flex flex-wrap gap-1.5">
           {availableDefinitions.map((definition) => (
             <Button
               key={definition.name}
+              variant="outline"
+              size="sm"
+              disabled={loading}
               onClick={() => handleAddBlock(definition.name, parentId)}
             >
               {definition.metadata.label}
             </Button>
           ))}
-        </ButtonGroup>
+        </div>
         {!loading && availableDefinitions.length === 0 && (
-          <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
+          <p className="mb-1 text-sm text-muted-foreground">
             No block definitions are available. Create one from Block definitions.
-          </Typography>
+          </p>
         )}
-      </Box>
-    </>
+      </div>
+    </div>
   )
 }
 

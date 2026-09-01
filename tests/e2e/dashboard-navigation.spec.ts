@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test"
 
 const savedPage = {
   id: "page-1",
+  name: null,
   blocks: [
     { id: "hero-1", type: "Hero", parentId: null, content: { title: "Saved hero" } },
   ],
@@ -55,7 +56,7 @@ test("navigates from the dashboard through pages and back from the composer", as
   await expect(page.getByTitle("Visual Composer")).toBeVisible()
   await expect(page.getByRole("button", { name: "Hero" }).first()).toBeVisible()
   await page.getByRole("button", { name: "Save" }).click()
-  await expect(page.getByText("Page saved.")).toBeVisible()
+  await expect(page.getByText("Page saved.", { exact: true })).toBeVisible()
   expect(updateMethod).toBe("PUT")
   await page.getByRole("link", { name: "Back to pages" }).click()
 
@@ -99,7 +100,7 @@ test("creates and deletes pages from the pages list", async ({ page }) => {
   await page.waitForLoadState("networkidle")
   await page.getByRole("button", { name: "Save" }).click()
   await expect(page).toHaveURL(/\/content\/pages\/page-1$/)
-  expect(createdRequest).toEqual({ blocks: [] })
+  expect(createdRequest).toEqual({ blocks: [], name: null })
 
   await page.goto("/content/pages")
   page.on("dialog", (dialog) => dialog.accept())

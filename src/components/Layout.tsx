@@ -1,9 +1,6 @@
 // components/Layout.tsx
-import React from "react"
+import React, { useEffect } from "react"
 import { useThemeStore } from "@/store/index"
-import { getTheme } from "../theme"
-import { CssBaseline, Box } from "@mui/material"
-import { ThemeProvider as MuiThemeProvider } from "@mui/system"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -11,22 +8,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const themeMode = useThemeStore((state) => state.mode)
-  const theme = getTheme(themeMode)
 
-  return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {children}
-      </Box>
-    </MuiThemeProvider>
-  )
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle("dark", themeMode === "dark")
+    root.style.colorScheme = themeMode
+  }, [themeMode])
+
+  return <div className="flex min-h-screen flex-col">{children}</div>
 }
 
 export default Layout

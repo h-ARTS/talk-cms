@@ -1,13 +1,11 @@
 import { useState } from "react"
-import LinkIcon from "@mui/icons-material/Link"
-import {
-  Box,
-  FormControlLabel,
-  InputAdornment,
-  Switch,
-  TextField,
-} from "@mui/material"
+import { LinkIcon } from "lucide-react"
 import type { BlockInput } from "../definition"
+
+import { Input } from "@/ui/input"
+import { Label } from "@/ui/label"
+import { Switch } from "@/ui/switch"
+import { Textarea } from "@/ui/textarea"
 
 type BlockFieldProps = {
   name: string
@@ -26,18 +24,16 @@ export default function BlockField({
 
   if (input.type === "boolean") {
     return (
-      <Box sx={{ pt: 1, mb: 3 }}>
-        <FormControlLabel
-          control={
-            <Switch
-              name={name}
-              checked={value === true}
-              onChange={(event) => onChange(name, event.target.checked)}
-            />
-          }
-          label={input.label}
+      <div className="mb-4 flex items-center gap-2 pt-1">
+        <Switch
+          id={name}
+          checked={value === true}
+          onCheckedChange={(checked) => onChange(name, checked)}
         />
-      </Box>
+        <Label htmlFor={name} className="cursor-pointer">
+          {input.label}
+        </Label>
+      </div>
     )
   }
 
@@ -61,40 +57,49 @@ export default function BlockField({
     onChange(name, rawValue)
   }
 
+  const isTextarea = input.type === "textarea"
+  const shared = {
+    id: name,
+    name,
+    value: typeof value === "string" || typeof value === "number" ? value : "",
+    "aria-invalid": Boolean(error) || undefined,
+  }
+
   return (
-    <Box sx={{ my: 2 }}>
-      <TextField
-        fullWidth
-        variant="standard"
-        name={name}
-        label={input.label}
-        type={input.type === "number" ? "number" : "text"}
-        multiline={input.type === "textarea"}
-        value={typeof value === "string" || typeof value === "number" ? value : ""}
-        onChange={(event) => handleChange(event.target.value)}
-        error={Boolean(error)}
-        helperText={error || input.description}
-        slotProps={{
-          htmlInput: {
-            min: input.type === "number" ? input.min : undefined,
-            max: input.type === "number" ? input.max : undefined,
-            step: input.type === "number" ? input.step : undefined,
-            placeholder: "placeholder" in input ? input.placeholder : undefined,
-          },
-          input: {
-            startAdornment:
-              input.type === "url" ? (
-                <InputAdornment position="start">
-                  <LinkIcon />
-                </InputAdornment>
-              ) : undefined,
-            endAdornment:
-              input.type === "number" && input.suffix ? (
-                <InputAdornment position="end">{input.suffix}</InputAdornment>
-              ) : undefined,
-          },
-        }}
-      />
-    </Box>
+    <div className="my-3 grid gap-1.5">
+      <Label htmlFor={name}>{input.label}</Label>
+      <div className="relative">
+        {input.type === "url" && (
+          <LinkIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+        )}
+        {isTextarea ? (
+          <Textarea
+            {...shared}
+            rows={3}
+            placeholder={"placeholder" in input ? input.placeholder : undefined}
+            onChange={(e) => handleChange(e.target.value)}
+          />
+        ) : (
+          <Input
+            {...shared}
+            type={input.type === "number" ? "number" : "text"}
+            min={input.type === "number" ? input.min : undefined}
+            max={input.type === "number" ? input.max : undefined}
+            step={input.type === "number" ? input.step : undefined}
+            placeholder={"placeholder" in input ? input.placeholder : undefined}
+            className={input.type === "url" ? "pl-9" : undefined}
+            onChange={(e) => handleChange(e.target.value)}
+          />
+        )}
+      </div>
+      {(error || input.description) && (
+        <p className={error ? "text-xs text-destructive" : "text-xs text-muted-foreground"}>
+          {error || input.description}
+        </p>
+      )}
+      {input.type === "number" && input.suffix ? (
+        <p className="text-xs text-muted-foreground">{input.suffix}</p>
+      ) : null}
+    </div>
   )
 }

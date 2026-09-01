@@ -1,11 +1,18 @@
 import React from "react"
-import { render, fireEvent } from "@testing-library/react"
+import { render } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { usePageBuilderStore } from "@/store/index"
 import SidebarRight from "@/components/SidebarRight"
 import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
-import { usePageBuilderStore } from "@/store/index"
 
 describe("SidebarRight", () => {
   beforeEach(() => {
+    usePageBuilderStore.setState({
+      blocks: [],
+      activeBlock: null,
+      navigationHistory: [],
+      pageName: "",
+    })
     vi.stubGlobal(
       "fetch",
       vi.fn(() =>
@@ -28,26 +35,19 @@ describe("SidebarRight", () => {
       </BlockRegistryProvider>
     )
 
-  test("renders tabs and switches between them", () => {
-    const { getByText, queryByTestId } = renderSidebarRight()
+  test("renders tabs and switches between them", async () => {
+    const user = userEvent.setup()
+    const { getByRole, getByTestId } = renderSidebarRight()
 
-    // Check initial tab state
-    expect(getByText("Blocks")).toBeInTheDocument()
-    expect(getByText("Config")).toBeInTheDocument()
-    expect(queryByTestId("page-name-input")).not.toBeInTheDocument()
+    const blocksTab = getByRole("tab", { name: "Blocks" })
+    const configTab = getByRole("tab", { name: "Config" })
+    expect(blocksTab).toHaveAttribute("data-state", "active")
+    expect(configTab).toHaveAttribute("data-state", "inactive")
 
-    // Switch to Config tab
-    fireEvent.click(getByText("Config"))
-    expect(queryByTestId("page-name-input")).toBeInTheDocument()
-  })
-
-  test("edits the page name in the config tab", () => {
-    const { getByText, getByTestId } = renderSidebarRight()
-
-    fireEvent.click(getByText("Config"))
-    const nameInput = getByTestId("page-name-input")
-    fireEvent.change(nameInput, { target: { value: "home" } })
-
+    await user.click(configTab)
+    expect(configTab).toHaveAttribute("data-state", "active")
+    expect(blocksTab).toHaveAttribute("data-state", "inactive")
+    await user.type(getByTestId("page-name-input"), "home")
     expect(usePageBuilderStore.getState().pageName).toBe("home")
   })
 })
