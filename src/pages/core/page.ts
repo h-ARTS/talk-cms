@@ -2,25 +2,25 @@ import type { Block } from "@/types/index"
 
 export type Page = {
   id: string
-  alias: string | null
+  name: string | null
   blocks: Block[]
   createdAt: Date
 }
 
 export type CreatePageInput = {
   blocks: Block[]
-  alias?: string | null
+  name?: string | null
 }
 
 export type UpdatePageInput = {
   blocks: Block[]
-  alias?: string | null
+  name?: string | null
 }
 
-export function normalizePageAlias(
-  alias: string | null | undefined
+export function normalizePageName(
+  name: string | null | undefined
 ): string | null {
-  const normalized = alias?.trim()
+  const normalized = name?.trim()
   return normalized ? normalized : null
 }
 

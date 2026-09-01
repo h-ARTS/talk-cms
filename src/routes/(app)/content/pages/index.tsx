@@ -89,7 +89,7 @@ function PagesPage() {
             <TableHead>
               <TableRow>
                 <TableCell>Page ID</TableCell>
-                <TableCell>Alias</TableCell>
+                <TableCell>Name</TableCell>
                 <TableCell>Created</TableCell>
                 <TableCell align="right">Blocks</TableCell>
                 <TableCell align="right">Actions</TableCell>
@@ -109,7 +109,7 @@ function PagesPage() {
                       <MuiLink component="span" underline="hover" sx={{ fontWeight: 600 }}>{page.id}</MuiLink>
                     </Link>
                   </TableCell>
-                  <TableCell>{page.alias ?? "—"}</TableCell>
+                  <TableCell>{page.name ?? "—"}</TableCell>
                   <TableCell>{formatDate(page.createdAt)}</TableCell>
                   <TableCell align="right">{page.blocks.length}</TableCell>
                   <TableCell align="right">

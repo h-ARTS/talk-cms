@@ -2,7 +2,7 @@ import type { Block } from "@/types/index"
 
 export type SavedPage = {
   id: string
-  alias: string | null
+  name: string | null
   blocks: Block[]
   createdAt: string
 }
@@ -31,12 +31,12 @@ export async function loadPage(pageId: string): Promise<SavedPage> {
 
 export async function savePage(
   blocks: Block[],
-  alias?: string | null
+  name?: string | null
 ): Promise<SavedPage> {
   const response = await fetch("/api/internal/pages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ blocks, alias: alias ?? null }),
+    body: JSON.stringify({ blocks, name: name ?? null }),
   })
 
   const value = await readJson(response, "The page could not be saved.")
@@ -48,12 +48,12 @@ export async function savePage(
 export async function updatePage(
   pageId: string,
   blocks: Block[],
-  alias?: string | null
+  name?: string | null
 ): Promise<void> {
   const response = await fetch(`/api/internal/pages?id=${encodeURIComponent(pageId)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ blocks, alias: alias ?? null }),
+    body: JSON.stringify({ blocks, name: name ?? null }),
   })
   if (!response.ok) throw new Error(await readError(response, "The page could not be updated."))
 }
@@ -93,7 +93,7 @@ function isSavedPage(value: unknown): value is SavedPage {
   return (
     isRecord(value) &&
     typeof value.id === "string" &&
-    (value.alias === null || typeof value.alias === "string") &&
+    (value.name === null || typeof value.name === "string") &&
     Array.isArray(value.blocks) &&
     value.blocks.every(isBlock) &&
     typeof value.createdAt === "string" &&

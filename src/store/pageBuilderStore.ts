@@ -6,9 +6,9 @@ interface PageBuilderState {
   activeBlock: ActiveBlock | null
   navigationHistory: string[]
   /**
-   * Human-readable alias of the page being edited, empty string when unset
+   * Human-readable name of the page being edited, empty string when unset
    */
-  pageAlias: string
+  pageName: string
   /**
    * Sets the active block for the block editor, or null if parent selected
    */
@@ -21,11 +21,11 @@ interface PageBuilderState {
    * Sets the entire blocks array with new blocks hierarchy from the chat prompt
    */
   setBlocks: (blocks: Block[]) => void
-  loadSavedPage: (blocks: Block[], alias?: string | null) => void
+  loadSavedPage: (blocks: Block[], name?: string | null) => void
   /**
-   * Sets the page alias from the page config tab
+   * Sets the page name from the page config tab
    */
-  setPageAlias: (alias: string) => void
+  setPageName: (name: string) => void
   /**
    * Moves a block to a new position in the blocks array
    */
@@ -51,7 +51,7 @@ export const usePageBuilderStore = create<PageBuilderState>()((set) => ({
   blocks: [],
   activeBlock: null,
   navigationHistory: [],
-  pageAlias: "",
+  pageName: "",
 
   setActiveBlock: (activeBlock) => set({ activeBlock }),
 
@@ -59,15 +59,15 @@ export const usePageBuilderStore = create<PageBuilderState>()((set) => ({
 
   setBlocks: (blocks) => set({ blocks }),
 
-  loadSavedPage: (blocks, alias) =>
+  loadSavedPage: (blocks, name) =>
     set({
       blocks,
-      pageAlias: alias ?? "",
+      pageName: name ?? "",
       activeBlock: null,
       navigationHistory: [],
     }),
 
-  setPageAlias: (pageAlias) => set({ pageAlias }),
+  setPageName: (pageName) => set({ pageName }),
 
   moveBlock: ({ draggedId, hoverIndex }) =>
     set((state) => {

@@ -3,7 +3,7 @@ import { createPageGetHandler } from "../../src/routes/api/content/v1/pages/$pag
 
 const page: Page = {
   id: "page-1",
-  alias: "home",
+  name: "home",
   blocks: [
     {
       id: "hero-1",

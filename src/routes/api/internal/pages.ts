@@ -9,7 +9,7 @@ import type {
   PageRepository,
   PageUpdater,
 } from "@/pages/core/page"
-import { normalizePageAlias } from "@/pages/core/page"
+import { normalizePageName } from "@/pages/core/page"
 import { createPage } from "@/pages/server/create-page"
 import {
   getPageLister,
@@ -69,8 +69,8 @@ export function createPagesPostHandler(dependencies?: PagesPostDependencies) {
       if (!requestBody.success) return requestBody.response
       const body = isRecord(requestBody.value) ? requestBody.value : undefined
       const blocks = body?.blocks
-      const alias = readAlias(body)
-      if (!alias.success) return alias.response
+      const name = readName(body)
+      if (!name.success) return name.response
       const registry = await (dependencies?.loadRegistry ?? loadRegistry)()
       const validationResult = validateStoredBlocks(blocks, registry)
 
@@ -79,7 +79,7 @@ export function createPagesPostHandler(dependencies?: PagesPostDependencies) {
       }
 
       const page = await createPage(
-        { blocks: validationResult.data, alias: alias.value },
+        { blocks: validationResult.data, name: name.value },
         dependencies?.repository ?? getPageRepository()
       )
       return Response.json(page, { status: 201 })
@@ -100,8 +100,8 @@ export function createPagesPutHandler(dependencies?: PagesPutDependencies) {
       if (!requestBody.success) return requestBody.response
       const body = isRecord(requestBody.value) ? requestBody.value : undefined
       const blocks = body?.blocks
-      const alias = readAlias(body)
-      if (!alias.success) return alias.response
+      const name = readName(body)
+      if (!name.success) return name.response
       const registry = await (dependencies?.loadRegistry ?? loadRegistry)()
       const validationResult = validateStoredBlocks(blocks, registry)
       if (!validationResult.success) {
@@ -110,7 +110,7 @@ export function createPagesPutHandler(dependencies?: PagesPutDependencies) {
 
       const updated = await (dependencies?.pageUpdater ?? getPageUpdater()).update(
         pageId,
-        { blocks: validationResult.data, alias: alias.value }
+        { blocks: validationResult.data, name: name.value }
       )
       if (!updated) return Response.json({ error: "Page not found" }, { status: 404 })
       return new Response(null, { status: 204 })
@@ -146,23 +146,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
-function readAlias(
+function readName(
   body: Record<string, unknown> | undefined
 ):
   | { success: true; value: string | null }
   | { success: false; response: Response } {
-  const alias = body?.alias
-  if (alias === undefined || alias === null) return { success: true, value: null }
-  if (typeof alias !== "string") {
+  const name = body?.name
+  if (name === undefined || name === null) return { success: true, value: null }
+  if (typeof name !== "string") {
     return {
       success: false,
       response: Response.json(
-        { error: "The page alias must be a string." },
+        { error: "The page name must be a string." },
         { status: 400 }
       ),
     }
   }
-  return { success: true, value: normalizePageAlias(alias) }
+  return { success: true, value: normalizePageName(name) }
 }
 
 function readPageId(request: Request): string | null {

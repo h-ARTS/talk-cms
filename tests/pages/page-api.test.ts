@@ -8,7 +8,7 @@ import {
 
 const validPage = {
   id: "page-1",
-  alias: "home",
+  name: "home",
   blocks: [
     { id: "hero-1", type: "Hero", parentId: null, content: { title: "Hello" } },
   ],
@@ -57,7 +57,7 @@ describe("page API", () => {
     await expect(savePage(validPage.blocks)).resolves.toEqual(validPage)
   })
 
-  test("sends the page alias when saving", async () => {
+  test("sends the page name when saving", async () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json(validPage, { status: 201 }))
     vi.stubGlobal("fetch", fetchMock)
 
@@ -67,15 +67,15 @@ describe("page API", () => {
       "/api/internal/pages",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ blocks: validPage.blocks, alias: "home" }),
+        body: JSON.stringify({ blocks: validPage.blocks, name: "home" }),
       })
     )
   })
 
-  test("rejects an invalid alias in the response", async () => {
+  test("rejects an invalid name in the response", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(Response.json({ ...validPage, alias: 42 }))
+      vi.fn().mockResolvedValue(Response.json({ ...validPage, name: 42 }))
     )
 
     await expect(loadPage("page-1")).rejects.toThrow("The page response is invalid.")
@@ -91,7 +91,7 @@ describe("page API", () => {
       "/api/internal/pages?id=page-1",
       expect.objectContaining({
         method: "PUT",
-        body: JSON.stringify({ blocks: validPage.blocks, alias: "home" }),
+        body: JSON.stringify({ blocks: validPage.blocks, name: "home" }),
       })
     )
   })

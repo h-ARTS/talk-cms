@@ -34,20 +34,20 @@ describe("SidebarRight", () => {
     // Check initial tab state
     expect(getByText("Blocks")).toBeInTheDocument()
     expect(getByText("Config")).toBeInTheDocument()
-    expect(queryByTestId("page-alias-input")).not.toBeInTheDocument()
+    expect(queryByTestId("page-name-input")).not.toBeInTheDocument()
 
     // Switch to Config tab
     fireEvent.click(getByText("Config"))
-    expect(queryByTestId("page-alias-input")).toBeInTheDocument()
+    expect(queryByTestId("page-name-input")).toBeInTheDocument()
   })
 
-  test("edits the page alias in the config tab", () => {
+  test("edits the page name in the config tab", () => {
     const { getByText, getByTestId } = renderSidebarRight()
 
     fireEvent.click(getByText("Config"))
-    const aliasInput = getByTestId("page-alias-input")
-    fireEvent.change(aliasInput, { target: { value: "home" } })
+    const nameInput = getByTestId("page-name-input")
+    fireEvent.change(nameInput, { target: { value: "home" } })
 
-    expect(usePageBuilderStore.getState().pageAlias).toBe("home")
+    expect(usePageBuilderStore.getState().pageName).toBe("home")
   })
 })
