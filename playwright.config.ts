@@ -25,7 +25,7 @@ export default defineConfig({
         "/var/folders/zr/wdph4q613m5brhzczkbs62y80000gq/T/opencode/talk-cms-e2e-block-definitions.json",
     },
     url: `http://localhost:${port}`,
-    reuseExistingServer: false,
-    timeout: 120_000,
+    reuseExistingServer: !process.env.CI,
+    timeout: 300_000,
   },
 })
