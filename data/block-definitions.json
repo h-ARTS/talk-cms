@@ -6,7 +6,9 @@
       "category": "Layout"
     },
     "fields": [],
-    "allowedChildren": true
+    "allowedChildren": [
+      "Grid"
+    ]
   },
   {
     "name": "Card",
