@@ -92,7 +92,7 @@ function PagesPage() {
           <table className="w-full text-sm" aria-label="Saved pages">
             <thead>
               <tr className="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground">
-                <th className="px-5 py-3 font-medium">Page ID</th>
+                <th className="px-5 py-3 font-medium">Page</th>
                 <th className="px-5 py-3 font-medium">Created</th>
                 <th className="px-5 py-3 text-right font-medium">Blocks</th>
                 <th className="px-5 py-3 text-right font-medium">Actions</th>
@@ -126,8 +126,11 @@ function PagesPage() {
                         params={{ pageId: page.id }}
                         className="font-medium text-foreground underline-offset-4 transition-colors duration-150 hover:text-primary hover:underline"
                       >
-                        {page.id}
+                        {page.name ?? page.id}
                       </Link>
+                      {page.name && (
+                        <p className="mt-0.5 text-xs text-muted-foreground">{page.id}</p>
+                      )}
                     </td>
                     <td className="px-5 py-3.5 text-muted-foreground">
                       {formatDate(page.createdAt)}

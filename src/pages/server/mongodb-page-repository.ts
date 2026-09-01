@@ -6,13 +6,17 @@ import type {
   PageReader,
   PageRepository,
   PageUpdater,
+  UpdatePageInput,
 } from "../core/page"
+import { normalizePageName } from "../core/page"
 
 const localMongoDbUri =
   "mongodb://talk-app:talk-app-local-only@localhost:27017/talk_cms?authSource=talk_cms"
 
-type PageDocument = Omit<Page, "id"> & {
+type PageDocument = Omit<Page, "id" | "name"> & {
   _id: string
+  // Pages stored before the name was introduced have no name field.
+  name?: string | null
 }
 
 export class MongoDbPageRepository
@@ -38,6 +42,7 @@ export class MongoDbPageRepository
     const collection = await this.getCollection()
     const result = await collection.insertOne({
       _id: page.id,
+      name: page.name,
       blocks: page.blocks,
       createdAt: page.createdAt,
     })
@@ -53,6 +58,7 @@ export class MongoDbPageRepository
 
     return {
       id: document._id,
+      name: document.name ?? null,
       blocks: document.blocks,
       createdAt: document.createdAt,
     }
@@ -64,14 +70,18 @@ export class MongoDbPageRepository
 
     return documents.map((document) => ({
       id: document._id,
+      name: document.name ?? null,
       blocks: document.blocks,
       createdAt: document.createdAt,
     }))
   }
 
-  async update(id: string, blocks: Page["blocks"]): Promise<boolean> {
+  async update(id: string, page: UpdatePageInput): Promise<boolean> {
     const collection = await this.getCollection()
-    const result = await collection.updateOne({ _id: id }, { $set: { blocks } })
+    const result = await collection.updateOne(
+      { _id: id },
+      { $set: { blocks: page.blocks, name: normalizePageName(page.name) } }
+    )
     return result.matchedCount === 1
   }
 

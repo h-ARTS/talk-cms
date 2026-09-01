@@ -1,7 +1,5 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "@/store/index"
-import { addBlock, deleteBlock, moveBlock } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore } from "@/store/index"
 import { useBlockRegistry } from "@/blocks/client/block-registry-context"
 import DraggableListItem from "../draggable/DraggableListItem"
 import BlockEditor from "../BlockEditor"
@@ -17,8 +15,10 @@ interface BlockTreeProps {
 }
 
 const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
-  const dispatch = useDispatch()
+  const blocks = usePageBuilderStore((state) => state.blocks)
+  const addBlock = usePageBuilderStore((state) => state.addBlock)
+  const deleteBlock = usePageBuilderStore((state) => state.deleteBlock)
+  const moveBlock = usePageBuilderStore((state) => state.moveBlock)
   const { registry, loading } = useBlockRegistry()
 
   const childBlocks = blocks.filter((block) => block.parentId === parentId)
@@ -44,15 +44,15 @@ const BlockTree: React.FC<BlockTreeProps> = ({ parentId, onNavigate }) => {
       parentId,
       crypto.randomUUID()
     )
-    dispatch(addBlock({ parent: parentId, block: newBlock }))
+    addBlock({ parent: parentId, block: newBlock })
   }
 
   const handleDeleteBlock = (blockId: string) => {
-    dispatch(deleteBlock(blockId))
+    deleteBlock(blockId)
   }
 
   const handleMoveBlock = (draggedId: string, hoverIndex: number) => {
-    dispatch(moveBlock({ draggedId, hoverIndex }))
+    moveBlock({ draggedId, hoverIndex })
   }
 
   return (

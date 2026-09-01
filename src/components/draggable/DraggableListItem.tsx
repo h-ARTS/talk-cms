@@ -1,8 +1,7 @@
 import React, { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
 import { Trash2Icon, GripVerticalIcon } from "lucide-react"
-import { useDispatch } from "react-redux"
-import { setActiveBlock } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore } from "@/store/index"
 
 import { cn } from "@/ui/lib/utils"
 
@@ -23,7 +22,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
   onClick,
   onDelete,
 }) => {
-  const dispatch = useDispatch()
+  const setActiveBlock = usePageBuilderStore((state) => state.setActiveBlock)
   const ref = useRef<HTMLDivElement>(null)
 
   const [, drop] = useDrop({
@@ -60,7 +59,7 @@ const DraggableListItem: React.FC<DraggableListItemProps> = ({
   const handleOnClick = (event: React.SyntheticEvent) => {
     event.stopPropagation()
     onClick(id)
-    dispatch(setActiveBlock({ id, type }))
+    setActiveBlock({ id, type })
   }
 
   return (

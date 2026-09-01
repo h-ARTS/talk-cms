@@ -5,11 +5,9 @@ import {
   createRootRoute,
 } from "@tanstack/react-router"
 import type { ReactNode } from "react"
-import { Provider } from "react-redux"
 
 import DndProviderWrapper from "@/components/DndProviderWrapper"
 import Layout from "@/components/Layout"
-import store from "@/store/index"
 import { TooltipProvider } from "@/ui/tooltip"
 import globalsCss from "@/styles/globals.css?url"
 import splitPaneCss from "../../styles/split-pane.css?url"
@@ -68,14 +66,12 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 function RootProviders({ children }: { children: ReactNode }) {
   return (
-    <Provider store={store}>
-      <TooltipProvider delayDuration={200}>
-        <Layout>
-          <BlockRegistryProvider>
-            <DndProviderWrapper>{children}</DndProviderWrapper>
-          </BlockRegistryProvider>
-        </Layout>
-      </TooltipProvider>
-    </Provider>
+    <TooltipProvider delayDuration={200}>
+      <Layout>
+        <BlockRegistryProvider>
+          <DndProviderWrapper>{children}</DndProviderWrapper>
+        </BlockRegistryProvider>
+      </Layout>
+    </TooltipProvider>
   )
 }

@@ -1,6 +1,5 @@
 import React from "react"
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/index"
+import { usePageBuilderStore } from "@/store/index"
 import { Block } from "@/types/index"
 import { BlocksIcon } from "lucide-react"
 
@@ -54,8 +53,8 @@ const BlockTreeView: React.FC<BlockTreeViewProps> = ({
   onBlockItemClick,
   onNavigationHistoryChange,
 }) => {
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
-  const activeBlock = useSelector((state: RootState) => state.pageBuilder.activeBlock)
+  const blocks = usePageBuilderStore((state) => state.blocks)
+  const activeBlock = usePageBuilderStore((state) => state.activeBlock)
 
   const tree = buildTree(blocks, null)
   const nodes = toTreeNodes(tree)

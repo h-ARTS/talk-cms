@@ -1,18 +1,14 @@
 import React from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/store/index"
-import { setBlockContent } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore } from "@/store/index"
 import GenericBlockEditor from "@/blocks/core/editor/GenericBlockEditor"
 import { useBlockRegistry } from "@/blocks/client/block-registry-context"
 
 const BlockEditor: React.FC = () => {
-  const dispatch = useDispatch()
   const { registry } = useBlockRegistry()
-  const activeBlock = useSelector(
-    (state: RootState) => state.pageBuilder.activeBlock
-  )
-  const block = useSelector((state: RootState) =>
-    state.pageBuilder.blocks.find((block) => block.id === activeBlock?.id)
+  const activeBlock = usePageBuilderStore((state) => state.activeBlock)
+  const setBlockContent = usePageBuilderStore((state) => state.setBlockContent)
+  const block = usePageBuilderStore((state) =>
+    state.blocks.find((block) => block.id === activeBlock?.id)
   )
 
   if (!activeBlock) {
@@ -38,7 +34,7 @@ const BlockEditor: React.FC = () => {
       definition={definition}
       content={block.content}
       onChange={(content) =>
-        dispatch(setBlockContent({ id: activeBlock.id, content }))
+        setBlockContent({ id: activeBlock.id, content })
       }
     />
   )

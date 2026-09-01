@@ -7,7 +7,9 @@ import tseslint from "typescript-eslint"
 export default tseslint.config(
   {
     ignores: [
+      ".gitnexus/**",
       ".output/**",
+      ".worktrees/**",
       "coverage/**",
       "dist/**",
       "node_modules/**",

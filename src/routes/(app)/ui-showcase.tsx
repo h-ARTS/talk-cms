@@ -1,6 +1,5 @@
 import * as React from "react"
 import { createFileRoute } from "@tanstack/react-router"
-import { useDispatch, useSelector } from "react-redux"
 import {
   BellIcon,
   BlocksIcon,
@@ -70,8 +69,7 @@ import {
   type ToastItem,
   type TreeNode,
 } from "@/ui/index"
-import type { RootState } from "@/store/index"
-import { toggleThemeMode } from "@/store/themeSlice"
+import { useThemeStore } from "@/store/index"
 
 export const Route = createFileRoute("/(app)/ui-showcase")({
   component: UiShowcasePage,
@@ -109,8 +107,8 @@ const demoTree: TreeNode[] = [
 ]
 
 function UiShowcasePage() {
-  const dispatch = useDispatch()
-  const mode = useSelector((state: RootState) => state.theme.mode)
+  const mode = useThemeStore((state) => state.mode)
+  const toggleThemeMode = useThemeStore((state) => state.toggleThemeMode)
   const [selectedNode, setSelectedNode] = React.useState<string | null>("hero")
   const [toasts, setToasts] = React.useState<ToastItem[]>([])
 
@@ -140,7 +138,7 @@ function UiShowcasePage() {
                 Component showcase
               </h1>
             </div>
-            <Button variant="outline" onClick={() => dispatch(toggleThemeMode())}>
+            <Button variant="outline" onClick={toggleThemeMode}>
               {mode === "dark" ? <SunIcon /> : <MoonIcon />}
               {mode === "dark" ? "Light mode" : "Dark mode"}
             </Button>

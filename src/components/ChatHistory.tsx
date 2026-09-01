@@ -1,7 +1,6 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import { Trash2Icon } from "lucide-react"
-import { RootState } from "@/store/index"
+import { useChatHistoryStore } from "@/store/index"
 
 interface ChatHistoryProps {
   onHistoryItemClick: (input: string) => void
@@ -12,7 +11,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
   onHistoryItemClick,
   onHistoryRemoveItem,
 }) => {
-  const history = useSelector((state: RootState) => state.chatHistory.history)
+  const history = useChatHistoryStore((state) => state.history)
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { ArrowLeftIcon } from "lucide-react"
-import { useDispatch } from "react-redux"
 import { Group, Panel, Separator } from "react-resizable-panels"
 import ChatBox from "@/components/ChatBox"
 import FloatingChatButton from "@/components/FloatingChatButton"
@@ -10,7 +9,7 @@ import RightSidebar from "@/components/SidebarRight"
 import UrlAppBar from "@/components/UrlAppBar"
 import useTransformedBlocks from "@/hooks/useTransformedBlocks"
 import { loadPage } from "@/pages/client/page-api"
-import { loadSavedPage } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore } from "@/store/index"
 
 import { Alert, AlertDescription, AlertTitle } from "@/ui/alert"
 import { Button } from "@/ui/button"
@@ -25,8 +24,8 @@ const isSupportedPreviewUrl =
   visualComposerUrl?.protocol === "http:" || visualComposerUrl?.protocol === "https:"
 
 export default function VisualComposer({ pageId }: { pageId?: string }) {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const loadSavedPage = usePageBuilderStore((state) => state.loadSavedPage)
   const [isDragging, setIsDragging] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -43,7 +42,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   useEffect(() => {
     let active = true
     if (!pageId) {
-      dispatch(loadSavedPage([]))
+      loadSavedPage([], null)
       queueMicrotask(() => {
         if (active) setLoading(false)
       })
@@ -54,7 +53,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
 
     void loadPage(pageId)
       .then((page) => {
-        if (active) dispatch(loadSavedPage(page.blocks))
+        if (active) loadSavedPage(page.blocks, page.name)
       })
       .catch((cause: unknown) => {
         if (active) setError(cause instanceof Error ? cause.message : "The page could not be loaded.")
@@ -66,7 +65,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
     return () => {
       active = false
     }
-  }, [dispatch, pageId])
+  }, [loadSavedPage, pageId])
 
   useEffect(() => {
     postBlocks()

@@ -1,14 +1,13 @@
 // components/Layout.tsx
 import React, { useEffect } from "react"
-import { useSelector } from "react-redux"
-import { RootState } from "@/store/index"
+import { useThemeStore } from "@/store/index"
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const themeMode = useSelector((state: RootState) => state.theme.mode)
+  const themeMode = useThemeStore((state) => state.mode)
 
   useEffect(() => {
     const root = document.documentElement

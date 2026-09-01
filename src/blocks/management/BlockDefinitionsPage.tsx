@@ -1,8 +1,7 @@
 import { useState } from "react"
 import { PlusIcon, Trash2Icon, PencilIcon, BoxesIcon } from "lucide-react"
-import { useSelector } from "react-redux"
 
-import type { RootState } from "@/store/index"
+import { usePageBuilderStore } from "@/store/index"
 import { useBlockRegistry } from "../client/block-registry-context"
 import {
   createDefinition,
@@ -23,7 +22,7 @@ import { Spinner } from "@/ui/spinner"
 
 export default function BlockDefinitionsPage() {
   const { descriptors, loading, error, refresh } = useBlockRegistry()
-  const contentBlocks = useSelector((state: RootState) => state.pageBuilder.blocks)
+  const contentBlocks = usePageBuilderStore((state) => state.blocks)
   const [selected, setSelected] = useState<BlockDescriptor | null>(null)
   const [creating, setCreating] = useState(false)
   const [saving, setSaving] = useState(false)

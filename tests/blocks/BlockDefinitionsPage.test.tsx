@@ -1,8 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { Provider } from "react-redux"
 import { RouterProvider, createMemoryHistory, createRouter } from "@tanstack/react-router"
-import store from "@/store/index"
 import { routeTree } from "../../src/routeTree.gen"
 import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
 
@@ -29,11 +27,9 @@ describe("BlockDefinitionsPage", () => {
     })
 
     render(
-      <Provider store={store}>
-        <BlockRegistryProvider>
-          <RouterProvider router={router} />
-        </BlockRegistryProvider>
-      </Provider>
+      <BlockRegistryProvider>
+        <RouterProvider router={router} />
+      </BlockRegistryProvider>
     )
 
     expect(await screen.findByTestId("empty-block-list")).toBeInTheDocument()
@@ -100,11 +96,9 @@ describe("BlockDefinitionsPage", () => {
     })
 
     render(
-      <Provider store={store}>
-        <BlockRegistryProvider>
-          <RouterProvider router={router} />
-        </BlockRegistryProvider>
-      </Provider>
+      <BlockRegistryProvider>
+        <RouterProvider router={router} />
+      </BlockRegistryProvider>
     )
 
     await screen.findByTestId("empty-block-list")

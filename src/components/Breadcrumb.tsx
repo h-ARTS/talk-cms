@@ -1,18 +1,16 @@
 import React from "react"
 import { ChevronRightIcon } from "lucide-react"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/store/index"
-import { setNavigationHistory } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore } from "@/store/index"
 
 const Breadcrumb = () => {
-  const dispatch = useDispatch()
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
-  const navigationHistory = useSelector(
-    (state: RootState) => state.pageBuilder.navigationHistory
+  const blocks = usePageBuilderStore((state) => state.blocks)
+  const navigationHistory = usePageBuilderStore((state) => state.navigationHistory)
+  const setNavigationHistory = usePageBuilderStore(
+    (state) => state.setNavigationHistory
   )
 
   const handleBreadcrumbClick = (index: number) => {
-    dispatch(setNavigationHistory(navigationHistory.slice(0, index + 1)))
+    setNavigationHistory(navigationHistory.slice(0, index + 1))
   }
 
   return (

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto"
 import {
+  normalizePageName,
   type CreatePageInput,
   type Page,
   type PageRepository,
@@ -22,6 +23,7 @@ export async function createPage(
 ): Promise<Page> {
   const page: Page = {
     id: dependencies.createId(),
+    name: normalizePageName(input.name),
     blocks: input.blocks,
     createdAt: dependencies.now(),
   }

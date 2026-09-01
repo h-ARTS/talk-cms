@@ -2,11 +2,8 @@ import React, { useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { MenuIcon, BlocksIcon, MoonIcon, SunIcon, XIcon } from "lucide-react"
 import BlockTreeView from "./BlockTreeView"
-import { useDispatch, useSelector } from "react-redux"
-import { toggleThemeMode } from "@/store/themeSlice"
-import { setActiveBlock, setNavigationHistory } from "@/store/pageBuilderSlice"
+import { usePageBuilderStore, useThemeStore } from "@/store/index"
 import { Block } from "@/types/index"
-import type { RootState } from "@/store/index"
 import { savePage, updatePage, type SavedPage } from "@/pages/client/page-api"
 
 import { Button } from "@/ui/button"
@@ -22,12 +19,17 @@ type TopAppBarProps = {
 }
 
 const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
-  const dispatch = useDispatch()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [toasts, setToasts] = useState<ToastItem[]>([])
-  const blocks = useSelector((state: RootState) => state.pageBuilder.blocks)
-  const mode = useSelector((state: RootState) => state.theme.mode)
+  const blocks = usePageBuilderStore((state) => state.blocks)
+  const pageName = usePageBuilderStore((state) => state.pageName)
+  const setActiveBlock = usePageBuilderStore((state) => state.setActiveBlock)
+  const setNavigationHistory = usePageBuilderStore(
+    (state) => state.setNavigationHistory
+  )
+  const mode = useThemeStore((state) => state.mode)
+  const toggleThemeMode = useThemeStore((state) => state.toggleThemeMode)
 
   const pushToast = (variant: ToastItem["variant"], title: string) => {
     const id = crypto.randomUUID()
@@ -35,15 +37,15 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
   }
 
   const handleSetActiveBlock = (block: Block) => {
-    dispatch(setActiveBlock(block))
+    setActiveBlock(block)
   }
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      if (pageId) await updatePage(pageId, blocks)
-      else if (onPageCreated) await onPageCreated(await savePage(blocks))
-      else await savePage(blocks)
+      if (pageId) await updatePage(pageId, blocks, pageName)
+      else if (onPageCreated) await onPageCreated(await savePage(blocks, pageName))
+      else await savePage(blocks, pageName)
       pushToast("success", "Page saved.")
     } catch (error) {
       console.error("Failed to save page:", error)
@@ -94,7 +96,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
           <Switch
             id="dark-mode-toggle"
             checked={mode === "dark"}
-            onCheckedChange={() => dispatch(toggleThemeMode())}
+            onCheckedChange={toggleThemeMode}
             aria-label="Toggle dark mode"
           />
           <Label htmlFor="dark-mode-toggle" className="hidden cursor-pointer items-center gap-1 text-xs text-muted-foreground lg:flex">
@@ -135,7 +137,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
             <BlockTreeView
               onBlockItemClick={handleSetActiveBlock}
               onNavigationHistoryChange={(history) => {
-                dispatch(setNavigationHistory(history))
+                setNavigationHistory(history)
                 setDrawerOpen(false)
               }}
             />
