@@ -16,11 +16,12 @@
     "jsx": "react-jsx",
     "paths": {
       "@/components/*": ["./src/components/*"],
+      "@/ui/*": ["./src/ui/*"],
       "@/blocks/*": ["./src/blocks/*"],
       "@/store/*": ["./src/store/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/pages/*": ["./src/pages/*"],
-      "@/styles/*": ["./styles/*"],
+      "@/styles/*": ["./src/styles/*"],
       "@/types/*": ["./types/*"]
     },
     "types": ["node", "vite/client", "vitest/globals"]
