@@ -77,13 +77,13 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
           <TooltipContent>Block hierarchy</TooltipContent>
         </Tooltip>
 
-        <p className="flex-1 font-display text-sm font-semibold tracking-tight text-muted-foreground">
+        <p className="min-w-0 flex-1 truncate font-display text-sm font-semibold tracking-tight text-muted-foreground">
           /home
         </p>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Avatar>
+            <Avatar className="hidden sm:flex">
               <AvatarFallback>TC</AvatarFallback>
             </Avatar>
           </TooltipTrigger>
@@ -97,7 +97,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
             onCheckedChange={() => dispatch(toggleThemeMode())}
             aria-label="Toggle dark mode"
           />
-          <Label htmlFor="dark-mode-toggle" className="flex cursor-pointer items-center gap-1 text-xs text-muted-foreground">
+          <Label htmlFor="dark-mode-toggle" className="hidden cursor-pointer items-center gap-1 text-xs text-muted-foreground lg:flex">
             {mode === "dark" ? <MoonIcon className="size-3.5" /> : <SunIcon className="size-3.5" />}
             Dark
           </Label>
@@ -107,7 +107,8 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
           <Button variant="ghost" size="sm" asChild>
             <Link to="/blocks">
               <BlocksIcon />
-              Block definitions
+              <span className="hidden md:inline">Block definitions</span>
+              <span className="sr-only md:hidden">Block definitions</span>
             </Link>
           </Button>
           <Button variant="ghost" size="sm" disabled={saving} onClick={handleSave}>

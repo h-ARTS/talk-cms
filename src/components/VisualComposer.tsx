@@ -120,7 +120,10 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             })
           }}
         />
-        <div className="flex min-h-0 flex-1">
+        <div className="min-h-0 flex-1 overflow-auto md:hidden">
+          <RightSidebar />
+        </div>
+        <div className="hidden min-h-0 flex-1 md:flex">
           <Group
             orientation="horizontal"
             onLayoutChanged={() => setIsDragging(false)}
