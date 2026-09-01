@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { ArrowLeftIcon } from "lucide-react"
-import { Group, Panel, Separator } from "react-resizable-panels"
+import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels"
 import ChatBox from "@/components/ChatBox"
 import TopAppBar from "@/components/AppBar"
 import RightSidebar from "@/components/SidebarRight"
@@ -26,11 +26,26 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   const navigate = useNavigate()
   const loadSavedPage = usePageBuilderStore((state) => state.loadSavedPage)
   const [isDragging, setIsDragging] = useState(false)
+  const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const aiSidebarRef = usePanelRef()
   const blocks = useTransformedBlocks()
+
+  const toggleAiSidebar = () => {
+    if (isMobile) {
+      setIsAiSidebarOpen((isOpen) => !isOpen)
+      return
+    }
+
+    const panel = aiSidebarRef.current
+    const isCollapsed = panel?.isCollapsed() ?? !isAiSidebarOpen
+    if (isCollapsed) panel?.expand()
+    else panel?.collapse()
+    setIsAiSidebarOpen(isCollapsed)
+  }
 
   const postBlocks = useCallback(() => {
     if (isSupportedPreviewUrl && visualComposerUrl && iframeRef.current?.contentWindow) {
@@ -107,17 +122,9 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   return (
     <>
       <main className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
-        {pageId && (
-          <div className="border-b border-border px-3 py-1.5">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/content/pages">
-                <ArrowLeftIcon />
-                Back to pages
-              </Link>
-            </Button>
-          </div>
-        )}
         <TopAppBar
+          isAiSidebarOpen={isAiSidebarOpen}
+          onToggleAiSidebar={toggleAiSidebar}
           pageId={pageId}
           onPageCreated={async (page) => {
             await navigate({
@@ -128,8 +135,16 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
           }}
         />
         {isMobile ? (
-          <div className="grid min-h-0 flex-1 grid-rows-[minmax(360px,1fr)_minmax(280px,auto)] overflow-auto">
-            <ChatBox />
+          <div
+            className={
+              isAiSidebarOpen
+                ? "grid min-h-0 flex-1 grid-rows-[minmax(360px,1fr)_minmax(280px,auto)] overflow-auto"
+                : "min-h-0 flex-1 overflow-auto"
+            }
+          >
+            <div id="ai-chat" className={isAiSidebarOpen ? "h-full" : "hidden"}>
+              <ChatBox />
+            </div>
             <div className="border-t border-border">
               <RightSidebar />
             </div>
@@ -143,12 +158,16 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             >
             <Panel
               id="ai-chat"
-              defaultSize="320px"
+              panelRef={aiSidebarRef}
+              collapsible
+              collapsedSize={0}
+              defaultSize={isAiSidebarOpen ? "320px" : 0}
               minSize="280px"
               maxSize="440px"
+              onResize={(size) => setIsAiSidebarOpen(size.inPixels > 0)}
               style={{ height: "100%", overflow: "hidden", boxSizing: "border-box" }}
             >
-              <ChatBox />
+              {isAiSidebarOpen && <ChatBox />}
             </Panel>
             <Separator
               id="ai-chat-resize-handle"
