@@ -31,10 +31,32 @@ describe("page creation", () => {
 
     expect(page).toEqual({
       id: "page-1",
+      name: null,
       blocks,
       createdAt,
     })
     expect(repository.pages).toEqual([page])
+  })
+
+  test("persists a normalized page name", async () => {
+    const repository = new RecordingPageRepository()
+
+    const page = await createPage(
+      { blocks, name: "  home  " },
+      repository,
+      { createId: () => "page-1", now: () => new Date() }
+    )
+
+    expect(page.name).toBe("home")
+    expect(repository.pages[0]?.name).toBe("home")
+  })
+
+  test("stores a blank name as null", async () => {
+    const repository = new RecordingPageRepository()
+
+    const page = await createPage({ blocks, name: "   " }, repository)
+
+    expect(page.name).toBeNull()
   })
 
   test("does not report success when persistence fails", async () => {

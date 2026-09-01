@@ -9,6 +9,7 @@ import type {
   PageRepository,
   PageUpdater,
 } from "@/pages/core/page"
+import { normalizePageName } from "@/pages/core/page"
 import { createPage } from "@/pages/server/create-page"
 import {
   getPageLister,
@@ -66,7 +67,10 @@ export function createPagesPostHandler(dependencies?: PagesPostDependencies) {
     try {
       const requestBody = await readRequestBody(request)
       if (!requestBody.success) return requestBody.response
-      const blocks = isRecord(requestBody.value) ? requestBody.value.blocks : undefined
+      const body = isRecord(requestBody.value) ? requestBody.value : undefined
+      const blocks = body?.blocks
+      const name = readName(body)
+      if (!name.success) return name.response
       const registry = await (dependencies?.loadRegistry ?? loadRegistry)()
       const validationResult = validateStoredBlocks(blocks, registry)
 
@@ -75,7 +79,7 @@ export function createPagesPostHandler(dependencies?: PagesPostDependencies) {
       }
 
       const page = await createPage(
-        { blocks: validationResult.data },
+        { blocks: validationResult.data, name: name.value },
         dependencies?.repository ?? getPageRepository()
       )
       return Response.json(page, { status: 201 })
@@ -94,7 +98,10 @@ export function createPagesPutHandler(dependencies?: PagesPutDependencies) {
 
       const requestBody = await readRequestBody(request)
       if (!requestBody.success) return requestBody.response
-      const blocks = isRecord(requestBody.value) ? requestBody.value.blocks : undefined
+      const body = isRecord(requestBody.value) ? requestBody.value : undefined
+      const blocks = body?.blocks
+      const name = readName(body)
+      if (!name.success) return name.response
       const registry = await (dependencies?.loadRegistry ?? loadRegistry)()
       const validationResult = validateStoredBlocks(blocks, registry)
       if (!validationResult.success) {
@@ -103,7 +110,7 @@ export function createPagesPutHandler(dependencies?: PagesPutDependencies) {
 
       const updated = await (dependencies?.pageUpdater ?? getPageUpdater()).update(
         pageId,
-        validationResult.data
+        { blocks: validationResult.data, name: name.value }
       )
       if (!updated) return Response.json({ error: "Page not found" }, { status: 404 })
       return new Response(null, { status: 204 })
@@ -137,6 +144,25 @@ async function loadRegistry(): Promise<BlockRegistry> {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function readName(
+  body: Record<string, unknown> | undefined
+):
+  | { success: true; value: string | null }
+  | { success: false; response: Response } {
+  const name = body?.name
+  if (name === undefined || name === null) return { success: true, value: null }
+  if (typeof name !== "string") {
+    return {
+      success: false,
+      response: Response.json(
+        { error: "The page name must be a string." },
+        { status: 400 }
+      ),
+    }
+  }
+  return { success: true, value: normalizePageName(name) }
 }
 
 function readPageId(request: Request): string | null {

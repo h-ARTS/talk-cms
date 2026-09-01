@@ -6,6 +6,10 @@ interface PageBuilderState {
   activeBlock: ActiveBlock | null
   navigationHistory: string[]
   /**
+   * Human-readable name of the page being edited, empty string when unset
+   */
+  pageName: string
+  /**
    * Sets the active block for the block editor, or null if parent selected
    */
   setActiveBlock: (block: ActiveBlock | null) => void
@@ -17,7 +21,11 @@ interface PageBuilderState {
    * Sets the entire blocks array with new blocks hierarchy from the chat prompt
    */
   setBlocks: (blocks: Block[]) => void
-  loadSavedPage: (blocks: Block[]) => void
+  loadSavedPage: (blocks: Block[], name?: string | null) => void
+  /**
+   * Sets the page name from the page config tab
+   */
+  setPageName: (name: string) => void
   /**
    * Moves a block to a new position in the blocks array
    */
@@ -43,6 +51,7 @@ export const usePageBuilderStore = create<PageBuilderState>()((set) => ({
   blocks: [],
   activeBlock: null,
   navigationHistory: [],
+  pageName: "",
 
   setActiveBlock: (activeBlock) => set({ activeBlock }),
 
@@ -50,8 +59,15 @@ export const usePageBuilderStore = create<PageBuilderState>()((set) => ({
 
   setBlocks: (blocks) => set({ blocks }),
 
-  loadSavedPage: (blocks) =>
-    set({ blocks, activeBlock: null, navigationHistory: [] }),
+  loadSavedPage: (blocks, name) =>
+    set({
+      blocks,
+      pageName: name ?? "",
+      activeBlock: null,
+      navigationHistory: [],
+    }),
+
+  setPageName: (pageName) => set({ pageName }),
 
   moveBlock: ({ draggedId, hoverIndex }) =>
     set((state) => {

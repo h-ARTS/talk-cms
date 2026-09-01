@@ -2,6 +2,7 @@ import React from "react"
 import { render, fireEvent } from "@testing-library/react"
 import SidebarRight from "@/components/SidebarRight"
 import { BlockRegistryProvider } from "@/blocks/client/BlockRegistryProvider"
+import { usePageBuilderStore } from "@/store/index"
 
 describe("SidebarRight", () => {
   beforeEach(() => {
@@ -28,15 +29,25 @@ describe("SidebarRight", () => {
     )
 
   test("renders tabs and switches between them", () => {
-    const { getByText, queryByText } = renderSidebarRight()
+    const { getByText, queryByTestId } = renderSidebarRight()
 
     // Check initial tab state
     expect(getByText("Blocks")).toBeInTheDocument()
     expect(getByText("Config")).toBeInTheDocument()
-    expect(queryByText("Config content goes here.")).not.toBeInTheDocument()
+    expect(queryByTestId("page-name-input")).not.toBeInTheDocument()
 
     // Switch to Config tab
     fireEvent.click(getByText("Config"))
-    expect(queryByText("Config content goes here.")).toBeInTheDocument()
+    expect(queryByTestId("page-name-input")).toBeInTheDocument()
+  })
+
+  test("edits the page name in the config tab", () => {
+    const { getByText, getByTestId } = renderSidebarRight()
+
+    fireEvent.click(getByText("Config"))
+    const nameInput = getByTestId("page-name-input")
+    fireEvent.change(nameInput, { target: { value: "home" } })
+
+    expect(usePageBuilderStore.getState().pageName).toBe("home")
   })
 })

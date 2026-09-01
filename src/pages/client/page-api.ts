@@ -2,6 +2,11 @@ import type { Block } from "@/types/index"
 
 export type SavedPage = {
   id: string
+  name: string | null
+  /**
+   * Canonical `$(uuid)-$(page-name)` slug, present on content API responses
+   */
+  slug?: string
   blocks: Block[]
   createdAt: string
 }
@@ -28,11 +33,14 @@ export async function loadPage(pageId: string): Promise<SavedPage> {
   return value
 }
 
-export async function savePage(blocks: Block[]): Promise<SavedPage> {
+export async function savePage(
+  blocks: Block[],
+  name?: string | null
+): Promise<SavedPage> {
   const response = await fetch("/api/internal/pages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ blocks }),
+    body: JSON.stringify({ blocks, name: name ?? null }),
   })
 
   const value = await readJson(response, "The page could not be saved.")
@@ -41,11 +49,15 @@ export async function savePage(blocks: Block[]): Promise<SavedPage> {
   return value
 }
 
-export async function updatePage(pageId: string, blocks: Block[]): Promise<void> {
+export async function updatePage(
+  pageId: string,
+  blocks: Block[],
+  name?: string | null
+): Promise<void> {
   const response = await fetch(`/api/internal/pages?id=${encodeURIComponent(pageId)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ blocks }),
+    body: JSON.stringify({ blocks, name: name ?? null }),
   })
   if (!response.ok) throw new Error(await readError(response, "The page could not be updated."))
 }
@@ -85,6 +97,8 @@ function isSavedPage(value: unknown): value is SavedPage {
   return (
     isRecord(value) &&
     typeof value.id === "string" &&
+    (value.name === null || typeof value.name === "string") &&
+    (value.slug === undefined || typeof value.slug === "string") &&
     Array.isArray(value.blocks) &&
     value.blocks.every(isBlock) &&
     typeof value.createdAt === "string" &&

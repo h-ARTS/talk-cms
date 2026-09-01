@@ -51,7 +51,34 @@ describe("pages POST handler", () => {
 
     expect(response.status).toBe(201)
     expect(repository.pages).toHaveLength(1)
-    expect(repository.pages[0]).toMatchObject({ blocks })
+    expect(repository.pages[0]).toMatchObject({ blocks, name: null })
+  })
+
+  test("persists a normalized page name", async () => {
+    const repository = new RecordingPageRepository()
+    const handler = createPagesPostHandler({
+      loadRegistry: async () => registry,
+      repository,
+    })
+
+    const response = await handler(createRequest({ blocks, name: "  home " }))
+
+    expect(response.status).toBe(201)
+    expect(repository.pages[0]?.name).toBe("home")
+  })
+
+  test("rejects a non-string name before persistence", async () => {
+    const repository = new RecordingPageRepository()
+    const handler = createPagesPostHandler({
+      loadRegistry: async () => registry,
+      repository,
+    })
+
+    const response = await handler(createRequest({ blocks, name: 42 }))
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toEqual({ error: "The page name must be a string." })
+    expect(repository.pages).toEqual([])
   })
 
   test("rejects a missing block collection before persistence", async () => {
@@ -103,12 +130,12 @@ describe("pages POST handler", () => {
 
 describe("pages GET handler", () => {
   test("returns saved pages", async () => {
-    const pages: Page[] = [{ id: "page-1", blocks, createdAt: new Date("2026-08-31T10:00:00.000Z") }]
+    const pages: Page[] = [{ id: "page-1", name: "home", blocks, createdAt: new Date("2026-08-31T10:00:00.000Z") }]
     const response = await createPagesGetHandler({ pageLister: { list: async () => pages } })()
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual([
-      { id: "page-1", blocks, createdAt: "2026-08-31T10:00:00.000Z" },
+      { id: "page-1", name: "home", blocks, createdAt: "2026-08-31T10:00:00.000Z" },
     ])
   })
 
@@ -124,20 +151,46 @@ describe("pages GET handler", () => {
 
 describe("pages PUT handler", () => {
   test("validates and updates an existing page", async () => {
-    let updatedBlocks: unknown
+    let updatedPage: unknown
     const response = await createPagesPutHandler({
       loadRegistry: async () => registry,
       pageUpdater: {
         update: async (id, value) => {
           expect(id).toBe("page-1")
-          updatedBlocks = value
+          updatedPage = value
           return true
         },
       },
-    })(createRequest({ blocks }, "PUT", "?id=page-1"))
+    })(createRequest({ blocks, name: "home" }, "PUT", "?id=page-1"))
 
     expect(response.status).toBe(204)
-    expect(updatedBlocks).toEqual(blocks)
+    expect(updatedPage).toEqual({ blocks, name: "home" })
+  })
+
+  test("clears the name when it is blank", async () => {
+    let updatedPage: unknown
+    const response = await createPagesPutHandler({
+      loadRegistry: async () => registry,
+      pageUpdater: {
+        update: async (id, value) => {
+          updatedPage = value
+          return true
+        },
+      },
+    })(createRequest({ blocks, name: "  " }, "PUT", "?id=page-1"))
+
+    expect(response.status).toBe(204)
+    expect(updatedPage).toEqual({ blocks, name: null })
+  })
+
+  test("rejects a non-string name", async () => {
+    const response = await createPagesPutHandler({
+      loadRegistry: async () => registry,
+      pageUpdater: { update: async () => true },
+    })(createRequest({ blocks, name: 42 }, "PUT", "?id=page-1"))
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toEqual({ error: "The page name must be a string." })
   })
 
   test("returns not found when the page does not exist", async () => {
