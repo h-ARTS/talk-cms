@@ -31,10 +31,32 @@ describe("page creation", () => {
 
     expect(page).toEqual({
       id: "page-1",
+      alias: null,
       blocks,
       createdAt,
     })
     expect(repository.pages).toEqual([page])
+  })
+
+  test("persists a normalized page alias", async () => {
+    const repository = new RecordingPageRepository()
+
+    const page = await createPage(
+      { blocks, alias: "  home  " },
+      repository,
+      { createId: () => "page-1", now: () => new Date() }
+    )
+
+    expect(page.alias).toBe("home")
+    expect(repository.pages[0]?.alias).toBe("home")
+  })
+
+  test("stores a blank alias as null", async () => {
+    const repository = new RecordingPageRepository()
+
+    const page = await createPage({ blocks, alias: "   " }, repository)
+
+    expect(page.alias).toBeNull()
   })
 
   test("does not report success when persistence fails", async () => {

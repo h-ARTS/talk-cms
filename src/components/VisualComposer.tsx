@@ -52,7 +52,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
 
     void loadPage(pageId)
       .then((page) => {
-        if (active) loadSavedPage(page.blocks)
+        if (active) loadSavedPage(page.blocks, page.alias)
       })
       .catch((cause: unknown) => {
         if (active) setError(cause instanceof Error ? cause.message : "The page could not be loaded.")

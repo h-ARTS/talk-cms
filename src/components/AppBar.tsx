@@ -41,6 +41,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
     (state) => state.setNavigationHistory
   )
   const blocks = usePageBuilderStore((state) => state.blocks)
+  const pageAlias = usePageBuilderStore((state) => state.pageAlias)
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen)
@@ -57,9 +58,9 @@ const TopAppBar: React.FC<TopAppBarProps> = ({ pageId, onPageCreated }) => {
   const handleSave = async () => {
     setSaving(true)
     try {
-      if (pageId) await updatePage(pageId, blocks)
-      else if (onPageCreated) await onPageCreated(await savePage(blocks))
-      else await savePage(blocks)
+      if (pageId) await updatePage(pageId, blocks, pageAlias)
+      else if (onPageCreated) await onPageCreated(await savePage(blocks, pageAlias))
+      else await savePage(blocks, pageAlias)
       setSaveResult({ severity: "success", message: "Page saved." })
     } catch (error) {
       console.error("Failed to save page:", error)

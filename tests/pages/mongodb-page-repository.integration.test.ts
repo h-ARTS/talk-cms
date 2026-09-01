@@ -31,6 +31,7 @@ describeWithMongo("MongoDbPageRepository", () => {
     const verificationClient = new MongoClient(uri)
     const page: Page = {
       id: `page-${randomUUID()}`,
+      alias: "home",
       blocks: [
         {
           id: "hero-1",
@@ -57,8 +58,8 @@ describeWithMongo("MongoDbPageRepository", () => {
         createdAt: page.createdAt,
       })
 
-      await expect(repository.update(page.id, [])).resolves.toBe(true)
-      await expect(repository.findById(page.id)).resolves.toMatchObject({ blocks: [] })
+      await expect(repository.update(page.id, { blocks: [], alias: null })).resolves.toBe(true)
+      await expect(repository.findById(page.id)).resolves.toMatchObject({ blocks: [], alias: null })
       await expect(collection.findOne({ _id: page.id })).resolves.toMatchObject({
         _id: page.id,
         blocks: [],

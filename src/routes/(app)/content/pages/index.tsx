@@ -89,6 +89,7 @@ function PagesPage() {
             <TableHead>
               <TableRow>
                 <TableCell>Page ID</TableCell>
+                <TableCell>Alias</TableCell>
                 <TableCell>Created</TableCell>
                 <TableCell align="right">Blocks</TableCell>
                 <TableCell align="right">Actions</TableCell>
@@ -96,10 +97,10 @@ function PagesPage() {
             </TableHead>
             <TableBody>
               {loading && (
-                <TableRow><TableCell colSpan={4} align="center" sx={{ py: 7 }}><CircularProgress size={28} /></TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} align="center" sx={{ py: 7 }}><CircularProgress size={28} /></TableCell></TableRow>
               )}
               {!loading && !error && pages.length === 0 && (
-                <TableRow><TableCell colSpan={4} align="center" sx={{ py: 7 }}><Typography color="text.secondary">No saved pages yet.</Typography></TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} align="center" sx={{ py: 7 }}><Typography color="text.secondary">No saved pages yet.</Typography></TableCell></TableRow>
               )}
               {!loading && pages.map((page) => (
                 <TableRow key={page.id} hover data-testid={`page-row-${page.id}`}>
@@ -108,6 +109,7 @@ function PagesPage() {
                       <MuiLink component="span" underline="hover" sx={{ fontWeight: 600 }}>{page.id}</MuiLink>
                     </Link>
                   </TableCell>
+                  <TableCell>{page.alias ?? "—"}</TableCell>
                   <TableCell>{formatDate(page.createdAt)}</TableCell>
                   <TableCell align="right">{page.blocks.length}</TableCell>
                   <TableCell align="right">

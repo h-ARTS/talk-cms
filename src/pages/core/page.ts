@@ -2,12 +2,26 @@ import type { Block } from "@/types/index"
 
 export type Page = {
   id: string
+  alias: string | null
   blocks: Block[]
   createdAt: Date
 }
 
 export type CreatePageInput = {
   blocks: Block[]
+  alias?: string | null
+}
+
+export type UpdatePageInput = {
+  blocks: Block[]
+  alias?: string | null
+}
+
+export function normalizePageAlias(
+  alias: string | null | undefined
+): string | null {
+  const normalized = alias?.trim()
+  return normalized ? normalized : null
 }
 
 export interface PageRepository {
@@ -23,7 +37,7 @@ export interface PageLister {
 }
 
 export interface PageUpdater {
-  update(id: string, blocks: Block[]): Promise<boolean>
+  update(id: string, page: UpdatePageInput): Promise<boolean>
 }
 
 export interface PageDeleter {
