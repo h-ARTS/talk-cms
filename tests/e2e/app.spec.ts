@@ -66,6 +66,7 @@ test("loads the editor and supports theme and pane resizing", async ({ page }) =
   await expect(page.getByRole("complementary", { name: "AI page assistant" })).toBeVisible()
   await page.getByRole("button", { name: "Close AI assistant" }).click()
   await expect(page.getByRole("complementary", { name: "AI page assistant" })).toHaveCount(0)
+  await expect(page.locator("#ai-chat-resize-handle")).toHaveCount(0)
   await expect(page.getByRole("button", { name: "Open AI assistant" })).toHaveAttribute(
     "aria-expanded",
     "false"

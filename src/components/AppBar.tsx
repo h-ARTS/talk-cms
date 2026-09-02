@@ -71,19 +71,21 @@ const TopAppBar: React.FC<TopAppBarProps> = ({
 
   return (
     <>
-      <header className="flex h-14 items-center gap-1 border-b border-border bg-card px-1 sm:gap-2 sm:px-3">
-        <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
-          <Link to="/content/pages">
-            <ArrowLeftIcon />
-            <span className="hidden sm:inline">Back to pages</span>
-            <span className="sr-only sm:hidden">Back to pages</span>
-          </Link>
-        </Button>
+      <header className="flex h-14 items-center border-b border-border bg-card px-1 sm:px-3">
+        <div className="flex h-8 items-center border-r border-border pr-1 sm:pr-2">
+          <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
+            <Link to="/content/pages">
+              <ArrowLeftIcon />
+              <span className="hidden sm:inline">Back to pages</span>
+              <span className="sr-only sm:hidden">Back to pages</span>
+            </Link>
+          </Button>
+        </div>
 
         <Button
           variant="ghost"
           size="sm"
-          className="px-2 sm:px-3"
+          className="ml-1 px-2 sm:ml-2 sm:px-3"
           onClick={onToggleAiSidebar}
           aria-expanded={isAiSidebarOpen}
           aria-controls="ai-chat"
@@ -97,7 +99,7 @@ const TopAppBar: React.FC<TopAppBarProps> = ({
           </span>
         </Button>
 
-        <p className="min-w-0 flex-1 truncate font-display text-sm font-semibold tracking-tight text-muted-foreground">
+        <p className="min-w-0 flex-1 truncate pl-1 font-display text-sm font-semibold tracking-tight text-muted-foreground sm:pl-2">
           /home
         </p>
 

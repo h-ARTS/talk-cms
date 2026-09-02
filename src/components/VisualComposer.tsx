@@ -179,14 +179,16 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             >
               {isAiSidebarOpen && <ChatBox />}
             </Panel>
-            <Separator
-              id="ai-chat-resize-handle"
-              aria-label="Resize AI assistant and preview"
-              className="resize-handle"
-              onPointerDown={() => setIsDragging(true)}
-              onPointerUp={() => setIsDragging(false)}
-              onPointerCancel={() => setIsDragging(false)}
-            />
+            {isAiSidebarOpen && (
+              <Separator
+                id="ai-chat-resize-handle"
+                aria-label="Resize AI assistant and preview"
+                className="resize-handle"
+                onPointerDown={() => setIsDragging(true)}
+                onPointerUp={() => setIsDragging(false)}
+                onPointerCancel={() => setIsDragging(false)}
+              />
+            )}
             <Panel
               id="visual-preview"
               defaultSize="55%"
