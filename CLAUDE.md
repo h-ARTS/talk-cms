@@ -1,12 +1,3 @@
-# Instructions for AI Agents
-
-## How to work
-
-- **ALWAYS** make new git worktrees and use the skill `using-git-worktrees`. The worktree MUST be located in the root directory of this project.
-- **ALWAYS** delete the worktree when explicitly asked to merge the changes into main.
-- **ALWAYS** use `ui-ux-pro-max` skill, when asked about frontend redesign, overhaul, or any frontend design changes including design system.
-- **MUST** Use context7 if you need more information regarding a library, packages or programming language
-
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
