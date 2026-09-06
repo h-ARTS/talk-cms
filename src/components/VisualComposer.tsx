@@ -29,6 +29,7 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [loadedIframeUrl, setLoadedIframeUrl] = useState<string | null>(null)
+  const [refreshCount, setRefreshCount] = useState(0)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const aiSidebarRef = usePanelRef()
   const blocks = useTransformedBlocks()
@@ -62,6 +63,13 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
   const handleIframeLoad = useCallback(() => {
     if (visualComposerUrl) setLoadedIframeUrl(visualComposerUrl.href)
   }, [visualComposerUrl])
+
+  const handleRefreshPreview = useCallback(() => {
+    // Reset loadedIframeUrl so the postBlocks effect re-fires once the
+    // remounted iframe finishes loading and reports the same href again.
+    setLoadedIframeUrl(null)
+    setRefreshCount((count) => count + 1)
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -203,9 +211,9 @@ export default function VisualComposer({ pageId }: { pageId?: string }) {
             >
               {visualComposerUrl && (
                 <>
-                  <UrlAppBar url={visualComposerUrl.origin} />
+                  <UrlAppBar url={visualComposerUrl.origin} onRefresh={handleRefreshPreview} />
                   <iframe
-                    key={visualComposerUrl.href}
+                    key={`${visualComposerUrl.href}:${refreshCount}`}
                     ref={iframeRef}
                     src={visualComposerUrl.href}
                     onLoad={handleIframeLoad}
