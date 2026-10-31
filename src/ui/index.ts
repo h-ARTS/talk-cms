@@ -3,6 +3,8 @@ export { Button, buttonVariants, type ButtonProps } from "./button"
 export { Input, type InputProps } from "./input"
 export { Textarea, type TextareaProps } from "./textarea"
 export { Label } from "./label"
+export { Form, FormSection, FormSubsection } from "./form"
+export { PageHeader } from "./page-header"
 export {
   Select,
   SelectGroup,

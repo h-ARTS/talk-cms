@@ -65,6 +65,8 @@ test("groups settings into ordered, accessible sections", async ({ page }) => {
 
   const workspace = page.getByRole("region", { name: "Workspace settings", exact: true })
   const composer = page.getByRole("region", { name: "Visual Composer", exact: true })
+  const settingsForm = page.locator("main form")
+  const save = page.getByRole("button", { name: "Save settings" })
   await expect(workspace.getByRole("heading", { name: "Workspace settings", level: 2 })).toBeVisible()
   await expect(workspace.getByRole("heading", { name: "Appearance", level: 3 })).toBeVisible()
   await expect(workspace.getByRole("switch", { name: "Use dark mode" })).toBeChecked()
@@ -74,10 +76,21 @@ test("groups settings into ordered, accessible sections", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 2 })).toHaveText(["Workspace settings", "Visual Composer"])
   await expect(page.getByRole("switch")).toHaveCount(1)
   await expect(page.getByLabel("Preview site URL")).toHaveCount(1)
-  await expect(page.getByRole("button", { name: "Save settings" })).toHaveCount(1)
-  await expect(page.locator("main form")).toHaveCount(1)
+  await expect(save).toHaveCount(1)
+  await expect(settingsForm).toHaveCount(1)
+  await expect(page.locator("main header")).toHaveCount(1)
+  await expect(page.locator("main form header")).toHaveCount(0)
+  await expect(settingsForm.getByRole("button", { name: "Save settings" })).toHaveCount(0)
+  const formId = await settingsForm.getAttribute("id")
+  expect(formId).toBeTruthy()
+  await expect(save).toHaveAttribute("form", formId!)
+  expect(await save.evaluate((button) => {
+    const form = document.querySelector("main form")
+    return form !== null &&
+      (button.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+  })).toBe(true)
   await expect(page.getByRole("tablist")).toHaveCount(0)
-  expect(await page.getByRole("button", { name: "Save settings" }).evaluate((button) =>
+  expect(await save.evaluate((button) =>
     (button as HTMLButtonElement).form === document.querySelector("main form")
   )).toBe(true)
   await expect(workspace.getByText("Personalize Talk CMS for this account.")).toBeVisible()
@@ -132,7 +145,7 @@ for (const themeMode of ["light", "dark"] as const) {
       for (const [divider, edge] of [
         [workspaceRow, "borderBottomWidth"],
         [composerRow, "borderBottomWidth"],
-        [page.locator("main form > header"), "borderBottomWidth"],
+        [page.locator("main header"), "borderBottomWidth"],
       ] as const) {
         expect(await divider.evaluate((element, property) =>
           parseFloat(getComputedStyle(element)[property]), edge
@@ -303,7 +316,7 @@ test("preview link follows only valid HTTP and HTTPS draft URLs", async ({ page 
   }
 })
 
-test("preserves native URL constraints and prevents invalid submission", async ({ page }) => {
+test("preserves native URL constraints and supports valid Enter submission", async ({ page }) => {
   const writes: string[] = []
   page.on("request", (request) => {
     if (request.url().endsWith("/api/internal/settings") && request.method() === "PUT") writes.push("PUT")
@@ -318,6 +331,10 @@ test("preserves native URL constraints and prevents invalid submission", async (
   await expect(url).toHaveValue("preview.example.com")
   await expect(page.getByText("Settings saved. Your workspace and visual composer are up to date.")).toHaveCount(0)
   expect(writes).toEqual([])
+  await url.fill("https://preview.example.com/editor")
+  await url.press("Enter")
+  await expect(page.getByText("Settings saved. Your workspace and visual composer are up to date.")).toBeVisible()
+  expect(writes).toEqual(["PUT"])
 })
 
 for (const themeMode of ["light", "dark"] as const) {
