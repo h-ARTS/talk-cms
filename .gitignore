@@ -32,4 +32,7 @@ pnpm-debug.log*
 # AI
 .sisyphus/
 .playwright-mcp/
-.opencode/
+!.opencode/*
+.opencode/skills/**/*.csv
+.opencode/skills/**/*.py
+.opencode/skills/**/*.pyc
