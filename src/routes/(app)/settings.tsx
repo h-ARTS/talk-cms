@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react"
+import { useEffect, useId, useState, type FormEvent } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { ExternalLinkIcon } from "lucide-react"
 
@@ -10,8 +10,12 @@ import {
     AlertDescription,
     AlertTitle,
     Button,
+    Form,
+    FormSection,
+    FormSubsection,
     Input,
     Label,
+    PageHeader,
     Spinner,
     Switch,
 } from "@/ui/index"
@@ -78,6 +82,7 @@ function SettingsForm({
     initialVisualComposerUrl: string
 }) {
     const saveSettings = useThemeStore((state) => state.saveSettings)
+    const formId = useId()
     const [mode, setMode] = useState<ThemeMode>(initialMode)
     const [visualComposerUrl, setVisualComposerUrl] = useState(
         initialVisualComposerUrl,
@@ -108,52 +113,42 @@ function SettingsForm({
     }
 
     return (
-        <form className="grid gap-8" onSubmit={handleSubmit}>
-            <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-8">
-                <h1 className="font-display text-4xl font-bold tracking-tight">
-                    Settings
-                </h1>
-                <Button type="submit" size="lg" disabled={saving}>
-                    {saving ? "Saving…" : "Save settings"}
-                </Button>
-            </header>
-            {error && (
-                <Alert variant="destructive">
-                    <AlertTitle>Settings unavailable</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
-            {message && (
-                <Alert variant="success" aria-live="polite">
-                    <AlertTitle>Saved</AlertTitle>
-                    <AlertDescription>{message}</AlertDescription>
-                </Alert>
-            )}
-
-            <section
-                aria-labelledby="workspace-settings-title"
-                className="min-w-0"
-            >
-                <div className="min-w-0 pb-6">
-                    <h2
-                        id="workspace-settings-title"
-                        className="font-display text-2xl font-semibold tracking-tight"
+        <>
+            <PageHeader
+                title="Settings"
+                action={
+                    <Button
+                        type="submit"
+                        form={formId}
+                        size="lg"
+                        disabled={saving}
                     >
-                        Workspace settings
-                    </h2>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                        Personalize Talk CMS for this account.
-                    </p>
-                </div>
-                <div className="grid min-w-0 gap-6 border-b border-border py-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-12">
-                    <div className="min-w-0">
-                        <h3 className="text-lg font-semibold">Appearance</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                            Choose how the content workspace appears on this
-                            account.
-                        </p>
-                    </div>
-                    <div className="flex min-w-0 items-start justify-between gap-6">
+                        {saving ? "Saving…" : "Save settings"}
+                    </Button>
+                }
+            />
+            <Form id={formId} className="mt-8" onSubmit={handleSubmit}>
+                {error && (
+                    <Alert variant="destructive">
+                        <AlertTitle>Settings unavailable</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+                {message && (
+                    <Alert variant="success" aria-live="polite">
+                        <AlertTitle>Saved</AlertTitle>
+                        <AlertDescription>{message}</AlertDescription>
+                    </Alert>
+                )}
+
+                <FormSection
+                    title="Workspace settings"
+                    description="Personalize Talk CMS for this account."
+                >
+                    <FormSubsection
+                        title="Appearance"
+                        description="Choose how the content workspace appears on this account."
+                    >
                         <div className="min-w-0">
                             <Label
                                 htmlFor="settings-dark-mode"
@@ -175,34 +170,18 @@ function SettingsForm({
                             }
                             aria-label="Use dark mode"
                         />
-                    </div>
-                </div>
-            </section>
+                    </FormSubsection>
+                </FormSection>
 
-            <section
-                aria-labelledby="visual-composer-title"
-                className="min-w-0"
-            >
-                <div className="min-w-0 pb-6">
-                    <h2
-                        id="visual-composer-title"
-                        className="font-display text-2xl font-semibold tracking-tight"
-                    >
-                        Visual Composer
-                    </h2>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                        Connect the end-user website or web app that renders
-                        content from Talk CMS.
-                    </p>
-                </div>
-                <div className="grid min-w-0 gap-6 border-b border-border py-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-12">
-                    <Label
+                <FormSection
+                    title="Visual Composer"
+                    description="Connect the end-user website or web app that renders content from Talk CMS."
+                >
+                    <FormSubsection
+                        title="Preview site URL"
                         htmlFor="visual-composer-url"
-                        className="self-start text-lg font-semibold"
+                        controlsClassName="grid gap-2"
                     >
-                        Preview site URL
-                    </Label>
-                    <div className="grid min-w-0 gap-2">
                         <Input
                             id="visual-composer-url"
                             type="url"
@@ -236,10 +215,10 @@ function SettingsForm({
                                 />
                             </a>
                         )}
-                    </div>
-                </div>
-            </section>
-        </form>
+                    </FormSubsection>
+                </FormSection>
+            </Form>
+        </>
     )
 }
 
