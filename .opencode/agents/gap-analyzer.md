@@ -2,7 +2,7 @@
 description: Identifies gaps between requirements and code
 mode: subagent
 model: openai/gpt-6.1-sol
-color: "#ff6b6b"
+color: "#d8ff66"
 permissions:
     - action: edit
       resource: "*"
