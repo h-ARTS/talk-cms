@@ -1,7 +1,7 @@
 ---
 description: The senior engineer, an ultra-worker, the most reliable engineer ever, the orchestrator.
 mode: primary
-model: openai/gpt-6.1-sol-ultrafast
+model: openai/gpt-6.1-sol-ultrafast#max
 color: "#da7bfc"
 hidden: false
 permissions:

@@ -1,7 +1,7 @@
 ---
 description: Explores the codebase and reports relevant findings
 mode: subagent
-model: opencode-go/deepseek-v4.1-flash
+model: opencode-go/claude-haiku-5-5
 color: "#4EC5F1"
 permissions:
     - action: edit
@@ -26,8 +26,8 @@ Once finished come with a report that would contain the following:
 <REPORT>
 ## REPORT
 
-Content
-<REPORT>
+Structured content with evidence
+</REPORT>
 
 ### What should the report contain
 

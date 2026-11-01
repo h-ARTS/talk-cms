@@ -1,7 +1,7 @@
 ---
 description: Researches external documentation and library APIs
 mode: subagent
-model: opencode-go/deepseek-v4.1-flash
+model: opencode-go/claude-haiku-5-5
 color: "#B01455"
 permissions:
     - action: edit
@@ -33,8 +33,8 @@ Once finished come with a report that would contain the following:
 <REPORT>
 ## REPORT
 
-Content
-<REPORT>
+Structured content with evidence
+</REPORT>
 
 ### What should the report contain
 
