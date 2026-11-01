@@ -4,6 +4,7 @@ import { PlusIcon, Trash2Icon, PencilIcon } from "lucide-react"
 
 import DashboardShell from "@/components/DashboardShell"
 import IconButtonLink from "@/components/IconButtonLink"
+import PageLayout from "@/components/PageLayout"
 import { deletePage, listPages, type SavedPage } from "@/pages/client/page-api"
 import { Alert, AlertDescription, AlertTitle } from "@/ui/alert"
 import { Button } from "@/ui/button"
@@ -56,7 +57,7 @@ function PagesPage() {
 
   return (
     <DashboardShell>
-      <div className="mx-auto max-w-5xl px-6 py-10 md:py-14">
+      <PageLayout>
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
@@ -162,7 +163,7 @@ function PagesPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </PageLayout>
     </DashboardShell>
   )
 }
