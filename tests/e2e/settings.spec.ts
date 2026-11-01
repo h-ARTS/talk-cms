@@ -246,6 +246,8 @@ test("shows loading before displaying editable settings", async ({ page }) => {
   await page.goto("/settings")
   const pending = await intercepted
   await expect(page.getByRole("status").filter({ hasText: "Loading settings" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1)
+  await expect(page.locator("main header")).toHaveCount(1)
   await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("font-size", "36px")
   await expect(page.getByRole("switch")).toHaveCount(0)
   await expect(page.getByRole("button", { name: "Save settings" })).toHaveCount(0)
@@ -261,6 +263,8 @@ test("load failure keeps settings unavailable rather than showing a form", async
   await page.goto("/settings")
   await expect(page.getByRole("alert")).toContainText("Settings unavailable")
   await expect(page.getByRole("alert")).toContainText("Settings are temporarily unavailable.")
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1)
+  await expect(page.locator("main header")).toHaveCount(1)
   await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("font-size", "36px")
   await expect(page.getByRole("switch")).toHaveCount(0)
   await expect(page.getByRole("button", { name: "Save settings" })).toHaveCount(0)

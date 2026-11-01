@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import BlockDefinitionsPage from "@/blocks/management/BlockDefinitionsPage"
 import DashboardShell from "@/components/DashboardShell"
+import PageLayout from "@/components/PageLayout"
 
 export const Route = createFileRoute("/(app)/blocks/")({
   component: BlocksPage,
@@ -9,7 +10,9 @@ export const Route = createFileRoute("/(app)/blocks/")({
 function BlocksPage() {
   return (
     <DashboardShell>
-      <BlockDefinitionsPage />
+      <PageLayout>
+        <BlockDefinitionsPage />
+      </PageLayout>
     </DashboardShell>
   )
 }

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { ArrowRightIcon, BlocksIcon, FileTextIcon } from "lucide-react"
 
 import DashboardShell from "@/components/DashboardShell"
+import PageLayout from "@/components/PageLayout"
 import { Card, CardDescription, CardTitle } from "@/ui/card"
 
 export const Route = createFileRoute("/(app)/")({
@@ -26,7 +27,7 @@ const destinations = [
 function DashboardPage() {
   return (
     <DashboardShell>
-      <div className="mx-auto max-w-5xl px-6 py-10 md:py-14">
+      <PageLayout>
         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
           Workspace
         </p>
@@ -59,7 +60,7 @@ function DashboardPage() {
             )
           })}
         </div>
-      </div>
+      </PageLayout>
     </DashboardShell>
   )
 }
