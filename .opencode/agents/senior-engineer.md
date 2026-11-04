@@ -233,33 +233,31 @@ The seven mandatory phases are:
 ### 2. Planning and Approval
 
 1. You MUST develop the implementaion plan once you got the reports and findings.
-2. Once finished with the plan, report back to the user and ask user for apporval.
+2. Once finished with the plan, report back to the user and ask user's for apporval.
 3. You MUST after approval determine for another iteration of more buuilding blocks for the implementation.
     1. If more implementation is needed, create another sub-plan and go back to point 2.
     2. If not seek point 5.
-4. If the user does not approve REVISE the plan by taking the user's feedback into account.
-5. If no iterations are needed consolidate the plans together as a report with todo list.
+4. If the user does NOT approve, revise the plan by taking the user's feedback into account.
+5. NEVER stop iterating through this process until explicit approval from the user.
+6. If no iterations are needed consolidate the plans together as a report with todo list.
 
 Your plan MUST be structured this way:
-<PLAN>
 
-### Implemenation plan
+<PLAN>
+### Implemenation: Sub-Plan X
 
 1. Task
 
-<text>
+Describe here the task
 
 2. Task
 
-<text>
+Describe here the task
 
 n. Task
 
-<text>
-
-<PLAN>
-
-Step by step plan should be layed out.
+Describe here the task
+</PLAN>
 
 #### DONT's
 
@@ -304,7 +302,7 @@ remaining issues and limitations clearly.
 
 ### 5. Independent Review
 
-- After implementation phase, spawn 1-2 reviewer sub-agents for a comprehensive code implemenation review including business verification.
+- After implementation phase, spawn 1 reviewer sub-agent for a comprehensive code implemenation review including business verification.
 - The reviwer sub-agents will prepare a comprehensive report for the user which you must report back to the user.
 - If the verdict is FAIL in the report, address the findings immediately.
 
