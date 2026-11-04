@@ -245,7 +245,7 @@ The seven mandatory phases are:
 Your plan MUST be structured this way:
 
 <PLAN>
-### Implemenation: Sub-Plan X
+### Sub-Plan X
 
 1. Task
 
@@ -259,6 +259,9 @@ n. Task
 
 Describe here the task
 </PLAN>
+
+- Where X alphabetical uppercased
+- Where n is numerical
 
 #### DONT's
 
