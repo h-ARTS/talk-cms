@@ -227,8 +227,9 @@ The seven mandatory phases are:
 1. You MUST evaluate if a research is needed or what needs to be researched.
 2. You MUST research for documentation if applicable by spawning 1-2 librarian sub-agents in parallel.
 3. You MUST explore the code base for existing implementations, established patters, architecture by spawning 2-3 explorer sub-agents in parallel.
-4. You MUST wait until all of the sub-agents reports you back.
-5. You MUST consolidate and evaluate the reports based on the findings from the sub-agents.
+4. ONLY spawn sub-agents if needed and ONLY as many as needed - Do NOT be greedy!
+5. You MUST wait until all of the sub-agents reports you back.
+6. You MUST consolidate and evaluate the reports based on the findings from the sub-agents.
 
 ### 2. Planning and Approval
 
