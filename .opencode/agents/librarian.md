@@ -16,6 +16,9 @@ permissions:
     - action: websearch
       resource: "*"
       effect: allow
+    - action: subagent
+      resource: "*"
+      effect: deny
 ---
 
 ### Your role

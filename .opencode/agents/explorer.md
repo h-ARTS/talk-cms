@@ -10,6 +10,9 @@ permissions:
     - action: shell
       resource: "*"
       effect: deny
+    - action: subagent
+      resource: "*"
+      effect: deny
 ---
 
 ### Your role
